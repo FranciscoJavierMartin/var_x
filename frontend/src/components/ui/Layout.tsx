@@ -12,10 +12,13 @@ import Header from './Header';
 
 const Layout: React.FC = ({ children }) => {
   const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
+    query GetCategories {
+      allStrapiCategory {
+        edges {
+          node {
+            name
+            strapiId
+          }
         }
       }
     }
@@ -23,7 +26,7 @@ const Layout: React.FC = ({ children }) => {
 
   return (
     <>
-      <Header />
+      <Header categories={data.allStrapiCategory.edges} />
       <div>
         <main>{children}</main>
       </div>
