@@ -73,7 +73,6 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
     /iPad|iPhone|iPod/.test(navigator.userAgent)
   );
 
-  // FIXME: Get the correct index
   const activeIndex = () => {
     const pathname =
       typeof window !== 'undefined' ? window.location.pathname : '';
