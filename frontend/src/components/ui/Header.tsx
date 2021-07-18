@@ -73,6 +73,17 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
     /iPad|iPhone|iPod/.test(navigator.userAgent)
   );
 
+  // FIXME: Get the correct index
+  const activeIndex = () => {
+    const pathname =
+      typeof window !== 'undefined' ? window.location.pathname : '';
+    const found = routes.findIndex(
+      route =>
+        (route.node.link || `/${route.node.name.toLowerCase()}`) === pathname
+    );
+    return found === -1 ? false : found;
+  };
+
   const routes = [
     ...categories,
     { node: { name: 'Contact us', strapiId: 'contact', link: '/contact' } },
@@ -80,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
 
   const tabs = (
     <Tabs
-      value={0}
+      value={activeIndex()}
       classes={{ indicator: classes.coloredIndicator, root: classes.tabs }}
     >
       {routes.map(route => (
@@ -105,8 +116,9 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       classes={{ paper: classes.drawer }}
     >
       <List disablePadding>
-        {routes.map(route => (
+        {routes.map((route, index) => (
           <ListItem
+            selected={activeIndex() == index}
             component={Link}
             to={route.node.link || `/${route.node.name.toLowerCase()}`}
             key={route.node.strapiId}
@@ -153,7 +165,11 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
   return (
     <AppBar color='transparent' elevation={0}>
       <Toolbar>
-        <Button classes={{ root: classes.logoContainer }}>
+        <Button
+          component={Link}
+          to='/'
+          classes={{ root: classes.logoContainer }}
+        >
           <Typography variant='h1'>
             <span className={classes.logoText}>VAR</span> X
           </Typography>
