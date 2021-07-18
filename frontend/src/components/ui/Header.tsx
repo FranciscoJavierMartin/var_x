@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, navigate } from 'gatsby';
 import {
   AppBar,
   Toolbar,
@@ -37,6 +38,15 @@ const useStyles = makeStyles(theme => ({
   logoText: {
     color: theme.palette.common.offBlack,
   },
+  logoContainer: {
+    [theme.breakpoints.down('md')]: {
+      marginRight: 'auto',
+    },
+  },
+  tab: {
+    ...theme.typography.body1,
+    fontWeight: 600,
+  },
   tabs: {
     marginRight: 'auto',
     marginLeft: 'auto',
@@ -44,6 +54,12 @@ const useStyles = makeStyles(theme => ({
   icon: {
     height: '3rem',
     width: '3rem',
+  },
+  drawer: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  listItemText: {
+    color: theme.palette.common.white,
   },
 }));
 
@@ -59,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
 
   const routes = [
     ...categories,
-    { node: { name: 'Contact us', strapiId: 'contact' } },
+    { node: { name: 'Contact us', strapiId: 'contact', link: '/contact' } },
   ];
 
   const tabs = (
@@ -68,7 +84,13 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       classes={{ indicator: classes.coloredIndicator, root: classes.tabs }}
     >
       {routes.map(route => (
-        <Tab key={route.node.strapiId} label={route.node.name} />
+        <Tab
+          component={Link}
+          to={route.node.link || `/${route.node.name.toLowerCase()}`}
+          classes={{ root: classes.tab }}
+          key={route.node.strapiId}
+          label={route.node.name}
+        />
       ))}
     </Tabs>
   );
@@ -80,39 +102,77 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       onClose={() => setIsDrawerOpen(false)}
       disableBackdropTransition={!iOS}
       disableDiscovery={iOS}
+      classes={{ paper: classes.drawer }}
     >
       <List disablePadding>
         {routes.map(route => (
-          <ListItem key={route.node.strapiId} divider button>
-            <ListItemText primary={route.node.name} />
+          <ListItem
+            component={Link}
+            to={route.node.link || `/${route.node.name.toLowerCase()}`}
+            key={route.node.strapiId}
+            divider
+            button
+          >
+            <ListItemText
+              classes={{ primary: classes.listItemText }}
+              primary={route.node.name}
+            />
           </ListItem>
         ))}
       </List>
     </SwipeableDrawer>
   );
 
+  const actions = [
+    {
+      icon: search,
+      alt: 'search',
+      visible: true,
+      onClick: () => {},
+    },
+    {
+      icon: cart,
+      alt: 'cart',
+      visible: true,
+      link: '/cart',
+    },
+    {
+      icon: account,
+      alt: 'account',
+      visible: !matchesMD,
+      link: '/account',
+    },
+    {
+      icon: menu,
+      alt: 'menu',
+      visible: matchesMD,
+      onClick: () => setIsDrawerOpen(true),
+    },
+  ];
+
   return (
     <AppBar color='transparent' elevation={0}>
       <Toolbar>
-        <Button>
+        <Button classes={{ root: classes.logoContainer }}>
           <Typography variant='h1'>
             <span className={classes.logoText}>VAR</span> X
           </Typography>
         </Button>
         {matchesMD ? drawer : tabs}
-        <IconButton>
-          <img src={search} alt='search' />
-        </IconButton>
-        <IconButton>
-          <img src={cart} alt='cart' />
-        </IconButton>
-        <IconButton onClick={() => (matchesMD ? setIsDrawerOpen(true) : null)}>
-          <img
-            className={classes.icon}
-            src={matchesMD ? menu : account}
-            alt={matchesMD ? 'menu' : 'account'}
-          />
-        </IconButton>
+        {/** FIXME: Move onClick to IconButton to solve problem on Firefox */}
+        {actions.map(
+          action =>
+            action.visible && (
+              <IconButton
+                key={action.alt}
+                component={action.onClick ? undefined : Link}
+                to={action.onClick ? undefined : action.link}
+                onClick={action.onClick}
+              >
+                <img src={action.icon} alt={action.alt} />
+              </IconButton>
+            )
+        )}
       </Toolbar>
     </AppBar>
   );
