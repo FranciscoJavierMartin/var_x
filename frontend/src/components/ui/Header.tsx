@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, navigate } from 'gatsby';
+import { Link } from 'gatsby';
 import {
   AppBar,
   Toolbar,
@@ -11,7 +11,6 @@ import {
   makeStyles,
   useMediaQuery,
   Theme,
-  Hidden,
   SwipeableDrawer,
   List,
   ListItem,
