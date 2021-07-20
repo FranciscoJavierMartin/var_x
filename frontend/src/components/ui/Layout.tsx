@@ -9,6 +9,7 @@ import * as React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 
 import Header from './Header';
+import Footer from './Footer';
 
 const Layout: React.FC = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -27,9 +28,11 @@ const Layout: React.FC = ({ children }) => {
   return (
     <>
       <Header categories={data.allStrapiCategory.edges} />
+      <div style={{ marginBottom: '10rem' }} />
       <div>
         <main>{children}</main>
       </div>
+      <Footer />
     </>
   );
 };
