@@ -29,9 +29,7 @@ const Layout: React.FC = ({ children }) => {
     <>
       <Header categories={data.allStrapiCategory.edges} />
       <div style={{ marginBottom: '10rem' }} />
-      <div>
-        <main>{children}</main>
-      </div>
+      <main>{children}</main>
       <Footer />
     </>
   );

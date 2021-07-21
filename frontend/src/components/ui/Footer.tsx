@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
                   <Typography variant='h5'>{category}</Typography>
                 </Grid>
                 {row.map(route => (
-                  <Grid item>
+                  <Grid item key={route.label}>
                     <Typography
                       component={route['link'] ? Link : 'a'}
                       to={route.link}
