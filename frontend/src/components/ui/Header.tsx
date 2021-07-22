@@ -161,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
   ];
 
   return (
-    <AppBar color='transparent' elevation={0}>
+    <AppBar color='transparent' elevation={0} position='static'>
       <Toolbar>
         <Button
           component={Link}
@@ -173,7 +173,6 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
           </Typography>
         </Button>
         {matchesMD ? drawer : tabs}
-        {/** FIXME: Move onClick to IconButton to solve problem on Firefox */}
         {actions.map(
           action =>
             action.visible && (
