@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import {
-  Grid,
-  Typography,
-  Button,
-  IconButton,
-  makeStyles,
-} from '@material-ui/core';
-import clsx from 'clsx';
+import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
 import Carousel from 'react-spring-3d-carousel';
 import PromotionalProductSlide from './PromotionalProductSlide';
 
