@@ -6,7 +6,7 @@ import PromotionalProductSlide from './PromotionalProductSlide';
 
 import promoAdornment from '../../images/promo-adornment.svg';
 import explore from '../../images/explore.svg';
-import { Query } from '../../interfaces/promoted';
+import { GetPromo } from '../../interfaces/promoted';
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -34,7 +34,7 @@ const PromotionalProducts: React.FC = () => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0);
   const classes = useStyles();
 
-  const data = useStaticQuery<Query>(graphql`
+  const data = useStaticQuery<GetPromo>(graphql`
     query GetPromo {
       allStrapiProduct(filter: { promo: { eq: true } }) {
         edges {

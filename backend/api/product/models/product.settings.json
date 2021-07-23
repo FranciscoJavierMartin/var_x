@@ -34,7 +34,8 @@
       "collection": "variant"
     },
     "promo": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     }
   }
 }
