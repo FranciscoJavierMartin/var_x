@@ -23,9 +23,12 @@ const useStyles = makeStyles(theme => ({
     backgroundRepeat: 'no-repeat',
     width: '100%',
     height: '70rem',
-    padding: '30rem 10rem',
+    padding: '30rem 10rem 10rem 10rem',
     [theme.breakpoints.down('lg')]: {
-      padding: '20rem 2rem',
+      padding: '20rem 2rem 2rem 2rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      overflow: 'hidden',
     },
   },
   carouselContainer: {
@@ -71,8 +74,6 @@ const PromotionalProducts: React.FC = () => {
     }
   `);
 
-  console.log(process.env.GATSBY_STRAPI_URL);
-
   const slides = data.allStrapiProduct.edges.map(({ node }, index: number) => ({
     key: index,
     content: (
@@ -99,7 +100,11 @@ const PromotionalProducts: React.FC = () => {
         {
           /* TODO: Uncomment to avoid error on development*/
           typeof window !== 'undefined' ? (
-            <Carousel slides={slides} goToSlide={selectedSlide} />
+            <Carousel
+              slides={slides}
+              goToSlide={selectedSlide}
+              showNavigation={false}
+            />
           ) : null
         }
       </Grid>

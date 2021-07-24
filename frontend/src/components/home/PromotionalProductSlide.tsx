@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       margin: '0 10rem 10rem 10rem',
     },
+    [theme.breakpoints.down("xs")]: {
+      margin: "0 5rem 10rem 5rem",
+    },
   },
 }));
 
