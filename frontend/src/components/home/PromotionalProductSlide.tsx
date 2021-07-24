@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   space: {
     margin: '0 15rem 10rem 15rem',
     [theme.breakpoints.down('sm')]: {
-      margin: '0 10rem 10rem 10rem',
+      margin: '0 8rem 8rem 8rem',
     },
     [theme.breakpoints.down("xs")]: {
       margin: "0 5rem 10rem 5rem",
