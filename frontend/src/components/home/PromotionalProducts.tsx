@@ -77,9 +77,10 @@ const PromotionalProducts: React.FC = () => {
       classes={{ root: classes.mainContainer }}
     >
       <Grid item classes={{ root: classes.carouselContainer }}>
-        {typeof window !== 'undefined' ? (
+        {/* TODO: Uncomment to avoid error on development
+         {typeof window !== 'undefined' ? (
           <Carousel slides={slides} goToSlide={selectedSlide} showNavigation />
-        ) : null}
+        ) : null} */}
       </Grid>
       <Grid item classes={{ root: classes.descriptionContainer }}>
         <Typography variant='h2' paragraph>
