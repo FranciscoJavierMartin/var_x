@@ -17,10 +17,20 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.common.white,
     borderRadius: 20,
     boxShadow: theme.shadows[5],
+    [theme.breakpoints.down('sm')]: {
+      height: '25rem',
+      width: '20rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: '20rem',
+      width: '15rem',
+    },
   },
   space: {
-    margin: '0 15rem',
-    marginBottom: '10rem',
+    margin: '0 15rem 10rem 15rem',
+    [theme.breakpoints.down('sm')]: {
+      margin: '0 10rem 10rem 10rem',
+    },
   },
 }));
 

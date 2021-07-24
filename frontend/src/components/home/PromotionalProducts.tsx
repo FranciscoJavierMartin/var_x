@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  Button,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 import Carousel from 'react-spring-3d-carousel';
 import PromotionalProductSlide from './PromotionalProductSlide';
 
@@ -17,9 +24,16 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: '70rem',
     padding: '30rem 10rem',
+    [theme.breakpoints.down('lg')]: {
+      padding: '20rem 2rem',
+    },
   },
   carouselContainer: {
     marginLeft: '20rem',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: 0,
+      height: '30rem',
+    },
   },
   explore: {
     textTransform: 'none',
@@ -27,11 +41,15 @@ const useStyles = makeStyles(theme => ({
   },
   descriptionContainer: {
     textAlign: 'right',
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
   },
 }));
 
 const PromotionalProducts: React.FC = () => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0);
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const classes = useStyles();
 
   const data = useStaticQuery<GetPromo>(graphql`
@@ -72,15 +90,18 @@ const PromotionalProducts: React.FC = () => {
   return (
     <Grid
       container
-      justifyContent='space-between'
+      justifyContent={matchesMD ? 'space-around' : 'space-between'}
       alignItems='center'
       classes={{ root: classes.mainContainer }}
+      direction={matchesMD ? 'column' : 'row'}
     >
       <Grid item classes={{ root: classes.carouselContainer }}>
-        {/* TODO: Uncomment to avoid error on development
-         {typeof window !== 'undefined' ? (
-          <Carousel slides={slides} goToSlide={selectedSlide} showNavigation />
-        ) : null} */}
+        {
+          /* TODO: Uncomment to avoid error on development*/
+          typeof window !== 'undefined' ? (
+            <Carousel slides={slides} goToSlide={selectedSlide} />
+          ) : null
+        }
       </Grid>
       <Grid item classes={{ root: classes.descriptionContainer }}>
         <Typography variant='h2' paragraph>
