@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  Button,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 
 import cta from '../../images/cta.svg';
 
@@ -14,14 +21,23 @@ const useStyles = makeStyles(theme => ({
   },
   body: {
     maxWidth: '45rem',
+    [theme.breakpoints.down('md')]: {
+      padding: '0 1rem',
+    },
   },
   buttonContainer: {
     marginTop: '3rem',
+  },
+  headingContainer: {
+    [theme.breakpoints.down('md')]: {
+      padding: '0 1rem',
+    },
   },
 }));
 
 const CallToAction: React.FC = () => {
   const classes = useStyles();
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
     <Grid
@@ -29,23 +45,34 @@ const CallToAction: React.FC = () => {
       justifyContent='space-around'
       alignItems='center'
       classes={{ root: classes.container }}
+      direction={matchesMD ? 'column' : 'row'}
     >
       <Grid item>
         <img src={cta} alt='Quality committed' />
       </Grid>
       <Grid item>
         <Grid container direction='column'>
-          <Grid item>
-            <Typography variant='h1'>Committed to quality</Typography>
+          <Grid item classes={{ root: classes.headingContainer }}>
+            <Typography align={matchesMD ? 'center' : undefined} variant='h1'>
+              Committed to quality
+            </Typography>
           </Grid>
           <Grid item classes={{ root: classes.body }}>
-            <Typography variant='body1'>
+            <Typography
+              align={matchesMD ? 'center' : undefined}
+              variant='body1'
+            >
               At VAR X our mission is to provide comfortable, durable, premium,
               designer clothing and clothing accessories to developers and
               technology enthusiasts
             </Typography>
           </Grid>
-          <Grid item container classes={{ root: classes.buttonContainer }}>
+          <Grid
+            item
+            justifyContent={matchesMD ? 'center' : undefined}
+            container
+            classes={{ root: classes.buttonContainer }}
+          >
             <Grid item>
               <Button
                 component={Link}
