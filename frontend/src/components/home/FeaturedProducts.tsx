@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { Grid, Typography, IconButton, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  IconButton,
+  Button,
+  Chip,
+  makeStyles,
+} from '@material-ui/core';
 import clsx from 'clsx';
+import Rating from './Rating';
 import { GetFeatured } from '../../interfaces/featured';
 
 import featuredAdornment from '../../images/featured-adornment.svg';
 import frame from '../../images/product-frame-grid.svg';
+import explore from '../../images/explore.svg';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -40,6 +49,7 @@ const useStyles = makeStyles(theme => ({
     width: '24.5rem',
     zIndex: 0,
     transition: 'transform 0.5s ease',
+    padding: '1rem 2rem',
   },
   slideLeft: {
     transform: 'translate(-24.5rem, 0px)',
@@ -49,6 +59,22 @@ const useStyles = makeStyles(theme => ({
   },
   productContainer: {
     margin: '5rem 0',
+  },
+  exploreContainer: {
+    marginTop: 'auto',
+  },
+  exploreButton: {
+    textTransform: 'none',
+  },
+  exploreIcon: {
+    height: '1.5rem',
+    marginLeft: '1rem',
+  },
+  chipLabel: {
+    ...theme.typography.h5,
+  },
+  chipRoot: {
+    backgroundColor: theme.palette.secondary.main,
   },
 }));
 
@@ -122,7 +148,30 @@ const FeaturedProducts: React.FC = () => {
                     (alignment === 'flex-start' || alignment === 'center'),
                 }),
               }}
-            ></Grid>
+            >
+              <Grid item>
+                <Typography variant='h4'>{node.name.split(' ')[0]}</Typography>
+              </Grid>
+              <Grid item>
+                <Rating rate={4.5} />
+              </Grid>
+              <Grid item>
+                <Chip
+                  classes={{ root: classes.chipRoot, label: classes.chipLabel }}
+                  label={`$${node.variants[0].price}`}
+                />
+              </Grid>
+              <Grid item classes={{ root: classes.exploreContainer }}>
+                <Button classes={{ root: classes.exploreButton }}>
+                  <Typography variant='h5'>Details</Typography>
+                  <img
+                    src={explore}
+                    alt='Go to product details'
+                    className={classes.exploreIcon}
+                  />
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         );
       })}
