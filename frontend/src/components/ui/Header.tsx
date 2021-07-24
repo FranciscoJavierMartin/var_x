@@ -34,13 +34,16 @@ const useStyles = makeStyles(theme => ({
   coloredIndicator: {
     backgroundColor: theme.palette.common.white,
   },
-  logoText: {
-    color: theme.palette.common.offBlack,
-  },
   logoContainer: {
     [theme.breakpoints.down('md')]: {
       marginRight: 'auto',
     },
+  },
+  logo: {
+    fontSize: '3rem',
+  },
+  logoText: {
+    color: theme.palette.common.offBlack,
   },
   tab: {
     ...theme.typography.body1,
@@ -53,6 +56,10 @@ const useStyles = makeStyles(theme => ({
   icon: {
     height: '3rem',
     width: '3rem',
+    [theme.breakpoints.down('xs')]: {
+      height: '2rem',
+      width: '2rem',
+    },
   },
   drawer: {
     backgroundColor: theme.palette.primary.main,
@@ -162,13 +169,13 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
 
   return (
     <AppBar color='transparent' elevation={0} position='static'>
-      <Toolbar>
+      <Toolbar disableGutters>
         <Button
           component={Link}
           to='/'
           classes={{ root: classes.logoContainer }}
         >
-          <Typography variant='h1'>
+          <Typography variant='h1' classes={{ root: classes.logo }}>
             <span className={classes.logoText}>VAR</span> X
           </Typography>
         </Button>

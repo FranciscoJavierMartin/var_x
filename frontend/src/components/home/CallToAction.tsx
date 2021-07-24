@@ -24,6 +24,9 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('md')]: {
       padding: '0 1rem',
     },
+    [theme.breakpoints.down('xs')]: {
+      padding: '0',
+    },
   },
   buttonContainer: {
     marginTop: '3rem',
@@ -31,6 +34,15 @@ const useStyles = makeStyles(theme => ({
   headingContainer: {
     [theme.breakpoints.down('md')]: {
       padding: '0 1rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '0',
+    },
+  },
+  icon: {
+    [theme.breakpoints.down('xs')]: {
+      height: '18rem',
+      width: '20rem',
     },
   },
 }));
@@ -48,7 +60,7 @@ const CallToAction: React.FC = () => {
       direction={matchesMD ? 'column' : 'row'}
     >
       <Grid item>
-        <img src={cta} alt='Quality committed' />
+        <img src={cta} alt='Quality committed' className={classes.icon} />
       </Grid>
       <Grid item>
         <Grid container direction='column'>
