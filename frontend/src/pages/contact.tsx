@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'gatsby';
-import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  Button,
+  TextField,
+  makeStyles,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import Layout from '../components/ui/Layout';
 
@@ -72,9 +78,40 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textField: {
+    width: '30rem',
+  },
+  input: {
+    color: theme.palette.common.white,
+  },
+  fieldContainer: {
+    marginBottom: '1rem',
+  },
+  multilineContainer: {
+    marginTop: '1rem',
+  },
+  '@global': {
+    '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
+      {
+        borderBottom: `2px solid ${theme.palette.common.white}`,
+      },
+    '.MuiInput-underline:after': {
+      borderBottom: `2px solid ${theme.palette.secondary.main}`,
+    },
+    '.MuiInput-multiline': {
+      border: `2px solid ${theme.palette.common.white}`,
+      borderRadius: 10,
+      padding: '1rem',
+    },
+  },
 }));
 
 const ContactPage: React.FC = () => {
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
+
   const classes = useStyles();
 
   return (
@@ -100,6 +137,51 @@ const ContactPage: React.FC = () => {
               }}
             >
               <Typography variant='h4'>Contact Us</Typography>
+            </Grid>
+            <Grid item>
+              <Grid container direction='column'>
+                <Grid item classes={{ root: classes.fieldContainer }}>
+                  <TextField
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder='Name'
+                    classes={{ root: classes.textField }}
+                    InputProps={{ classes: { input: classes.input } }}
+                  />
+                </Grid>
+                <Grid item classes={{ root: classes.fieldContainer }}>
+                  <TextField
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder='Email'
+                    classes={{ root: classes.textField }}
+                    InputProps={{ classes: { input: classes.input } }}
+                  />
+                </Grid>
+                <Grid item classes={{ root: classes.fieldContainer }}>
+                  <TextField
+                    value={phoneNumber}
+                    onChange={e => setPhoneNumber(e.target.value)}
+                    placeholder='Phone'
+                    classes={{ root: classes.textField }}
+                    InputProps={{ classes: { input: classes.input } }}
+                  />
+                </Grid>
+                <Grid item classes={{ root: classes.multilineContainer }}>
+                  <TextField
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
+                    placeholder='Message'
+                    multiline
+                    rows={8}
+                    classes={{ root: classes.textField }}
+                    InputProps={{
+                      disableUnderline: true,
+                      classes: { input: classes.input },
+                    }}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid
               item
