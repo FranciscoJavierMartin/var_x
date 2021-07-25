@@ -34,9 +34,11 @@ const useStyles = makeStyles(theme => ({
   },
   buttonContainer: {
     marginBottom: '-4rem',
-  },
-  sendButton: {
     textTransform: 'none',
+    borderRadius: 0,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+    },
   },
   sendIcon: {
     marginLeft: '2rem',
@@ -56,12 +58,19 @@ const useStyles = makeStyles(theme => ({
     marginRight: '2rem',
   },
   infoContainer: {
-    height: '15rem',
+    height: '21.25rem',
   },
   middleInfo: {
     borderTop: `2px solid ${theme.palette.common.white}`,
     borderBottom: `2px solid ${theme.palette.common.white}`,
-    padding: '1rem 0',
+  },
+  iconContainer: {
+    borderRight: `2px solid ${theme.palette.common.white}`,
+    height: '7rem',
+    width: '8rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
 
@@ -94,18 +103,13 @@ const ContactPage: React.FC = () => {
             </Grid>
             <Grid
               item
+              component={Button}
               classes={{
                 root: clsx(classes.buttonContainer, classes.blockContainer),
               }}
             >
-              <Button classes={{ root: classes.sendButton }}>
-                <Typography variant='h4'>Send message</Typography>
-                <img
-                  src={send}
-                  alt='Send message'
-                  className={classes.sendIcon}
-                />
-              </Button>
+              <Typography variant='h4'>Send message</Typography>
+              <img src={send} alt='Send message' className={classes.sendIcon} />
             </Grid>
           </Grid>
         </Grid>
@@ -117,7 +121,7 @@ const ContactPage: React.FC = () => {
             classes={{ root: classes.infoContainer }}
           >
             <Grid item container alignItems='center'>
-              <Grid item>
+              <Grid item classes={{ root: classes.iconContainer }}>
                 <img
                   src={address}
                   alt='address'
@@ -139,7 +143,7 @@ const ContactPage: React.FC = () => {
               alignItems='center'
               classes={{ root: classes.middleInfo }}
             >
-              <Grid item>
+              <Grid item classes={{ root: classes.iconContainer }}>
                 <img src={phone} alt='phone' className={classes.contactIcon} />
               </Grid>
               <Grid item>
@@ -152,8 +156,10 @@ const ContactPage: React.FC = () => {
               </Grid>
             </Grid>
             <Grid item container alignItems='center'>
-              <Grid item classes={{ root: classes.contactEmailIcon }}>
-                <Email color='#fff' />
+              <Grid item classes={{ root: classes.iconContainer }}>
+                <div className={classes.contactEmailIcon}>
+                  <Email color='#fff' />
+                </div>
               </Grid>
               <Grid item>
                 <Typography
