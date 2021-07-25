@@ -40,7 +40,9 @@ const useStyles = makeStyles(theme => ({
     },
   },
   logo: {
-    fontSize: '3rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '3rem',
+    },
   },
   logoText: {
     color: theme.palette.common.offBlack,
