@@ -5,15 +5,18 @@ import {
   Typography,
   Button,
   TextField,
+  InputAdornment,
   makeStyles,
+  useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Layout from '../components/ui/Layout';
 
 import address from '../images/address.svg';
-import phone from '../images/phone-adornment.svg';
+import PhoneAdornment from '../images/PhoneAdornment';
 import Email from '../images/EmailAdornment';
 import send from '../images/send.svg';
+import nameAdornment from '../images/name-adornment.svg';
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -90,6 +93,15 @@ const useStyles = makeStyles(theme => ({
   multilineContainer: {
     marginTop: '1rem',
   },
+  emailAdornment: {
+    height: 17,
+    width: 17,
+    marginBottom: 10,
+  },
+  phoneAdornment: {
+    width: 25.173,
+    height: 25.122,
+  },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
       {
@@ -113,6 +125,7 @@ const ContactPage: React.FC = () => {
   const [message, setMessage] = useState<string>('');
 
   const classes = useStyles();
+  const theme = useTheme();
 
   return (
     <Layout>
@@ -146,7 +159,14 @@ const ContactPage: React.FC = () => {
                     onChange={e => setName(e.target.value)}
                     placeholder='Name'
                     classes={{ root: classes.textField }}
-                    InputProps={{ classes: { input: classes.input } }}
+                    InputProps={{
+                      classes: { input: classes.input },
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <img src={nameAdornment} alt='name icon' />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item classes={{ root: classes.fieldContainer }}>
@@ -155,7 +175,16 @@ const ContactPage: React.FC = () => {
                     onChange={e => setEmail(e.target.value)}
                     placeholder='Email'
                     classes={{ root: classes.textField }}
-                    InputProps={{ classes: { input: classes.input } }}
+                    InputProps={{
+                      classes: { input: classes.input },
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <div className={classes.emailAdornment}>
+                            <Email color={theme.palette.secondary.main} />
+                          </div>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item classes={{ root: classes.fieldContainer }}>
@@ -164,7 +193,18 @@ const ContactPage: React.FC = () => {
                     onChange={e => setPhoneNumber(e.target.value)}
                     placeholder='Phone'
                     classes={{ root: classes.textField }}
-                    InputProps={{ classes: { input: classes.input } }}
+                    InputProps={{
+                      classes: { input: classes.input },
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <div className={classes.phoneAdornment}>
+                            <PhoneAdornment
+                              color={theme.palette.secondary.main}
+                            />
+                          </div>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item classes={{ root: classes.multilineContainer }}>
@@ -226,7 +266,9 @@ const ContactPage: React.FC = () => {
               classes={{ root: classes.middleInfo }}
             >
               <Grid item classes={{ root: classes.iconContainer }}>
-                <img src={phone} alt='phone' className={classes.contactIcon} />
+                <div className={classes.contactIcon}>
+                  <PhoneAdornment />
+                </div>
               </Grid>
               <Grid item>
                 <Typography
