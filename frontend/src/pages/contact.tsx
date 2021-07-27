@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Layout from '../components/ui/Layout';
+import validate from '../utils/validate';
 
 import address from '../images/address.svg';
 import PhoneAdornment from '../images/PhoneAdornment';
@@ -20,7 +21,7 @@ import nameAdornment from '../images/name-adornment.svg';
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
-    height: '40rem',
+    height: '45rem',
     backgroundColor: theme.palette.primary.main,
     marginBottom: '10rem',
   },
@@ -102,6 +103,17 @@ const useStyles = makeStyles(theme => ({
     width: 25.173,
     height: 25.122,
   },
+  multiline: {
+    border: `2px solid ${theme.palette.common.white}`,
+    borderRadius: 10,
+    padding: '1rem',
+  },
+  multilineError: {
+    border: `2px solid ${theme.palette.error.main}`,
+  },
+  buttonDisabled: {
+    backgroundColor: theme.palette.grey[500],
+  },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
       {
@@ -109,11 +121,6 @@ const useStyles = makeStyles(theme => ({
       },
     '.MuiInput-underline:after': {
       borderBottom: `2px solid ${theme.palette.secondary.main}`,
-    },
-    '.MuiInput-multiline': {
-      border: `2px solid ${theme.palette.common.white}`,
-      borderRadius: 10,
-      padding: '1rem',
     },
   },
 }));
@@ -123,6 +130,7 @@ const ContactPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [errors, setErrors] = useState<any>({});
 
   const classes = useStyles();
   const theme = useTheme();
@@ -156,7 +164,25 @@ const ContactPage: React.FC = () => {
                 <Grid item classes={{ root: classes.fieldContainer }}>
                   <TextField
                     value={name}
-                    onChange={e => setName(e.target.value)}
+                    onChange={e => {
+                      if (errors.name) {
+                        const valid = validate({ name: e.target.value });
+                        setErrors(prevErrors => ({
+                          ...prevErrors,
+                          name: !valid.name,
+                        }));
+                      }
+                      setName(e.target.value);
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ name });
+                      setErrors(prevErrors => ({
+                        ...prevErrors,
+                        name: !valid.name,
+                      }));
+                    }}
+                    error={errors.name}
+                    helperText={errors.name && 'You must enter a name'}
                     placeholder='Name'
                     classes={{ root: classes.textField }}
                     InputProps={{
@@ -172,7 +198,25 @@ const ContactPage: React.FC = () => {
                 <Grid item classes={{ root: classes.fieldContainer }}>
                   <TextField
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={e => {
+                      if (errors.name) {
+                        const valid = validate({ email: e.target.value });
+                        setErrors(prevErrors => ({
+                          ...prevErrors,
+                          email: !valid.email,
+                        }));
+                      }
+                      setEmail(e.target.value);
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ email });
+                      setErrors(prevErrors => ({
+                        ...prevErrors,
+                        email: !valid.email,
+                      }));
+                    }}
+                    error={errors.email}
+                    helperText={errors.email && 'You must enter a email'}
                     placeholder='Email'
                     classes={{ root: classes.textField }}
                     InputProps={{
@@ -190,7 +234,25 @@ const ContactPage: React.FC = () => {
                 <Grid item classes={{ root: classes.fieldContainer }}>
                   <TextField
                     value={phoneNumber}
-                    onChange={e => setPhoneNumber(e.target.value)}
+                    onChange={e => {
+                      if (errors.phone) {
+                        const valid = validate({ phone: e.target.value });
+                        setErrors(prevErrors => ({
+                          ...prevErrors,
+                          phone: !valid.phone,
+                        }));
+                      }
+                      setPhoneNumber(e.target.value);
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ phone: phoneNumber });
+                      setErrors(prevErrors => ({
+                        ...prevErrors,
+                        phone: !valid.phone,
+                      }));
+                    }}
+                    error={errors.phone}
+                    helperText={errors.phone && 'You must enter a phone number'}
                     placeholder='Phone'
                     classes={{ root: classes.textField }}
                     InputProps={{
@@ -210,14 +272,36 @@ const ContactPage: React.FC = () => {
                 <Grid item classes={{ root: classes.multilineContainer }}>
                   <TextField
                     value={message}
-                    onChange={e => setMessage(e.target.value)}
+                    onChange={e => {
+                      if (errors.message) {
+                        const valid = validate({ message: e.target.value });
+                        setErrors(prevErrors => ({
+                          ...prevErrors,
+                          message: !valid.message,
+                        }));
+                      }
+                      setMessage(e.target.value);
+                    }}
+                    onBlur={e => {
+                      const valid = validate({ message });
+                      setErrors(prevErrors => ({
+                        ...prevErrors,
+                        message: !valid.message,
+                      }));
+                    }}
+                    error={errors.message}
+                    helperText={errors.message && 'You must enter a message'}
                     placeholder='Message'
                     multiline
                     rows={8}
                     classes={{ root: classes.textField }}
                     InputProps={{
                       disableUnderline: true,
-                      classes: { input: classes.input },
+                      classes: {
+                        input: classes.input,
+                        multiline: classes.multiline,
+                        error: classes.multilineError,
+                      },
                     }}
                   />
                 </Grid>
@@ -226,8 +310,16 @@ const ContactPage: React.FC = () => {
             <Grid
               item
               component={Button}
+              disabled={
+                Object.keys(errors).length !== 4 ||
+                Object.keys(errors).some(error => errors[error])
+              }
               classes={{
-                root: clsx(classes.buttonContainer, classes.blockContainer),
+                root: clsx(classes.buttonContainer, classes.blockContainer, {
+                  [classes.buttonDisabled]:
+                    Object.keys(errors).length !== 4 ||
+                    Object.keys(errors).some(error => errors[error]),
+                }),
               }}
             >
               <Typography variant='h4'>Send message</Typography>
