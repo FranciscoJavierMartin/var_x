@@ -130,7 +130,7 @@ const ContactPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [message, setMessage] = useState<string>('');
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   const classes = useStyles();
   const theme = useTheme();
