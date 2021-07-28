@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   infoContainer: {
     height: '21.25rem',
     [theme.breakpoints.down('xs')]: {
-      height: '15rem',
+      height: '15.25rem',
     },
   },
   middleInfo: {
@@ -214,6 +214,33 @@ const ContactPage: React.FC = () => {
     },
   };
 
+  const info = [
+    {
+      label: (
+        <span>
+          1234 S Example St {matchesXS ? <br /> : null}Wichita, KS 67111
+        </span>
+      ),
+      icon: <img src={address} alt='address' className={classes.contactIcon} />,
+    },
+    {
+      label: '(555) 555-5555',
+      icon: (
+        <div className={classes.contactIcon}>
+          <PhoneAdornment />
+        </div>
+      ),
+    },
+    {
+      label: 'contact@var-x.com',
+      icon: (
+        <div className={classes.contactEmailIcon}>
+          <Email color='#fff' />
+        </div>
+      ),
+    },
+  ];
+
   const disabled =
     Object.keys(errors).length !== 4 ||
     Object.keys(errors).some(error => errors[error]);
@@ -302,11 +329,12 @@ const ContactPage: React.FC = () => {
                             ...fields[field].inputClasses,
                           },
                           disableUnderline: field === 'message',
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              {fields[field].adornment}
-                            </InputAdornment>
-                          ),
+                          startAdornment:
+                            field !== 'message' ? (
+                              <InputAdornment position='start'>
+                                {fields[field].adornment}
+                              </InputAdornment>
+                            ) : null,
                         }}
                       />
                     </Grid>
@@ -338,58 +366,27 @@ const ContactPage: React.FC = () => {
             justifyContent='space-between'
             classes={{ root: classes.infoContainer }}
           >
-            <Grid item container alignItems='center'>
-              <Grid item classes={{ root: classes.iconContainer }}>
-                <img
-                  src={address}
-                  alt='address'
-                  className={classes.contactIcon}
-                />
+            {info.map((section, i) => (
+              <Grid
+                key={i}
+                item
+                container
+                alignItems='center'
+                classes={{ root: i === 1 ? classes.middleInfo : undefined }}
+              >
+                <Grid item classes={{ root: classes.iconContainer }}>
+                  {section.icon}
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant='h2'
+                    classes={{ root: classes.contactInfo }}
+                  >
+                    {section.label}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Typography
-                  variant='h2'
-                  classes={{ root: classes.contactInfo }}
-                >
-                  1234 S Example St {matchesXS ? <br /> : null}Wichita, KS 67111
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid
-              item
-              container
-              alignItems='center'
-              classes={{ root: classes.middleInfo }}
-            >
-              <Grid item classes={{ root: classes.iconContainer }}>
-                <div className={classes.contactIcon}>
-                  <PhoneAdornment />
-                </div>
-              </Grid>
-              <Grid item>
-                <Typography
-                  variant='h2'
-                  classes={{ root: classes.contactInfo }}
-                >
-                  (555) 555-5555
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item container alignItems='center'>
-              <Grid item classes={{ root: classes.iconContainer }}>
-                <div className={classes.contactEmailIcon}>
-                  <Email color='#fff' />
-                </div>
-              </Grid>
-              <Grid item>
-                <Typography
-                  variant='h2'
-                  classes={{ root: classes.contactInfo }}
-                >
-                  contact@var-x.com
-                </Typography>
-              </Grid>
-            </Grid>
+            ))}
           </Grid>
         </Grid>
       </Grid>
