@@ -8,6 +8,8 @@ import {
   InputAdornment,
   makeStyles,
   useTheme,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Layout from '../components/ui/Layout';
@@ -24,12 +26,23 @@ const useStyles = makeStyles(theme => ({
     height: '45rem',
     backgroundColor: theme.palette.primary.main,
     marginBottom: '10rem',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '8rem',
+      height: '90rem',
+    },
   },
   formContainer: {
     height: '100%',
   },
   formWrapper: {
     height: '100%',
+    [theme.breakpoints.down('md')]: {
+      height: '50%',
+      marginTop: '-8rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
   blockContainer: {
     backgroundColor: theme.palette.secondary.main,
@@ -38,6 +51,12 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      width: '30rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
   titleContainer: {
     marginTop: '-4rem',
@@ -69,6 +88,9 @@ const useStyles = makeStyles(theme => ({
   },
   infoContainer: {
     height: '21.25rem',
+    [theme.breakpoints.down('xs')]: {
+      height: '15rem',
+    },
   },
   middleInfo: {
     borderTop: `2px solid ${theme.palette.common.white}`,
@@ -81,9 +103,16 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+      height: '5rem',
+      width: '6rem',
+    },
   },
   textField: {
     width: '30rem',
+    [theme.breakpoints.down('sm')]: {
+      width: '20rem',
+    },
   },
   input: {
     color: theme.palette.common.white,
@@ -114,6 +143,11 @@ const useStyles = makeStyles(theme => ({
   buttonDisabled: {
     backgroundColor: theme.palette.grey[500],
   },
+  sendMessage: {
+    [theme.breakpoints.down('xs')]: {
+      height: '2.5rem',
+    },
+  },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
       {
@@ -126,14 +160,63 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ContactPage: React.FC = () => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const [values, setValues] = useState<{ [key: string]: string }>({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   const classes = useStyles();
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const theme = useTheme();
+
+  const fields: {
+    [key: string]: {
+      helperText: string;
+      placeholder: string;
+      adornment?: JSX.Element;
+      inputClasses?: { [key: string]: string };
+    };
+  } = {
+    name: {
+      helperText: 'You must enter a name',
+      placeholder: 'Name',
+      adornment: <img src={nameAdornment} alt='name icon' />,
+    },
+    email: {
+      helperText: 'You must enter a email',
+      placeholder: 'Email',
+      adornment: (
+        <div className={classes.emailAdornment}>
+          <Email color={theme.palette.secondary.main} />
+        </div>
+      ),
+    },
+    phone: {
+      helperText: 'You must enter a phone',
+      placeholder: 'Phone',
+      adornment: (
+        <div className={classes.phoneAdornment}>
+          <PhoneAdornment color={theme.palette.secondary.main} />
+        </div>
+      ),
+    },
+    message: {
+      helperText: 'You must enter a message',
+      placeholder: 'Message',
+      inputClasses: {
+        multiline: classes.multiline,
+        error: classes.multilineError,
+      },
+    },
+  };
+
+  const disabled =
+    Object.keys(errors).length !== 4 ||
+    Object.keys(errors).some(error => errors[error]);
 
   return (
     <Layout>
@@ -142,6 +225,7 @@ const ContactPage: React.FC = () => {
         justifyContent='space-around'
         alignItems='center'
         classes={{ root: classes.mainContainer }}
+        direction={matchesMD ? 'column' : 'row'}
       >
         <Grid item classes={{ root: classes.formWrapper }}>
           <Grid
@@ -161,168 +245,88 @@ const ContactPage: React.FC = () => {
             </Grid>
             <Grid item>
               <Grid container direction='column'>
-                <Grid item classes={{ root: classes.fieldContainer }}>
-                  <TextField
-                    value={name}
-                    onChange={e => {
-                      if (errors.name) {
-                        const valid = validate({ name: e.target.value });
-                        setErrors(prevErrors => ({
-                          ...prevErrors,
-                          name: !valid.name,
-                        }));
-                      }
-                      setName(e.target.value);
-                    }}
-                    onBlur={e => {
-                      const valid = validate({ name });
-                      setErrors(prevErrors => ({
-                        ...prevErrors,
-                        name: !valid.name,
-                      }));
-                    }}
-                    error={errors.name}
-                    helperText={errors.name && 'You must enter a name'}
-                    placeholder='Name'
-                    classes={{ root: classes.textField }}
-                    InputProps={{
-                      classes: { input: classes.input },
-                      startAdornment: (
-                        <InputAdornment position='start'>
-                          <img src={nameAdornment} alt='name icon' />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item classes={{ root: classes.fieldContainer }}>
-                  <TextField
-                    value={email}
-                    onChange={e => {
-                      if (errors.name) {
-                        const valid = validate({ email: e.target.value });
-                        setErrors(prevErrors => ({
-                          ...prevErrors,
-                          email: !valid.email,
-                        }));
-                      }
-                      setEmail(e.target.value);
-                    }}
-                    onBlur={e => {
-                      const valid = validate({ email });
-                      setErrors(prevErrors => ({
-                        ...prevErrors,
-                        email: !valid.email,
-                      }));
-                    }}
-                    error={errors.email}
-                    helperText={errors.email && 'You must enter a email'}
-                    placeholder='Email'
-                    classes={{ root: classes.textField }}
-                    InputProps={{
-                      classes: { input: classes.input },
-                      startAdornment: (
-                        <InputAdornment position='start'>
-                          <div className={classes.emailAdornment}>
-                            <Email color={theme.palette.secondary.main} />
-                          </div>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item classes={{ root: classes.fieldContainer }}>
-                  <TextField
-                    value={phoneNumber}
-                    onChange={e => {
-                      if (errors.phone) {
-                        const valid = validate({ phone: e.target.value });
-                        setErrors(prevErrors => ({
-                          ...prevErrors,
-                          phone: !valid.phone,
-                        }));
-                      }
-                      setPhoneNumber(e.target.value);
-                    }}
-                    onBlur={e => {
-                      const valid = validate({ phone: phoneNumber });
-                      setErrors(prevErrors => ({
-                        ...prevErrors,
-                        phone: !valid.phone,
-                      }));
-                    }}
-                    error={errors.phone}
-                    helperText={errors.phone && 'You must enter a phone number'}
-                    placeholder='Phone'
-                    classes={{ root: classes.textField }}
-                    InputProps={{
-                      classes: { input: classes.input },
-                      startAdornment: (
-                        <InputAdornment position='start'>
-                          <div className={classes.phoneAdornment}>
-                            <PhoneAdornment
-                              color={theme.palette.secondary.main}
-                            />
-                          </div>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item classes={{ root: classes.multilineContainer }}>
-                  <TextField
-                    value={message}
-                    onChange={e => {
-                      if (errors.message) {
-                        const valid = validate({ message: e.target.value });
-                        setErrors(prevErrors => ({
-                          ...prevErrors,
-                          message: !valid.message,
-                        }));
-                      }
-                      setMessage(e.target.value);
-                    }}
-                    onBlur={e => {
-                      const valid = validate({ message });
-                      setErrors(prevErrors => ({
-                        ...prevErrors,
-                        message: !valid.message,
-                      }));
-                    }}
-                    error={errors.message}
-                    helperText={errors.message && 'You must enter a message'}
-                    placeholder='Message'
-                    multiline
-                    rows={8}
-                    classes={{ root: classes.textField }}
-                    InputProps={{
-                      disableUnderline: true,
-                      classes: {
-                        input: classes.input,
-                        multiline: classes.multiline,
-                        error: classes.multilineError,
-                      },
-                    }}
-                  />
-                </Grid>
+                {Object.entries(fields).map(([field, value]) => {
+                  const validateHelper = (
+                    event: React.ChangeEvent<
+                      HTMLInputElement | HTMLTextAreaElement
+                    >
+                  ) => {
+                    const valid = validate({ [field]: event.target.value });
+                    setErrors(prevErrors => ({
+                      ...prevErrors,
+                      [field]: !valid[field],
+                    }));
+                  };
+                  return (
+                    <Grid
+                      key={field}
+                      item
+                      classes={{
+                        root:
+                          field === 'message'
+                            ? classes.multilineContainer
+                            : classes.fieldContainer,
+                      }}
+                    >
+                      <TextField
+                        value={values[field]}
+                        onChange={(
+                          event: React.ChangeEvent<
+                            HTMLInputElement | HTMLTextAreaElement
+                          >
+                        ) => {
+                          if (values[field]) {
+                            validateHelper(event);
+                          }
+                          setValues(prevState => ({
+                            ...prevState,
+                            [field]: event.target.value,
+                          }));
+                        }}
+                        onBlur={(
+                          event: React.ChangeEvent<
+                            HTMLInputElement | HTMLTextAreaElement
+                          >
+                        ) => {
+                          validateHelper(event);
+                        }}
+                        error={errors[field]}
+                        helperText={errors[field] && value.helperText}
+                        placeholder={value.placeholder}
+                        classes={{ root: classes.textField }}
+                        multiline={field === 'message'}
+                        rows={field === 'message' ? 8 : undefined}
+                        InputProps={{
+                          classes: {
+                            input: classes.input,
+                            ...fields[field].inputClasses,
+                          },
+                          disableUnderline: field === 'message',
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              {fields[field].adornment}
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                  );
+                })}
               </Grid>
             </Grid>
             <Grid
               item
               component={Button}
-              disabled={
-                Object.keys(errors).length !== 4 ||
-                Object.keys(errors).some(error => errors[error])
-              }
+              disabled={disabled}
               classes={{
                 root: clsx(classes.buttonContainer, classes.blockContainer, {
-                  [classes.buttonDisabled]:
-                    Object.keys(errors).length !== 4 ||
-                    Object.keys(errors).some(error => errors[error]),
+                  [classes.buttonDisabled]: disabled,
                 }),
               }}
             >
-              <Typography variant='h4'>Send message</Typography>
+              <Typography variant='h4' classes={{ root: classes.sendMessage }}>
+                Send message
+              </Typography>
               <img src={send} alt='Send message' className={classes.sendIcon} />
             </Grid>
           </Grid>
@@ -347,7 +351,7 @@ const ContactPage: React.FC = () => {
                   variant='h2'
                   classes={{ root: classes.contactInfo }}
                 >
-                  1234 S Example St Wichita, KS 67111
+                  1234 S Example St {matchesXS ? <br /> : null}Wichita, KS 67111
                 </Typography>
               </Grid>
             </Grid>
