@@ -13,7 +13,7 @@ import Footer from './Footer';
 
 const useStyles = makeStyles(theme => ({
   spacer: {
-    marginBottom: '10rem',
+    marginBottom: '5rem',
     [theme.breakpoints.down('md')]: {
       marginBottom: '2rem',
     },
