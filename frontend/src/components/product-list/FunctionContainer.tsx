@@ -10,7 +10,8 @@ import { Filters } from '../../interfaces/filters';
 const useStyles = makeStyles(theme => ({
   functionContainer: {
     backgroundColor: theme.palette.primary.main,
-    height: '6rem',
+    minHeight: '6rem',
+    height: 'auto',
     borderTopLeftRadius: '10px',
     borderTopRightRadius: '10px',
   },

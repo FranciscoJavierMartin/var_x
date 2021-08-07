@@ -16,6 +16,9 @@ import close from '../../images/close-outline.svg';
 import { Filters } from '../../interfaces/filters';
 
 const useStyles = makeStyles(theme => ({
+  mainContainer: {
+    padding: '1rem 0',
+  },
   chipRoot: {
     backgroundColor: theme.palette.secondary.main,
   },
@@ -23,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     ...theme.typography.body1,
     color: theme.palette.common.white,
     fontWeight: 500,
+  },
+  checkbox: {
+    color: theme.palette.common.white,
   },
 }));
 
@@ -35,7 +41,13 @@ const Filter: React.FC<FilterProps> = ({ setOption, filterOptions }) => {
   const classes = useStyles();
 
   return (
-    <Grid item container justify='space-between' alignItems='center'>
+    <Grid
+      item
+      container
+      justify='space-between'
+      alignItems='center'
+      classes={{ root: classes.mainContainer }}
+    >
       <Grid item>
         <IconButton onClick={() => setOption(null)}>
           <img src={filter} alt='filter' />
@@ -64,8 +76,13 @@ const Filter: React.FC<FilterProps> = ({ setOption, filterOptions }) => {
                           <FormControlLabel
                             key={label}
                             label={label}
+                            classes={{ label: classes.checkbox }}
                             control={
-                              <Checkbox checked={checked} name={label} />
+                              <Checkbox
+                                checked={checked}
+                                name={label}
+                                classes={{ root: classes.checkbox }}
+                              />
                             }
                           />
                         ))}
