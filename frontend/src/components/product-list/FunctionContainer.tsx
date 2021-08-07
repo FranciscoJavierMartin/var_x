@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
+import Sort from './Sort';
+import Filter from './Filter';
 
 import filter from '../../images/filter.svg';
 import sort from '../../images/sort.svg';
-import Sort from './Sort';
+import { Filters } from '../../interfaces/filters';
 
 const useStyles = makeStyles(theme => ({
   functionContainer: {
@@ -14,7 +16,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const FunctionContainer: React.FC = () => {
+interface FunctionContainerProps {
+  filterOptions: Filters;
+}
+
+const FunctionContainer: React.FC<FunctionContainerProps> = ({
+  filterOptions,
+}) => {
   const classes = useStyles();
   const [option, setOption] = useState<any>(null);
 
@@ -51,6 +59,9 @@ const FunctionContainer: React.FC = () => {
         break;
       case 'sort':
         res = <Sort setOption={setOption} />;
+        break;
+      case 'filter':
+        res = <Filter setOption={setOption} filterOptions={filterOptions} />;
         break;
       default:
         res = null;
