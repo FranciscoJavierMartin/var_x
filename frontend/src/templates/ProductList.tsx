@@ -13,11 +13,17 @@ interface ProductListProps {
   };
 }
 
-const ProductList: React.FC<ProductListProps> = ({ pageContext }) => {
+const ProductList: React.FC<ProductListProps> = ({
+  pageContext: { name, description, filterOptions },
+}) => {
   return (
     <Layout>
       <Grid container direction='column' alignItems='center'>
-        <DynamicToolbar filterOptions={pageContext.filterOptions}/>
+        <DynamicToolbar
+          filterOptions={filterOptions}
+          name={name}
+          description={description}
+        />
       </Grid>
     </Layout>
   );
