@@ -1,6 +1,17 @@
-import React from 'react';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import React, { useState } from 'react';
+import {
+  Grid,
+  Typography,
+  ButtonGroup,
+  Button,
+  makeStyles,
+  useTheme,
+} from '@material-ui/core';
+import clsx from 'clsx';
+
 import background from '../../images/toolbar-background.svg';
+import ListIcon from '../../images/List';
+import GridIcon from '../../images/Grid';
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -9,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+    position: 'relative',
   },
   descriptionContainer: {
     backgroundColor: theme.palette.primary.main,
@@ -19,6 +31,29 @@ const useStyles = makeStyles(theme => ({
   },
   description: {
     color: theme.palette.common.white,
+  },
+  button: {
+    border: `2px solid ${theme.palette.primary.main}`,
+    borderRightColor: `${theme.palette.primary.main} !important`,
+    borderRadius: 25,
+    backgroundColor: theme.palette.common.white,
+    padding: '0.5rem 1.5rem',
+    '&:hover': {
+      backgroundColor: theme.palette.common.white,
+    },
+  },
+  selected: {
+    backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+    },
+  },
+  buttonGroup: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    marginRight: '3rem',
+    marginBottom: '3rem',
   },
 }));
 
@@ -32,6 +67,8 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
   description,
 }) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const [layout, setLayout] = useState('grid');
 
   return (
     <Grid
@@ -51,6 +88,34 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
         >
           {description}
         </Typography>
+      </Grid>
+      <Grid item classes={{ root: classes.buttonGroup }}>
+        <ButtonGroup>
+          <Button
+            onClick={() => setLayout('list')}
+            classes={{
+              outlined: clsx(classes.button, {
+                [classes.selected]: layout === 'list',
+              }),
+            }}
+          >
+            <ListIcon
+              color={layout === 'list' ? theme.palette.common.white : undefined}
+            />
+          </Button>
+          <Button
+            onClick={() => setLayout('grid')}
+            classes={{
+              outlined: clsx(classes.button, {
+                [classes.selected]: layout === 'grid',
+              }),
+            }}
+          >
+            <GridIcon
+              color={layout === 'grid' ? theme.palette.common.white : undefined}
+            />
+          </Button>
+        </ButtonGroup>
       </Grid>
     </Grid>
   );

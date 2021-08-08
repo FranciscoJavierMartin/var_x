@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
+import React from 'react';
+import { Grid, Typography, makeStyles, IconButton, Theme } from '@material-ui/core';
 import Sort from './Sort';
 import Filter from './Filter';
 
@@ -7,25 +7,27 @@ import filter from '../../images/filter.svg';
 import sort from '../../images/sort.svg';
 import { Filters } from '../../interfaces/filters';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { option: string }>(theme => ({
   functionContainer: {
     backgroundColor: theme.palette.primary.main,
     minHeight: '6rem',
     height: 'auto',
-    borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px',
+    borderRadius: ({ option }) => (option ? '10px' : '10px 10px 0px 0px'),
   },
 }));
 
 interface FunctionContainerProps {
   filterOptions: Filters;
+  option: any;
+  setOption: any;
 }
 
 const FunctionContainer: React.FC<FunctionContainerProps> = ({
   filterOptions,
+  option,
+  setOption,
 }) => {
-  const classes = useStyles();
-  const [option, setOption] = useState<any>(null);
+  const classes = useStyles({ option });
 
   const content = () => {
     let res;
