@@ -1,5 +1,11 @@
 import React from 'react';
-import { Grid, Typography, makeStyles, IconButton, Theme } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  makeStyles,
+  IconButton,
+  Theme,
+} from '@material-ui/core';
 import Sort from './Sort';
 import Filter from './Filter';
 
@@ -7,19 +13,21 @@ import filter from '../../images/filter.svg';
 import sort from '../../images/sort.svg';
 import { Filters } from '../../interfaces/filters';
 
-const useStyles = makeStyles<Theme, { option: string }>(theme => ({
-  functionContainer: {
-    backgroundColor: theme.palette.primary.main,
-    minHeight: '6rem',
-    height: 'auto',
-    borderRadius: ({ option }) => (option ? '10px' : '10px 10px 0px 0px'),
-  },
-}));
+const useStyles = makeStyles<Theme, { option: 'sort' | 'filter' | null }>(
+  theme => ({
+    functionContainer: {
+      backgroundColor: theme.palette.primary.main,
+      minHeight: '6rem',
+      height: 'auto',
+      borderRadius: ({ option }) => (option ? '10px' : '10px 10px 0px 0px'),
+    },
+  })
+);
 
 interface FunctionContainerProps {
   filterOptions: Filters;
-  option: any;
-  setOption: any;
+  option: 'sort' | 'filter' | null;
+  setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
 }
 
 const FunctionContainer: React.FC<FunctionContainerProps> = ({
@@ -33,7 +41,10 @@ const FunctionContainer: React.FC<FunctionContainerProps> = ({
     let res;
     switch (option) {
       case null:
-        const items = [
+        const items: {
+          icon: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
+          alt: 'sort' | 'filter' | null;
+        }[] = [
           {
             icon: filter,
             alt: 'filter',

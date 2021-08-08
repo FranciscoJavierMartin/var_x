@@ -26,7 +26,7 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
   description,
 }) => {
   const classes = useStyles();
-  const [option, setOption] = useState<any>(null);
+  const [option, setOption] = useState<'sort' | 'filter' | null>(null);
 
   return (
     <Grid item container direction='column' classes={{ root: classes.toolbar }}>

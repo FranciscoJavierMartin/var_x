@@ -68,7 +68,7 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [layout, setLayout] = useState('grid');
+  const [layout, setLayout] = useState<'list' | 'grid'>('grid');
 
   return (
     <Grid

@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface FilterProps {
-  setOption: React.Dispatch<any>;
+  setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
   filterOptions: Filters;
 }
 

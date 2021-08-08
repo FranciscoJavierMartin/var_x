@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface SortProps {
-  setOption: React.Dispatch<any>;
+  setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
 }
 
 const Sort: React.FC<SortProps> = ({ setOption }) => {
