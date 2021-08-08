@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Dialog,
@@ -83,6 +83,7 @@ const QuickView: React.FC<QuickViewProps> = ({
   product,
 }) => {
   const classes = useStyles();
+  const [selectedSize, setSelectedSize] = useState<string>('');
 
   const sizes = product.node.variants.map(variant => variant.size);
 
@@ -144,7 +145,11 @@ const QuickView: React.FC<QuickViewProps> = ({
             <Grid item>
               <Grid container direction='column'>
                 <Grid item>
-                  <Sizes sizes={sizes} />
+                  <Sizes
+                    sizes={sizes}
+                    selectedSize={selectedSize}
+                    setSelectedSize={setSelectedSize}
+                  />
                 </Grid>
               </Grid>
             </Grid>

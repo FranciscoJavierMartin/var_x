@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Button, makeStyles, Typography } from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   size: {
@@ -12,15 +13,27 @@ const useStyles = makeStyles(theme => ({
     width: '3rem',
     minWidth: 0,
   },
+  selected: {
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+  },
 }));
 
 const possibleSizes = ['S', 'M', 'L'];
 
 interface SizesProps {
   sizes: string[];
+  selectedSize: string;
+  setSelectedSize: React.Dispatch<string>;
 }
 
-const Sizes: React.FC<SizesProps> = ({ sizes }) => {
+const Sizes: React.FC<SizesProps> = ({
+  sizes,
+  selectedSize,
+  setSelectedSize,
+}) => {
   const classes = useStyles();
 
   let actualSizes: string[] = [];
@@ -33,7 +46,14 @@ const Sizes: React.FC<SizesProps> = ({ sizes }) => {
     <Grid item container justifyContent='space-between'>
       {actualSizes.map(size => (
         <Grid item key={size}>
-          <Button classes={{ root: classes.button }}>
+          <Button
+            onClick={() => setSelectedSize(size)}
+            classes={{
+              root: clsx(classes.button, {
+                [classes.selected]: selectedSize === size,
+              }),
+            }}
+          >
             <Typography variant='h3' classes={{ root: classes.size }}>
               {size}
             </Typography>
