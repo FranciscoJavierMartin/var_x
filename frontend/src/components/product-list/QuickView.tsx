@@ -9,9 +9,11 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import Rating from '../home/Rating';
+import Sizes from './Sizes';
 
 import frame from '../../images/selected-frame.svg';
 import explore from '../../images/explore.svg';
+import { Edge } from '../../interfaces/category-products';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -69,6 +71,7 @@ interface QuickViewProps {
   url: string;
   name: string;
   price: number;
+  product: Edge;
 }
 
 const QuickView: React.FC<QuickViewProps> = ({
@@ -77,8 +80,11 @@ const QuickView: React.FC<QuickViewProps> = ({
   url,
   name,
   price,
+  product,
 }) => {
   const classes = useStyles();
+
+  const sizes = product.node.variants.map(variant => variant.size);
 
   return (
     <Dialog
@@ -95,7 +101,12 @@ const QuickView: React.FC<QuickViewProps> = ({
               className={classes.productImage}
             />
           </Grid>
-          <Grid item container classes={{ root: classes.toolbar }}>
+          <Grid
+            item
+            justifyContent='space-between'
+            container
+            classes={{ root: classes.toolbar }}
+          >
             <Grid item>
               <Grid
                 container
@@ -129,6 +140,13 @@ const QuickView: React.FC<QuickViewProps> = ({
             </Grid>
             <Grid item classes={{ root: classes.chipContainer }}>
               <Chip label={`$${price}`} classes={{ root: classes.chipRoot }} />
+            </Grid>
+            <Grid item>
+              <Grid container direction='column'>
+                <Grid item>
+                  <Sizes sizes={sizes} />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

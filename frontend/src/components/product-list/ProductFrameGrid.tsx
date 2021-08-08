@@ -63,6 +63,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         url={imgURL}
         name={name}
         price={variant.price}
+        product={product}
       />
     </Grid>
   );
