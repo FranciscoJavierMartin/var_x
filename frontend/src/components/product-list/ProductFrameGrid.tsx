@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
-import frame from '../../images/product-frame-grid.svg';
+import QuickView from './QuickView';
 import { Edge, Variant } from '../../interfaces/category-products';
+
+import frame from '../../images/product-frame-grid.svg';
 
 const useStyles = makeStyles(theme => ({
   frame: {
@@ -40,23 +42,28 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   variant,
 }) => {
   const classes = useStyles();
+  const [open, setOpen] = useState<boolean>(false);
+
+  const imgURL = `${process.env.GATSBY_STRAPI_URL}${variant.images[0].url}`;
+  const name = product.node.name.split(' ')[0];
 
   return (
     <Grid item>
-      <Grid container direction='column'>
+      <Grid container direction='column' onClick={() => setOpen(true)}>
         <Grid item classes={{ root: classes.frame }}>
-          <img
-            src={`${process.env.GATSBY_STRAPI_URL}${variant.images[0].url}`}
-            alt={product.node.name}
-            className={classes.product}
-          />
+          <img src={imgURL} alt={name} className={classes.product} />
         </Grid>
         <Grid item classes={{ root: classes.title }}>
-          <Typography variant='h5'>
-            {product.node.name.split(' ')[0]}
-          </Typography>
+          <Typography variant='h5'>{name}</Typography>
         </Grid>
       </Grid>
+      <QuickView
+        open={open}
+        setOpen={setOpen}
+        url={imgURL}
+        name={name}
+        price={variant.price}
+      />
     </Grid>
   );
 };
