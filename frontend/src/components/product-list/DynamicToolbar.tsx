@@ -18,12 +18,16 @@ interface DynamicToolbarProps {
   filterOptions: Filters;
   name: string;
   description: string;
+  layout: 'grid' | 'list';
+  setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
 }
 
 const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
   filterOptions,
   name,
   description,
+  layout,
+  setLayout,
 }) => {
   const classes = useStyles();
   const [option, setOption] = useState<'sort' | 'filter' | null>(null);
@@ -36,7 +40,12 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
         setOption={setOption}
       />
       {option === null && (
-        <DescriptionContainer name={name} description={description} />
+        <DescriptionContainer
+          name={name}
+          description={description}
+          layout={layout}
+          setLayout={setLayout}
+        />
       )}
     </Grid>
   );

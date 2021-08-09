@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { graphql } from 'gatsby';
 import { Grid } from '@material-ui/core';
 import Layout from '../components/ui/Layout';
@@ -23,6 +23,7 @@ const ProductList: React.FC<ProductListProps> = ({
     allStrapiProduct: { edges: products },
   },
 }) => {
+  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   return (
     <Layout>
       <Grid container direction='column' alignItems='center'>
@@ -30,8 +31,14 @@ const ProductList: React.FC<ProductListProps> = ({
           filterOptions={filterOptions}
           name={name}
           description={description}
+          layout={layout}
+          setLayout={setLayout}
         />
-        <ListOfProducts products={products} />
+        <ListOfProducts
+          products={products}
+          layout={layout}
+          setLayout={setLayout}
+        />
       </Grid>
     </Layout>
   );

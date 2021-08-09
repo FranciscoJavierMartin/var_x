@@ -60,15 +60,18 @@ const useStyles = makeStyles(theme => ({
 interface DescriptionContainerProps {
   name: string;
   description: string;
+  layout: 'grid' | 'list';
+  setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
 }
 
 const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
   name,
   description,
+  layout,
+  setLayout,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [layout, setLayout] = useState<'list' | 'grid'>('grid');
 
   return (
     <Grid
