@@ -11,6 +11,7 @@ import {
 import Rating from '../home/Rating';
 import Sizes from './Sizes';
 import Swatches from './Swatches';
+import QtyButton from './QtyButton';
 
 import frame from '../../images/selected-frame.svg';
 import explore from '../../images/explore.svg';
@@ -157,6 +158,7 @@ const QuickView: React.FC<QuickViewProps> = ({
                   setSelectedColor={setSelectedColor}
                   selectedColor={selectedColor}
                 />
+                <QtyButton />
               </Grid>
             </Grid>
           </Grid>
