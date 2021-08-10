@@ -11,7 +11,7 @@ import {
   Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import Rating from './Rating';
+import Rating from '../shared/Rating';
 import { GetFeatured } from '../../interfaces/featured';
 
 import featuredAdornment from '../../images/featured-adornment.svg';

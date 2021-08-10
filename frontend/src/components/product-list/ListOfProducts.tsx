@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, makeStyles, Theme } from '@material-ui/core';
 import ProductFrameGrid from './ProductFrameGrid';
 import ProductFrameList from './ProductFrameList';
@@ -26,7 +26,26 @@ const FrameHelper = ({
   Frame: typeof ProductFrameGrid | typeof ProductFrameList;
   product: Edge;
   variant: Variant;
-}) => <Frame variant={variant} product={product} />;
+}) => {
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
+
+  const sizes = product.node.variants.map(variant => variant.size);
+  const colors = product.node.variants.map(variant => variant.color);
+
+  return (
+    <Frame
+      variant={variant}
+      product={product}
+      selectedColor={selectedColor}
+      selectedSize={selectedSize}
+      setSelectedColor={setSelectedColor}
+      setSelectedSize={setSelectedSize}
+      sizes={sizes}
+      colors={colors}
+    />
+  );
+};
 
 interface ListOfProductsProps {
   products: Edge[];

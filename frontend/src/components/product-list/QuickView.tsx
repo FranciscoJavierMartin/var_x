@@ -8,7 +8,7 @@ import {
   Chip,
   makeStyles,
 } from '@material-ui/core';
-import Rating from '../home/Rating';
+import Rating from '../shared/Rating';
 import Sizes from './Sizes';
 import Swatches from './Swatches';
 import QtyButton from './QtyButton';
@@ -65,6 +65,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
   },
+  qtyContainer: {
+    marginTop: '2.25rem',
+  },
 }));
 
 interface QuickViewProps {
@@ -74,6 +77,12 @@ interface QuickViewProps {
   name: string;
   price: number;
   product: Edge;
+  selectedSize: string;
+  selectedColor: string;
+  setSelectedSize: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
+  sizes: string[];
+  colors: string[];
 }
 
 const QuickView: React.FC<QuickViewProps> = ({
@@ -83,13 +92,14 @@ const QuickView: React.FC<QuickViewProps> = ({
   name,
   price,
   product,
+  selectedColor,
+  selectedSize,
+  setSelectedColor,
+  setSelectedSize,
+  sizes,
+  colors,
 }) => {
   const classes = useStyles();
-  const [selectedSize, setSelectedSize] = useState<string>('');
-  const [selectedColor, setSelectedColor] = useState<string>('');
-
-  const sizes = product.node.variants.map(variant => variant.size);
-  const colors = product.node.variants.map(variant => variant.color);
 
   return (
     <Dialog
@@ -158,7 +168,9 @@ const QuickView: React.FC<QuickViewProps> = ({
                   setSelectedColor={setSelectedColor}
                   selectedColor={selectedColor}
                 />
-                <QtyButton />
+                <span className={classes.qtyContainer}>
+                  <QtyButton />
+                </span>
               </Grid>
             </Grid>
           </Grid>

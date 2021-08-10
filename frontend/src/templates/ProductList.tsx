@@ -23,7 +23,7 @@ const ProductList: React.FC<ProductListProps> = ({
     allStrapiProduct: { edges: products },
   },
 }) => {
-  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
+  const [layout, setLayout] = useState<'grid' | 'list'>('list');
   return (
     <Layout>
       <Grid container direction='column' alignItems='center'>

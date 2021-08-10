@@ -35,11 +35,23 @@ const useStyles = makeStyles(theme => ({
 interface ProductFrameGridProps {
   product: Edge;
   variant: Variant;
+  selectedSize: string;
+  selectedColor: string;
+  setSelectedSize: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
+  sizes: string[];
+  colors: string[];
 }
 
 const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   product,
   variant,
+  selectedColor,
+  setSelectedSize,
+  setSelectedColor,
+  selectedSize,
+  sizes,
+  colors,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -64,6 +76,12 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         name={name}
         price={variant.price}
         product={product}
+        selectedColor={selectedColor}
+        setSelectedSize={setSelectedSize}
+        setSelectedColor={setSelectedColor}
+        selectedSize={selectedSize}
+        sizes={sizes}
+        colors={colors}
       />
     </Grid>
   );

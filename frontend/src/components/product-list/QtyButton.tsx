@@ -15,7 +15,6 @@ import Cart from '../../images/Cart';
 const useStyles = makeStyles(theme => ({
   mainGroup: {
     height: '3rem',
-    marginTop: '2.25rem',
   },
   qtyText: {
     color: theme.palette.common.white,
