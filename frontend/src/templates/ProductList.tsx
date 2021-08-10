@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { graphql } from 'gatsby';
-import { Grid } from '@material-ui/core';
+import { Grid, Fab, makeStyles } from '@material-ui/core';
 import Layout from '../components/ui/Layout';
 import DynamicToolbar from '../components/product-list/DynamicToolbar';
 import { Filters } from '../interfaces/filters';
 import { GetCategoryProducts } from '../interfaces/category-products';
 import ListOfProducts from '../components/product-list/ListOfProducts';
+
+const useStyles = makeStyles(theme => ({
+  fab: {
+    alignSelf: 'flex-end',
+    marginRight: '2rem',
+    marginBottom: '2rem',
+    color: theme.palette.common.white,
+    fontFamily: 'Montserrat',
+    fontSize: '5rem',
+    width: '5rem',
+    height: '5rem',
+  },
+}));
 
 interface ProductListProps {
   pageContext: {
@@ -24,9 +37,19 @@ const ProductList: React.FC<ProductListProps> = ({
   },
 }) => {
   const [layout, setLayout] = useState<'grid' | 'list'>('list');
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const classes = useStyles();
+
+  const scroll = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <Layout>
       <Grid container direction='column' alignItems='center'>
+        <div ref={scrollRef} />
         <DynamicToolbar
           filterOptions={filterOptions}
           name={name}
@@ -39,6 +62,9 @@ const ProductList: React.FC<ProductListProps> = ({
           layout={layout}
           setLayout={setLayout}
         />
+        <Fab onClick={scroll} color='primary' classes={{ root: classes.fab }}>
+          ^
+        </Fab>
       </Grid>
     </Layout>
   );
