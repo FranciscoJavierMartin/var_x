@@ -51,27 +51,41 @@ interface ListOfProductsProps {
   products: Edge[];
   layout: 'grid' | 'list';
   setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
+  currentPage: number;
+  productsPerPage: number;
 }
 
 const ListOfProducts: React.FC<ListOfProductsProps> = ({
   products,
   layout,
   setLayout,
+  currentPage,
+  productsPerPage,
 }) => {
   const classes = useStyles({ layout });
 
+  const content: { product: number; variant: Variant }[] = products.flatMap(
+    (product: Edge, index: number) =>
+      product.node.variants.map((variant: Variant) => ({
+        product: index,
+        variant,
+      }))
+  );
   return (
     <Grid item container classes={{ root: classes.productContainer }}>
-      {products.map(product =>
-        product.node.variants.map(variant => (
+      {content
+        .slice(
+          (currentPage - 1) * productsPerPage,
+          currentPage * productsPerPage
+        )
+        .map(item => (
           <FrameHelper
             Frame={layout === 'grid' ? ProductFrameGrid : ProductFrameList}
-            key={variant.id}
-            variant={variant}
-            product={product}
+            key={item.variant.id}
+            variant={item.variant}
+            product={products[item.product]}
           />
-        ))
-      )}
+        ))}
     </Grid>
   );
 };

@@ -62,6 +62,7 @@ interface DescriptionContainerProps {
   description: string;
   layout: 'grid' | 'list';
   setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
@@ -69,9 +70,15 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
   description,
   layout,
   setLayout,
+  setCurrentPage,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
+
+  const changeLayout = (option: 'list' | 'grid'): void => {
+    setLayout(option);
+    setCurrentPage(1);
+  };
 
   return (
     <Grid
@@ -95,7 +102,7 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
       <Grid item classes={{ root: classes.buttonGroup }}>
         <ButtonGroup>
           <Button
-            onClick={() => setLayout('list')}
+            onClick={() => changeLayout('list')}
             classes={{
               outlined: clsx(classes.button, {
                 [classes.selected]: layout === 'list',
@@ -107,7 +114,7 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
             />
           </Button>
           <Button
-            onClick={() => setLayout('grid')}
+            onClick={() => changeLayout('grid')}
             classes={{
               outlined: clsx(classes.button, {
                 [classes.selected]: layout === 'grid',

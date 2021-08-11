@@ -20,6 +20,7 @@ interface DynamicToolbarProps {
   description: string;
   layout: 'grid' | 'list';
   setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
@@ -28,6 +29,7 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
   description,
   layout,
   setLayout,
+  setCurrentPage,
 }) => {
   const classes = useStyles();
   const [option, setOption] = useState<'sort' | 'filter' | null>(null);
@@ -45,6 +47,7 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
           description={description}
           layout={layout}
           setLayout={setLayout}
+          setCurrentPage={setCurrentPage}
         />
       )}
     </Grid>

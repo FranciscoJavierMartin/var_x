@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { graphql } from 'gatsby';
 import { Grid, Fab, makeStyles } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 import Layout from '../components/ui/Layout';
 import DynamicToolbar from '../components/product-list/DynamicToolbar';
 import { Filters } from '../interfaces/filters';
-import { GetCategoryProducts } from '../interfaces/category-products';
+import { Edge, GetCategoryProducts } from '../interfaces/category-products';
 import ListOfProducts from '../components/product-list/ListOfProducts';
 
 const useStyles = makeStyles(theme => ({
@@ -17,6 +18,22 @@ const useStyles = makeStyles(theme => ({
     fontSize: '5rem',
     width: '5rem',
     height: '5rem',
+  },
+  pagination: {
+    alignSelf: 'flex-end',
+    marginRight: '2%',
+    marginTop: '-3rem',
+    marginBottom: '4rem',
+  },
+  '@global': {
+    '.MuiPaginationItem-root': {
+      fontFamily: 'Montserrat',
+      fontSize: '2rem',
+      color: theme.palette.primary.main,
+      '&.Mui-selected': {
+        color: theme.palette.common.white,
+      },
+    },
   },
 }));
 
@@ -36,7 +53,8 @@ const ProductList: React.FC<ProductListProps> = ({
     allStrapiProduct: { edges: products },
   },
 }) => {
-  const [layout, setLayout] = useState<'grid' | 'list'>('list');
+  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
 
@@ -45,6 +63,14 @@ const ProductList: React.FC<ProductListProps> = ({
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const productsPerPage = layout === 'grid' ? 16 : 6;
+  const numVariants: number = products.reduce<number>(
+    (acc: number, product: Edge) => acc + product.node.variants.length,
+    0
+  );
+
+  const numPages = Math.ceil(numVariants / productsPerPage);
 
   return (
     <Layout>
@@ -56,11 +82,21 @@ const ProductList: React.FC<ProductListProps> = ({
           description={description}
           layout={layout}
           setLayout={setLayout}
+          setCurrentPage={setCurrentPage}
         />
         <ListOfProducts
+          currentPage={currentPage}
+          productsPerPage={productsPerPage}
           products={products}
           layout={layout}
           setLayout={setLayout}
+        />
+        <Pagination
+          color='primary'
+          count={numPages}
+          page={currentPage}
+          onChange={(e, newPage: number) => setCurrentPage(newPage)}
+          classes={{ root: classes.pagination }}
         />
         <Fab onClick={scroll} color='primary' classes={{ root: classes.fab }}>
           ^
