@@ -7,6 +7,7 @@ import QtyButton from './QtyButton';
 import { Edge, Image, Variant } from '../../interfaces/category-products';
 
 import frame from '../../images/product-frame-list.svg';
+import { getImagesByColor } from '../../utils/imageByColor';
 
 const useStyles = makeStyles(theme => ({
   frame: {
@@ -31,7 +32,9 @@ const useStyles = makeStyles(theme => ({
   },
   sizesAndSwatches: {
     maxWidth: '13rem',
-    
+  },
+  chipLabel: {
+    fontSize: '2rem',
   },
 }));
 
@@ -58,6 +61,8 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
 }) => {
   const classes = useStyles();
 
+  const images = getImagesByColor(product, selectedColor, variant.images);
+
   return (
     <Grid item container>
       <Grid
@@ -68,7 +73,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
         justifyContent='space-around'
         classes={{ root: classes.frame }}
       >
-        {variant.images.map((image: Image) => (
+        {images.map((image: Image) => (
           <>
             <Grid item key={image.url}>
               <img
@@ -98,7 +103,10 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
             <Rating rate={3.5} />
           </Grid>
           <Grid item>
-            <Chip label={`$${variant.price}`} />
+            <Chip
+              label={`$${variant.price}`}
+              classes={{ label: classes.chipLabel }}
+            />
           </Grid>
           <Grid item>
             <Typography variant='h3' classes={{ root: classes.stock }}>

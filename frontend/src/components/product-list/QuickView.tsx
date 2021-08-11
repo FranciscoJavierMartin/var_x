@@ -38,6 +38,7 @@ const useStyles = makeStyles(theme => ({
     height: '13rem',
     marginTop: '2rem',
     padding: '0.5rem 1rem',
+    position: 'relative',
   },
   stock: {
     color: theme.palette.common.white,
@@ -67,6 +68,15 @@ const useStyles = makeStyles(theme => ({
   },
   qtyContainer: {
     marginTop: '2.25rem',
+  },
+  infoItem: {
+    position: 'absolute',
+    left: '1rem',
+    height: 'calc(100% - 1rem)',
+  },
+  actionsItems: {
+    position: 'absolute',
+    right: '1rem',
   },
 }));
 
@@ -118,11 +128,11 @@ const QuickView: React.FC<QuickViewProps> = ({
           </Grid>
           <Grid
             item
-            justifyContent='space-between'
+            justifyContent='center'
             container
             classes={{ root: classes.toolbar }}
           >
-            <Grid item>
+            <Grid item classes={{ root: classes.infoItem }}>
               <Grid
                 container
                 direction='column'
@@ -156,7 +166,7 @@ const QuickView: React.FC<QuickViewProps> = ({
             <Grid item classes={{ root: classes.chipContainer }}>
               <Chip label={`$${price}`} classes={{ root: classes.chipRoot }} />
             </Grid>
-            <Grid item>
+            <Grid item classes={{ root: classes.actionsItems }}>
               <Grid container direction='column'>
                 <Sizes
                   sizes={sizes}

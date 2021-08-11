@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
+import clsx from 'clsx';
 import QuickView from './QuickView';
 import { Edge, Variant } from '../../interfaces/category-products';
 
 import frame from '../../images/product-frame-grid.svg';
+import { getImageByColor } from '../../utils/imageByColor';
 
 const useStyles = makeStyles(theme => ({
   frame: {
@@ -29,6 +31,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '-0.1rem',
+  },
+  invisibility: {
+    visibility: 'hidden',
   },
 }));
 
@@ -56,11 +61,18 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
 
-  const imgURL = `${process.env.GATSBY_STRAPI_URL}${variant.images[0].url}`;
+  const imgURL = getImageByColor(product, selectedColor, variant.images[0].url);
   const name = product.node.name.split(' ')[0];
 
   return (
-    <Grid item>
+    <Grid
+      item
+      classes={{
+        root: clsx({
+          [classes.invisibility]: open,
+        }),
+      }}
+    >
       <Grid container direction='column' onClick={() => setOpen(true)}>
         <Grid item classes={{ root: classes.frame }}>
           <img src={imgURL} alt={name} className={classes.product} />
