@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Grid,
   Typography,
@@ -6,6 +6,8 @@ import {
   Button,
   makeStyles,
   useTheme,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 
@@ -21,13 +23,22 @@ const useStyles = makeStyles(theme => ({
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      padding: '3rem 0',
+    },
   },
   descriptionContainer: {
     backgroundColor: theme.palette.primary.main,
     height: '15rem',
-    width: '60rem',
+    width: '60%',
     borderRadius: 25,
     padding: '1rem',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: 0,
+    },
   },
   description: {
     color: theme.palette.common.white,
@@ -54,6 +65,17 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     marginRight: '3rem',
     marginBottom: '3rem',
+    [theme.breakpoints.down('md')]: {
+      position: 'relative',
+      display: 'flex',
+      alignSelf: 'flex-end',
+      marginRight: 0,
+      marginBottom: 0,
+      marginTop: '3rem',
+    },
+    [theme.breakpoints.down('md')]: {
+      marginRight: '1.5rem',
+    },
   },
 }));
 
@@ -74,6 +96,7 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   const changeLayout = (option: 'list' | 'grid'): void => {
     setLayout(option);
@@ -84,8 +107,10 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
     <Grid
       item
       container
+      direction={matchesMD ? 'column' : 'row'}
       classes={{ root: classes.mainContainer }}
       justifyContent='center'
+      alignItems={matchesMD ? 'center' : undefined}
     >
       <Grid item classes={{ root: classes.descriptionContainer }}>
         <Typography align='center' variant='h4' paragraph gutterBottom>

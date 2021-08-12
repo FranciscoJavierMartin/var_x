@@ -1,14 +1,24 @@
 import React from 'react';
-import { Grid, IconButton, Chip } from '@material-ui/core';
+import { Grid, IconButton, Chip, makeStyles } from '@material-ui/core';
 
 import sort from '../../images/sort.svg';
 import close from '../../images/close-outline.svg';
+
+const useStyles = makeStyles(theme => ({
+  chipContainer: {
+    [theme.breakpoints.down('md')]: {
+      margin: '0.5rem',
+    },
+  },
+}));
 
 interface SortProps {
   setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
 }
 
 const Sort: React.FC<SortProps> = ({ setOption }) => {
+  const classes = useStyles();
+
   const sortOptions = [
     { label: 'A-Z' },
     { label: 'Z-A' },
@@ -29,7 +39,11 @@ const Sort: React.FC<SortProps> = ({ setOption }) => {
       <Grid item xs>
         <Grid container justify='space-around'>
           {sortOptions.map(option => (
-            <Grid item key={option.label}>
+            <Grid
+              item
+              key={option.label}
+              classes={{ root: classes.chipContainer }}
+            >
               <Chip label={option.label} />
             </Grid>
           ))}
