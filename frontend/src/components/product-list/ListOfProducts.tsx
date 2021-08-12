@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, makeStyles, Theme } from '@material-ui/core';
+import { Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
 import ProductFrameGrid from './ProductFrameGrid';
 import ProductFrameList from './ProductFrameList';
 import { Edge, Variant } from '../../interfaces/category-products';
@@ -7,13 +7,40 @@ import { Edge, Variant } from '../../interfaces/category-products';
 const useStyles = makeStyles<Theme, { layout: 'grid' | 'list' }>(theme => ({
   productContainer: {
     width: '95%',
-    '& > *': {
-      marginRight: ({ layout }) =>
-        layout === 'grid' ? 'calc((100% - (25rem * 4)) / 3)' : 0,
-      marginBottom: '5rem',
+    [theme.breakpoints.only('xl')]: {
+      '& > *': {
+        marginRight: ({ layout }) =>
+          layout === 'grid' ? 'calc((100% - (25rem * 4)) / 3)' : 0,
+        marginBottom: '5rem',
+      },
+      '& > :nth-child(4n)': {
+        marginRight: 0,
+      },
     },
-    '& > :nth-child(4n)': {
-      marginRight: 0,
+    [theme.breakpoints.only('lg')]: {
+      '& > *': {
+        marginRight: ({ layout }) =>
+          layout === 'grid' ? 'calc((100% - (25rem * 3)) / 2)' : 0,
+        marginBottom: '5rem',
+      },
+      '& > :nth-child(3n)': {
+        marginRight: 0,
+      },
+    },
+    [theme.breakpoints.only('md')]: {
+      '& > *': {
+        marginRight: ({ layout }) =>
+          layout === 'grid' ? 'calc(100% - (25rem * 2))' : 0,
+        marginBottom: '5rem',
+      },
+      '& > :nth-child(2n)': {
+        marginRight: 0,
+      },
+    },
+    [theme.breakpoints.only('sm')]: {
+      '& > *': {
+        marginBottom: '5rem',
+      },
     },
   },
 }));
@@ -69,6 +96,7 @@ const ListOfProducts: React.FC<ListOfProductsProps> = ({
   productsPerPage,
 }) => {
   const classes = useStyles({ layout });
+  const matchesSM = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const content: { product: number; variant: Variant }[] = products.flatMap(
     (product: Edge, index: number) =>
@@ -77,8 +105,15 @@ const ListOfProducts: React.FC<ListOfProductsProps> = ({
         variant,
       }))
   );
+
   return (
-    <Grid item container classes={{ root: classes.productContainer }}>
+    <Grid
+      item
+      container
+      direction={matchesSM ? 'column' : 'row'}
+      alignItems={matchesSM ? 'center' : undefined}
+      classes={{ root: classes.productContainer }}
+    >
       {content
         .slice(
           (currentPage - 1) * productsPerPage,

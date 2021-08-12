@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { navigate } from 'gatsby';
+import {
+  Grid,
+  Typography,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import QuickView from './QuickView';
 import { Edge, Variant } from '../../interfaces/category-products';
@@ -65,6 +72,11 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
+  if (matchesMD && open) {
+    setOpen(false);
+  }
 
   const imgURL = getImageByColor(
     product,
@@ -83,7 +95,15 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         }),
       }}
     >
-      <Grid container direction='column' onClick={() => setOpen(true)}>
+      <Grid
+        container
+        direction='column'
+        onClick={() =>
+          matchesMD
+            ? navigate(`/${product.node.category.name.toLowerCase()}/${name}`)
+            : setOpen(true)
+        }
+      >
         <Grid item classes={{ root: classes.frame }}>
           <img src={imgURL} alt={name} className={classes.product} />
         </Grid>
