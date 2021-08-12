@@ -113,7 +113,7 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
       alignItems={matchesMD ? 'center' : undefined}
     >
       <Grid item classes={{ root: classes.descriptionContainer }}>
-        <Typography align='center' variant='h4' paragraph gutterBottom>
+        <Typography align='center' variant='h4'>
           {name}
         </Typography>
         <Typography
