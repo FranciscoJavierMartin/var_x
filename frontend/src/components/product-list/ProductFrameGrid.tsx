@@ -8,6 +8,11 @@ import frame from '../../images/product-frame-grid.svg';
 import { getImageByColor } from '../../utils/imageByColor';
 
 const useStyles = makeStyles(theme => ({
+  frameContainer: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
   frame: {
     backgroundImage: `url(${frame})`,
     backgroundPosition: 'center',
@@ -68,7 +73,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
     <Grid
       item
       classes={{
-        root: clsx({
+        root: clsx(classes.frameContainer, {
           [classes.invisibility]: open,
         }),
       }}

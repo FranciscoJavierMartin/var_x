@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'gatsby';
 import { Grid, Typography, Chip, makeStyles } from '@material-ui/core';
 import Rating from '../shared/Rating';
 import Sizes from './Sizes';
@@ -35,6 +36,9 @@ const useStyles = makeStyles(theme => ({
   },
   chipLabel: {
     fontSize: '2rem',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 }));
 
@@ -74,15 +78,20 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
         classes={{ root: classes.frame }}
       >
         {images.map((image: Image) => (
-          <>
-            <Grid item key={image.url}>
-              <img
-                src={`${process.env.GATSBY_STRAPI_URL}${image.url}`}
-                alt={image.url}
-                className={classes.productImage}
-              />
-            </Grid>
-          </>
+          <Grid
+            item
+            key={image.url}
+            component={Link}
+            to={`/${product.node.category.name.toLowerCase()}/${product.node.name
+              .split(' ')[0]
+              .toLowerCase()}`}
+          >
+            <img
+              src={`${process.env.GATSBY_STRAPI_URL}${image.url}`}
+              alt={image.url}
+              className={classes.productImage}
+            />
+          </Grid>
         ))}
       </Grid>
       <Grid
@@ -93,7 +102,15 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
         justifyContent='space-between'
         classes={{ root: classes.info }}
       >
-        <Grid item container direction='column'>
+        <Grid
+          item
+          container
+          direction='column'
+          component={Link}
+          to={`/${product.node.category.name.toLowerCase()}/${product.node.name
+            .split(' ')[0]
+            .toLowerCase()}`}
+        >
           <Grid item>
             <Typography variant='h4'>
               {product.node.name.split(' ')[0]}

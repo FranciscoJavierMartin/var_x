@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'gatsby';
 import {
   Grid,
   Dialog,
@@ -119,7 +120,13 @@ const QuickView: React.FC<QuickViewProps> = ({
     >
       <DialogContent classes={{ root: classes.selectedFrame }}>
         <Grid container direction='column' alignItems='center'>
-          <Grid item>
+          <Grid
+            item
+            component={Link}
+            to={`/${product.node.category.name.toLowerCase()}/${product.node.name
+              .split(' ')[0]
+              .toLowerCase()}`}
+          >
             <img
               src={url}
               alt='product image'
@@ -138,6 +145,10 @@ const QuickView: React.FC<QuickViewProps> = ({
                 direction='column'
                 justifyContent='space-between'
                 classes={{ root: classes.infoContainer }}
+                component={Link}
+                to={`/${product.node.category.name.toLowerCase()}/${product.node.name
+                  .split(' ')[0]
+                  .toLowerCase()}`}
               >
                 <Grid item>
                   <Typography variant='h4'>{name}</Typography>

@@ -11,9 +11,14 @@ export interface Variant {
   images: Image[];
 }
 
+export interface Category {
+  name: string;
+}
+
 export interface Node {
   name: string;
   strapiId: number;
+  category: Category;
   variants: Variant[];
 }
 
