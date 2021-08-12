@@ -66,7 +66,12 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
 
-  const imgURL = getImageByColor(product, selectedColor, variant.images[0].url);
+  const imgURL = getImageByColor(
+    product,
+    variant,
+    selectedColor,
+    variant.images[0].url
+  );
   const name = product.node.name.split(' ')[0];
 
   return (

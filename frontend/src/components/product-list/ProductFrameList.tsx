@@ -65,7 +65,12 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
 }) => {
   const classes = useStyles();
 
-  const images = getImagesByColor(product, selectedColor, variant.images);
+  const images = getImagesByColor(
+    product,
+    variant,
+    selectedColor,
+    variant.images
+  );
 
   return (
     <Grid item container>

@@ -95,7 +95,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({}) => {
           classes={{ root: clsx(classes.endButtons, classes.cartButton) }}
         >
           <Badge
-            overlap='circle'
+            overlap='circular'
             badgeContent='+'
             classes={{ badge: classes.badge }}
           >

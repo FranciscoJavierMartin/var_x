@@ -31,7 +31,13 @@ const FrameHelper = ({
   const [selectedColor, setSelectedColor] = useState<string>('');
 
   const sizes = product.node.variants.map(variant => variant.size);
-  const colors = product.node.variants.map(variant => variant.color);
+  const colors = product.node.variants
+    .map(variant => variant.color)
+    .reduce(
+      (acc: string[], color: string) =>
+        acc.includes(color) ? acc : acc.concat([color]),
+      []
+    );
 
   return (
     <Frame
