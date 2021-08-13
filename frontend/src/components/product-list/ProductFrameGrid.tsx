@@ -30,10 +30,18 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+      height: '20rem',
+      width: '20rem',
+    },
   },
   product: {
     height: '20rem',
     width: '20rem',
+    [theme.breakpoints.down('xs')]: {
+      height: '15rem',
+      width: '15rem',
+    },
   },
   title: {
     backgroundColor: theme.palette.primary.main,
@@ -43,6 +51,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '-0.1rem',
+    [theme.breakpoints.down('xs')]: {
+      width: '20rem',
+    },
   },
   invisibility: {
     visibility: 'hidden',
@@ -100,7 +111,9 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         direction='column'
         onClick={() =>
           matchesMD
-            ? navigate(`/${product.node.category.name.toLowerCase()}/${name.toLowerCase()}`)
+            ? navigate(
+                `/${product.node.category.name.toLowerCase()}/${name.toLowerCase()}`
+              )
             : setOpen(true)
         }
       >
