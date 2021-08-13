@@ -51,10 +51,12 @@ const Filter: React.FC<FilterProps> = ({
 }) => {
   const classes = useStyles();
 
-  const handleFilter = (option: string, i: number) => {
-    const newFilters = { ...filterOptions };
-    newFilters[option][i].checked = !newFilters[option][i].checked;
-    setFilterOptions(newFilters);
+  const handleFilter = (option: string, index: number) => {
+    setFilterOptions(prevState => {
+      const newFilters = { ...prevState };
+      newFilters[option][index].checked = !newFilters[option][index].checked;
+      return newFilters;
+    });
   };
 
   return (
