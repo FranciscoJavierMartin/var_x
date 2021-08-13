@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Grid,
-  Typography,
   IconButton,
   Chip,
   FormControl,
@@ -18,6 +17,13 @@ import { Filters } from '../../interfaces/filters';
 const useStyles = makeStyles(theme => ({
   mainContainer: {
     padding: '1rem 0',
+  },
+  optionsContainer: {
+    [theme.breakpoints.down('xs')]: {
+      '& > :not(:last-child)': {
+        marginBottom: '2rem',
+      },
+    },
   },
   chipRoot: {
     backgroundColor: theme.palette.secondary.main,
@@ -44,7 +50,7 @@ const Filter: React.FC<FilterProps> = ({ setOption, filterOptions }) => {
     <Grid
       item
       container
-      justify='space-between'
+      justifyContent='space-between'
       alignItems='center'
       classes={{ root: classes.mainContainer }}
     >
@@ -54,12 +60,16 @@ const Filter: React.FC<FilterProps> = ({ setOption, filterOptions }) => {
         </IconButton>
       </Grid>
       <Grid item xs>
-        <Grid container justify='space-around'>
+        <Grid
+          container
+          justifyContent='space-around'
+          classes={{ root: classes.optionsContainer }}
+        >
           {Object.keys(filterOptions)
             .filter(option => filterOptions[option])
             .map(option => (
               <Grid item key={option}>
-                <Grid container direction='column'>
+                <Grid container direction='column' alignItems='center'>
                   <Grid item>
                     <Chip
                       label={option}

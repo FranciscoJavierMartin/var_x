@@ -38,7 +38,7 @@ const Sort: React.FC<SortProps> = ({ setOption }) => {
   ];
 
   return (
-    <Grid item container justify='space-between' alignItems='center'>
+    <Grid item container justifyContent='space-between' alignItems='center'>
       <Grid item>
         <IconButton onClick={() => setOption(null)}>
           <img src={sort} alt='sort' />
@@ -47,7 +47,7 @@ const Sort: React.FC<SortProps> = ({ setOption }) => {
       <Grid item xs>
         <Grid
           container
-          justify='space-around'
+          justifyContent='space-around'
           alignItems={matchesXS ? 'center' : undefined}
           direction={matchesXS ? 'column' : 'row'}
         >
