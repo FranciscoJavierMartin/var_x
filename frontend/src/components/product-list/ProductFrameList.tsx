@@ -23,6 +23,12 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     width: '100%',
     padding: '1rem',
+    [theme.breakpoints.down('md')]: {
+      height: '50%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: '26rem',
+    },
   },
   productImage: {
     height: '20rem',
@@ -76,7 +82,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
     <Grid item container>
       <Grid
         item
-        xs={9}
+        lg={9}
         container
         alignItems='center'
         justifyContent='space-around'
@@ -101,7 +107,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
       </Grid>
       <Grid
         item
-        xs={3}
+        lg={3}
         container
         direction='column'
         justifyContent='space-between'
