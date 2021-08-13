@@ -1,5 +1,12 @@
 import React from 'react';
-import { Grid, IconButton, Chip, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  IconButton,
+  Chip,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 
 import sort from '../../images/sort.svg';
 import close from '../../images/close-outline.svg';
@@ -18,6 +25,7 @@ interface SortProps {
 
 const Sort: React.FC<SortProps> = ({ setOption }) => {
   const classes = useStyles();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const sortOptions = [
     { label: 'A-Z' },
@@ -37,7 +45,12 @@ const Sort: React.FC<SortProps> = ({ setOption }) => {
         </IconButton>
       </Grid>
       <Grid item xs>
-        <Grid container justify='space-around'>
+        <Grid
+          container
+          justify='space-around'
+          alignItems={matchesXS ? 'center' : undefined}
+          direction={matchesXS ? 'column' : 'row'}
+        >
           {sortOptions.map(option => (
             <Grid
               item
