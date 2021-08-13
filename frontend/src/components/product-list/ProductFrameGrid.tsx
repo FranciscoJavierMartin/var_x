@@ -100,7 +100,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         direction='column'
         onClick={() =>
           matchesMD
-            ? navigate(`/${product.node.category.name.toLowerCase()}/${name}`)
+            ? navigate(`/${product.node.category.name.toLowerCase()}/${name.toLowerCase()}`)
             : setOpen(true)
         }
       >

@@ -124,6 +124,7 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
           {description}
         </Typography>
       </Grid>
+      {/* FIXME: Push down the button group to not overlap with container */}
       <Grid item classes={{ root: classes.buttonGroup }}>
         <ButtonGroup>
           <Button
