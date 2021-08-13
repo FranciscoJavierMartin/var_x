@@ -41,10 +41,21 @@ const useStyles = makeStyles(theme => ({
 interface FilterProps {
   setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
   filterOptions: Filters;
+  setFilterOptions: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
-const Filter: React.FC<FilterProps> = ({ setOption, filterOptions }) => {
+const Filter: React.FC<FilterProps> = ({
+  setOption,
+  filterOptions,
+  setFilterOptions,
+}) => {
   const classes = useStyles();
+
+  const handleFilter = (option: string, i: number) => {
+    const newFilters = { ...filterOptions };
+    newFilters[option][i].checked = !newFilters[option][i].checked;
+    setFilterOptions(newFilters);
+  };
 
   return (
     <Grid
@@ -82,20 +93,23 @@ const Filter: React.FC<FilterProps> = ({ setOption, filterOptions }) => {
                   <Grid item>
                     <FormControl>
                       <FormGroup>
-                        {filterOptions[option].map(({ label, checked }) => (
-                          <FormControlLabel
-                            key={label}
-                            label={label}
-                            classes={{ label: classes.checkbox }}
-                            control={
-                              <Checkbox
-                                checked={checked}
-                                name={label}
-                                classes={{ root: classes.checkbox }}
-                              />
-                            }
-                          />
-                        ))}
+                        {filterOptions[option].map(
+                          ({ label, checked }, i: number) => (
+                            <FormControlLabel
+                              key={label}
+                              label={label}
+                              classes={{ label: classes.checkbox }}
+                              control={
+                                <Checkbox
+                                  checked={checked}
+                                  name={label}
+                                  classes={{ root: classes.checkbox }}
+                                  onChange={() => handleFilter(option, i)}
+                                />
+                              }
+                            />
+                          )
+                        )}
                       </FormGroup>
                     </FormControl>
                   </Grid>

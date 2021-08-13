@@ -16,6 +16,7 @@ const useStyles = makeStyles(theme => ({
 
 interface DynamicToolbarProps {
   filterOptions: Filters;
+  setFilterOptions: React.Dispatch<React.SetStateAction<Filters>>;
   name: string;
   description: string;
   layout: 'grid' | 'list';
@@ -25,6 +26,7 @@ interface DynamicToolbarProps {
 
 const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
   filterOptions,
+  setFilterOptions,
   name,
   description,
   layout,
@@ -38,6 +40,7 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
     <Grid item container direction='column' classes={{ root: classes.toolbar }}>
       <FunctionContainer
         filterOptions={filterOptions}
+        setFilterOptions={setFilterOptions}
         option={option}
         setOption={setOption}
       />

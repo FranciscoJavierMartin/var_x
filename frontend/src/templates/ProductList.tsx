@@ -51,13 +51,14 @@ interface ProductListProps {
 }
 
 const ProductList: React.FC<ProductListProps> = ({
-  pageContext: { name, description, filterOptions },
+  pageContext: { name, description, filterOptions: options },
   data: {
     allStrapiProduct: { edges: products },
   },
 }) => {
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filterOptions, setFilterOptions] = useState<Filters>(options);
   const scrollRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
 
@@ -81,6 +82,7 @@ const ProductList: React.FC<ProductListProps> = ({
         <div ref={scrollRef} />
         <DynamicToolbar
           filterOptions={filterOptions}
+          setFilterOptions={setFilterOptions}
           name={name}
           description={description}
           layout={layout}

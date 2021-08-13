@@ -26,12 +26,14 @@ const useStyles = makeStyles<Theme, { option: 'sort' | 'filter' | null }>(
 
 interface FunctionContainerProps {
   filterOptions: Filters;
+  setFilterOptions: React.Dispatch<React.SetStateAction<Filters>>;
   option: 'sort' | 'filter' | null;
   setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
 }
 
 const FunctionContainer: React.FC<FunctionContainerProps> = ({
   filterOptions,
+  setFilterOptions,
   option,
   setOption,
 }) => {
@@ -43,7 +45,7 @@ const FunctionContainer: React.FC<FunctionContainerProps> = ({
       case null:
         const items: {
           icon: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
-          alt: 'sort' | 'filter' | null;
+          alt: 'sort' | 'filter';
         }[] = [
           {
             icon: filter,
@@ -75,7 +77,13 @@ const FunctionContainer: React.FC<FunctionContainerProps> = ({
         res = <Sort setOption={setOption} />;
         break;
       case 'filter':
-        res = <Filter setOption={setOption} filterOptions={filterOptions} />;
+        res = (
+          <Filter
+            setOption={setOption}
+            filterOptions={filterOptions}
+            setFilterOptions={setFilterOptions}
+          />
+        );
         break;
       default:
         res = null;
