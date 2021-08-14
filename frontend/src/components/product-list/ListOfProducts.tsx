@@ -3,7 +3,7 @@ import { Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
 import ProductFrameGrid from './ProductFrameGrid';
 import ProductFrameList from './ProductFrameList';
 import { Edge, Variant } from '../../interfaces/category-products';
-import { Filters, Option } from '../../interfaces/filters';
+import { Filters } from '../../interfaces/filters';
 
 const useStyles = makeStyles<Theme, { layout: 'grid' | 'list' }>(theme => ({
   productContainer: {
@@ -88,6 +88,7 @@ interface ListOfProductsProps {
   currentPage: number;
   productsPerPage: number;
   filterOptions: Filters;
+  content: { product: number; variant: Variant }[];
 }
 
 const ListOfProducts: React.FC<ListOfProductsProps> = ({
@@ -97,80 +98,10 @@ const ListOfProducts: React.FC<ListOfProductsProps> = ({
   currentPage,
   productsPerPage,
   filterOptions,
+  content,
 }) => {
   const classes = useStyles({ layout });
   const matchesSM = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const activeFilters = Object.keys(filterOptions).filter(
-    option => filterOptions[option]
-  );
-  let isFiltered = false;
-  let filters: { [key: string]: Option[] } = {};
-  let filteredProducts: { product: number; variant: Variant }[] = [];
-
-  let content: { product: number; variant: Variant }[] = products.flatMap(
-    (product: Edge, index: number) =>
-      product.node.variants.map((variant: Variant) => ({
-        product: index,
-        variant,
-      }))
-  );
-
-  // TODO: Use filters from GraphQL
-  activeFilters.map(option => {
-    filterOptions[option].forEach(value => {
-      if (value.checked) {
-        isFiltered = true;
-
-        if (!filters[option]) {
-          filters[option] = [];
-        }
-
-        if (!filters[option].includes(value)) {
-          filters[option].push(value);
-        }
-
-        content.forEach(item => {
-          if (option === 'Color') {
-            if (
-              item.variant.colorLabel === value.label &&
-              !filteredProducts.includes(item)
-            ) {
-              filteredProducts.push(item);
-            }
-          } else if (
-            (item.variant as any)[option.toLowerCase()] === value.label &&
-            !filteredProducts.includes(item)
-          ) {
-            filteredProducts.push(item);
-          }
-        });
-      }
-    });
-  });
-
-  Object.keys(filters).forEach(filter => {
-    filteredProducts = filteredProducts.filter(item => {
-      let valid;
-
-      filters[filter].some((value: Option) => {
-        if (filter === 'Color') {
-          if (item.variant.colorLabel === value.label) {
-            valid = item;
-          }
-        } else if (
-          (item.variant as any)[filter.toLowerCase()] === value.label
-        ) {
-          valid = item;
-        }
-      });
-
-      return valid;
-    });
-  });
-
-  if (isFiltered) {
-    content = filteredProducts;
-  }
 
   return (
     <Grid

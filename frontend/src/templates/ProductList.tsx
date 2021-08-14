@@ -1,12 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { graphql } from 'gatsby';
 import { Grid, Fab, makeStyles } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import Layout from '../components/ui/Layout';
 import DynamicToolbar from '../components/product-list/DynamicToolbar';
-import { Filters } from '../interfaces/filters';
-import { Edge, GetCategoryProducts } from '../interfaces/category-products';
 import ListOfProducts from '../components/product-list/ListOfProducts';
+import { Filters, Option } from '../interfaces/filters';
+import {
+  Edge,
+  GetCategoryProducts,
+  Variant,
+} from '../interfaces/category-products';
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -61,6 +65,24 @@ const ProductList: React.FC<ProductListProps> = ({
   const [filterOptions, setFilterOptions] = useState<Filters>(options);
   const scrollRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
+  let isFiltered = false;
+  let filters: { [key: string]: Option[] } = {};
+  let filteredProducts: { product: number; variant: Variant }[] = [];
+  const activeFilters = Object.keys(filterOptions).filter(
+    option => filterOptions[option]
+  );
+
+  let content: { product: number; variant: Variant }[] = products.flatMap(
+    (product: Edge, index: number) =>
+      product.node.variants.map((variant: Variant) => ({
+        product: index,
+        variant,
+      }))
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterOptions, layout]);
 
   const scroll = () => {
     if (scrollRef.current) {
@@ -69,12 +91,65 @@ const ProductList: React.FC<ProductListProps> = ({
   };
 
   const productsPerPage = layout === 'grid' ? 16 : 6;
-  const numVariants: number = products.reduce<number>(
-    (acc: number, product: Edge) => acc + product.node.variants.length,
-    0
-  );
 
-  const numPages = Math.ceil(numVariants / productsPerPage);
+  // TODO: Use filters from GraphQL
+  activeFilters.map(option => {
+    filterOptions[option].forEach(value => {
+      if (value.checked) {
+        isFiltered = true;
+
+        if (!filters[option]) {
+          filters[option] = [];
+        }
+
+        if (!filters[option].includes(value)) {
+          filters[option].push(value);
+        }
+
+        content.forEach(item => {
+          if (option === 'Color') {
+            if (
+              item.variant.colorLabel === value.label &&
+              !filteredProducts.includes(item)
+            ) {
+              filteredProducts.push(item);
+            }
+          } else if (
+            (item.variant as any)[option.toLowerCase()] === value.label &&
+            !filteredProducts.includes(item)
+          ) {
+            filteredProducts.push(item);
+          }
+        });
+      }
+    });
+  });
+
+  Object.keys(filters).forEach(filter => {
+    filteredProducts = filteredProducts.filter(item => {
+      let valid;
+
+      filters[filter].some((value: Option) => {
+        if (filter === 'Color') {
+          if (item.variant.colorLabel === value.label) {
+            valid = item;
+          }
+        } else if (
+          (item.variant as any)[filter.toLowerCase()] === value.label
+        ) {
+          valid = item;
+        }
+      });
+
+      return valid;
+    });
+  });
+
+  if (isFiltered) {
+    content = filteredProducts;
+  }
+
+  const numPages = Math.ceil(content.length / productsPerPage);
 
   return (
     <Layout>
@@ -87,7 +162,6 @@ const ProductList: React.FC<ProductListProps> = ({
           description={description}
           layout={layout}
           setLayout={setLayout}
-          setCurrentPage={setCurrentPage}
         />
         <ListOfProducts
           filterOptions={filterOptions}
@@ -96,6 +170,7 @@ const ProductList: React.FC<ProductListProps> = ({
           products={products}
           layout={layout}
           setLayout={setLayout}
+          content={content}
         />
         <Pagination
           color='primary'

@@ -84,7 +84,6 @@ interface DescriptionContainerProps {
   description: string;
   layout: 'grid' | 'list';
   setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
@@ -92,7 +91,6 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
   description,
   layout,
   setLayout,
-  setCurrentPage,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -100,7 +98,6 @@ const DescriptionContainer: React.FC<DescriptionContainerProps> = ({
 
   const changeLayout = (option: 'list' | 'grid'): void => {
     setLayout(option);
-    setCurrentPage(1);
   };
 
   return (
