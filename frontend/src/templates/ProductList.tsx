@@ -90,6 +90,7 @@ const ProductList: React.FC<ProductListProps> = ({
           setCurrentPage={setCurrentPage}
         />
         <ListOfProducts
+          filterOptions={filterOptions}
           currentPage={currentPage}
           productsPerPage={productsPerPage}
           products={products}
@@ -129,6 +130,7 @@ export const query = graphql`
             price
             size
             style
+            colorLabel
             images {
               url
             }

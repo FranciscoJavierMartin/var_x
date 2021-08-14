@@ -8,6 +8,7 @@ export interface Variant {
   price: number;
   size: string;
   style?: any;
+  colorLabel: string;
   images: Image[];
 }
 
