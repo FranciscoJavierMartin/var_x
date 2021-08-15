@@ -241,6 +241,7 @@ export const query = graphql`
         node {
           name
           strapiId
+          created_at
           category {
             name
           }
