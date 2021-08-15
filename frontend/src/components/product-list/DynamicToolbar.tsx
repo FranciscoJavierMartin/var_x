@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 import FunctionContainer from './FunctionContainer';
 import { Filters } from '../../interfaces/filters';
 import DescriptionContainer from './DescriptionContainer';
+import { Edge } from '../../interfaces/category-products';
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -21,6 +22,20 @@ interface DynamicToolbarProps {
   description: string;
   layout: 'grid' | 'list';
   setLayout: React.Dispatch<React.SetStateAction<'grid' | 'list'>>;
+  sortOptions: {
+    label: string;
+    active: boolean;
+    function: (data: Edge[]) => Edge[];
+  }[];
+  setSortOptions: React.Dispatch<
+    React.SetStateAction<
+      {
+        label: string;
+        active: boolean;
+        function: (data: Edge[]) => Edge[];
+      }[]
+    >
+  >;
 }
 
 const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
@@ -30,6 +45,8 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
   description,
   layout,
   setLayout,
+  sortOptions,
+  setSortOptions,
 }) => {
   const classes = useStyles();
   const [option, setOption] = useState<'sort' | 'filter' | null>(null);
@@ -41,6 +58,8 @@ const DynamicToolbar: React.FC<DynamicToolbarProps> = ({
         setFilterOptions={setFilterOptions}
         option={option}
         setOption={setOption}
+        sortOptions={sortOptions}
+        setSortOptions={setSortOptions}
       />
       {option === null && (
         <DescriptionContainer

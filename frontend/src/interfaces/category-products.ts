@@ -19,6 +19,7 @@ export interface Category {
 export interface Node {
   name: string;
   strapiId: number;
+  created_at: Date;
   category: Category;
   variants: Variant[];
 }

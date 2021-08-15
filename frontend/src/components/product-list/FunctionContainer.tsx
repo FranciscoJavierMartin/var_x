@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  Grid,
-  Typography,
-  makeStyles,
-  IconButton,
-  Theme,
-} from '@material-ui/core';
+import { Grid, makeStyles, IconButton, Theme } from '@material-ui/core';
 import Sort from './Sort';
 import Filter from './Filter';
+import { Edge } from '../../interfaces/category-products';
+import { Filters } from '../../interfaces/filters';
 
 import filter from '../../images/filter.svg';
 import sort from '../../images/sort.svg';
-import { Filters } from '../../interfaces/filters';
 
 const useStyles = makeStyles<Theme, { option: 'sort' | 'filter' | null }>(
   theme => ({
@@ -29,6 +24,20 @@ interface FunctionContainerProps {
   setFilterOptions: React.Dispatch<React.SetStateAction<Filters>>;
   option: 'sort' | 'filter' | null;
   setOption: React.Dispatch<React.SetStateAction<'sort' | 'filter' | null>>;
+  sortOptions: {
+    label: string;
+    active: boolean;
+    function: (data: Edge[]) => Edge[];
+  }[];
+  setSortOptions: React.Dispatch<
+    React.SetStateAction<
+      {
+        label: string;
+        active: boolean;
+        function: (data: Edge[]) => Edge[];
+      }[]
+    >
+  >;
 }
 
 const FunctionContainer: React.FC<FunctionContainerProps> = ({
@@ -36,6 +45,8 @@ const FunctionContainer: React.FC<FunctionContainerProps> = ({
   setFilterOptions,
   option,
   setOption,
+  sortOptions,
+  setSortOptions,
 }) => {
   const classes = useStyles({ option });
 
@@ -74,7 +85,13 @@ const FunctionContainer: React.FC<FunctionContainerProps> = ({
         );
         break;
       case 'sort':
-        res = <Sort setOption={setOption} />;
+        res = (
+          <Sort
+            setOption={setOption}
+            sortOptions={sortOptions}
+            setSortOptions={setSortOptions}
+          />
+        );
         break;
       case 'filter':
         res = (

@@ -11,6 +11,7 @@ import {
   GetCategoryProducts,
   Variant,
 } from '../interfaces/category-products';
+import { alphabetic, time, price } from '../utils/sortFunctions';
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -63,8 +64,50 @@ const ProductList: React.FC<ProductListProps> = ({
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filterOptions, setFilterOptions] = useState<Filters>(options);
+  const [sortOptions, setSortOptions] = useState<
+    { label: string; active: boolean; function: (data: Edge[]) => Edge[] }[]
+  >([
+    {
+      label: 'A-Z',
+      active: true,
+      function: (data: Edge[]) => alphabetic(data, 'asc'),
+    },
+    {
+      label: 'Z-A',
+      active: false,
+      function: (data: Edge[]) => alphabetic(data, 'desc'),
+    },
+    {
+      label: 'NEWEST',
+      active: false,
+      function: (data: Edge[]) => time(data, 'asc'),
+    },
+    {
+      label: 'OLDEST',
+      active: false,
+      function: (data: Edge[]) => time(data, 'desc'),
+    },
+    {
+      label: 'PRICE ↑',
+      active: false,
+      function: (data: Edge[]) => price(data, 'asc'),
+    },
+    {
+      label: 'PRICE ↓',
+      active: false,
+      function: (data: Edge[]) => price(data, 'desc'),
+    },
+    {
+      label: 'REVIEWS',
+      active: false,
+      function: (data: Edge[]) => alphabetic(data, 'asc'),
+    },
+  ]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
+  const selectedSortOption = sortOptions.find(option => option.active);
+  // TODO: Move sorted products to graphQL query
+  const sortedProducts = selectedSortOption?.function(products) || [];
   let isFiltered = false;
   let filters: { [key: string]: Option[] } = {};
   let filteredProducts: { product: number; variant: Variant }[] = [];
@@ -72,7 +115,7 @@ const ProductList: React.FC<ProductListProps> = ({
     option => filterOptions[option]
   );
 
-  let content: { product: number; variant: Variant }[] = products.flatMap(
+  let content: { product: number; variant: Variant }[] = sortedProducts.flatMap(
     (product: Edge, index: number) =>
       product.node.variants.map((variant: Variant) => ({
         product: index,
@@ -162,6 +205,8 @@ const ProductList: React.FC<ProductListProps> = ({
           description={description}
           layout={layout}
           setLayout={setLayout}
+          sortOptions={sortOptions}
+          setSortOptions={setSortOptions}
         />
         <ListOfProducts
           filterOptions={filterOptions}
