@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery, gql } from '@apollo/client';
 import { Grid, Theme, useMediaQuery } from '@material-ui/core';
 import ProductImages from '../components/product-detail/ProductImages';
 import Layout from '../components/ui/Layout';
 import ProductInfo from '../components/product-detail/ProductInfo';
-import { Product, Variant } from '../interfaces/product-details';
+import {
+  Product,
+  QueryProductQty,
+  Variant,
+} from '../interfaces/product-details';
 import { RECENTLY_VIEWED } from '../constants/localStorage';
 import RecentlyViewed from '../components/product-detail/RecentlyViewed';
 import { getRecentlyViewProducts } from '../utils/localStorage';
@@ -19,6 +24,16 @@ interface ProductDetailProps {
   };
 }
 
+const GET_DETAILS = gql`
+  query getDetails($id: ID!) {
+    product(id: $id) {
+      variants {
+        qty
+      }
+    }
+  }
+`;
+
 const ProductDetail: React.FC<ProductDetailProps> = ({
   pageContext: { name, id, category, description, variants, product },
 }) => {
@@ -27,6 +42,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
   let recentlyView: Product[] = getRecentlyViewProducts();
+
+  const { loading, error, data } = useQuery<QueryProductQty, { id: string }>(
+    GET_DETAILS,
+    {
+      variables: { id },
+    }
+  );
 
   useEffect(() => {
     // Get variant

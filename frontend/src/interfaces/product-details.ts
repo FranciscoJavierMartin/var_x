@@ -27,3 +27,15 @@ export interface Node {
 export interface Product {
   node: Node;
 }
+
+export interface VariantQty {
+  qty: number;
+}
+
+export interface ProductQty {
+  variants: VariantQty[];
+}
+
+export interface QueryProductQty {
+  product: ProductQty;
+}
