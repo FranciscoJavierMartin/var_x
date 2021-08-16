@@ -14,7 +14,7 @@ import { Edge, Variant } from '../../interfaces/category-products';
 import frame from '../../images/product-frame-grid.svg';
 import { getImageByColor } from '../../utils/imageByColor';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { small: boolean }>(theme => ({
   frameContainer: {
     '&:hover': {
       cursor: 'pointer',
@@ -34,6 +34,10 @@ const useStyles = makeStyles(theme => ({
       height: '20rem',
       width: '20rem',
     },
+    [theme.breakpoints.up('xs')]: {
+      height: ({ small }) => (small ? '15rem' : undefined),
+      width: ({ small }) => (small ? '15rem' : undefined),
+    },
   },
   product: {
     height: '20rem',
@@ -41,6 +45,10 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       height: '15rem',
       width: '15rem',
+    },
+    [theme.breakpoints.up('xs')]: {
+      height: ({ small }) => (small ? '12rem' : undefined),
+      width: ({ small }) => (small ? '12rem' : undefined),
     },
   },
   title: {
@@ -53,6 +61,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: '-0.1rem',
     [theme.breakpoints.down('xs')]: {
       width: '20rem',
+    },
+    [theme.breakpoints.up('xs')]: {
+      width: ({ small }) => (small ? '15rem' : undefined),
     },
   },
   invisibility: {
@@ -71,6 +82,7 @@ interface ProductFrameGridProps {
   colors?: string[];
   hasStyles: boolean;
   disableQuickView?: boolean;
+  small?: boolean;
 }
 
 const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
@@ -84,8 +96,9 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   colors,
   hasStyles,
   disableQuickView,
+  small,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ small: !!small });
   const [open, setOpen] = useState<boolean>(false);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
