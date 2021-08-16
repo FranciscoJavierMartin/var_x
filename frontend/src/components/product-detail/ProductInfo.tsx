@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Button, Typography, Chip, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import Rating from '../shared/Rating';
+import Sizes from '../shared/Sizes';
+import Swatches from '../shared/Swatches';
+import QtyButton from '../product-list/QtyButton';
 import { Variant } from '../../interfaces/category-products';
+import { getImagesByColor } from '../../utils/imageByColor';
 
 import favorite from '../../images/favorite.svg';
 import subscription from '../../images/subscription.svg';
@@ -52,6 +56,20 @@ const useStyles = makeStyles(theme => ({
   chipLabel: {
     fontSize: '2rem',
   },
+  stock: {
+    color: theme.palette.common.white,
+  },
+  sizesAndSwatches: {
+    maxWidth: '13rem',
+  },
+  actionsContainer: {
+    padding: '0 1rem',
+  },
+  '@global': {
+    '.MuiButtonGroup-groupedOutlinedVertical:not(:first-child)': {
+      marginTop: 0,
+    },
+  },
 }));
 
 interface ProductInfoProps {
@@ -70,6 +88,28 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   setSelectedVariant,
 }) => {
   const classes = useStyles();
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
+
+  const images = getImagesByColor(
+    { node: { variants } },
+    variants[selectedVariant],
+    selectedColor,
+    variants[selectedVariant].images
+  );
+
+  const sizes = variants.map(variant => variant.size);
+  const colors = variants
+    .map(variant => variant.color)
+    .reduce(
+      (acc: string[], color: string) =>
+        acc.includes(color) ? acc : acc.concat([color]),
+      []
+    );
+
+    useEffect(() => {
+
+    }, [])
 
   return (
     <Grid
@@ -159,8 +199,37 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         <Grid
           item
           container
-          classes={{ root: classes.sectionContainer }}
-        ></Grid>
+          justifyContent='space-between'
+          alignItems='center'
+          classes={{
+            root: clsx(classes.actionsContainer, classes.sectionContainer),
+          }}
+        >
+          <Grid item>
+            <Grid container direction='column'>
+              <Grid item classes={{ root: classes.sizesAndSwatches }}>
+                <Sizes
+                  sizes={sizes}
+                  selectedSize={selectedSize}
+                  setSelectedSize={setSelectedSize}
+                />
+                <Swatches
+                  colors={colors}
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedColor}
+                />
+              </Grid>
+              <Grid item>
+                <Typography variant='h3' classes={{ root: classes.stock }}>
+                  12 Currently in stock
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item>
+            <QtyButton />
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );

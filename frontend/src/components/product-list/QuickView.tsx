@@ -10,8 +10,8 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import Rating from '../shared/Rating';
-import Sizes from './Sizes';
-import Swatches from './Swatches';
+import Sizes from '../shared/Sizes';
+import Swatches from '../shared/Swatches';
 import QtyButton from './QtyButton';
 
 import frame from '../../images/selected-frame.svg';

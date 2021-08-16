@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'gatsby';
 import { Grid, Typography, Chip, makeStyles } from '@material-ui/core';
 import Rating from '../shared/Rating';
-import Sizes from './Sizes';
-import Swatches from './Swatches';
+import Sizes from '../shared/Sizes';
+import Swatches from '../shared/Swatches';
 import QtyButton from './QtyButton';
 import { Edge, Image, Variant } from '../../interfaces/category-products';
 

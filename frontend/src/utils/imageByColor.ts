@@ -1,7 +1,7 @@
-import { Edge, Image, Variant } from '../interfaces/category-products';
+import { Image, Variant } from '../interfaces/category-products';
 
 export function getImageByColor(
-  product: Edge,
+  product: { node: { variants: Variant[] } },
   variant: Variant,
   color: string,
   defaultImage: string
@@ -18,7 +18,7 @@ export function getImageByColor(
 }
 
 export function getImagesByColor(
-  product: Edge,
+  product: { node: { variants: Variant[] } },
   variant: Variant,
   color: string,
   defaultImages: Image[]
