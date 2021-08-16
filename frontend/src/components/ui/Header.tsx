@@ -81,13 +81,17 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
     /iPad|iPhone|iPod/.test(navigator.userAgent)
   );
 
-  const activeIndex = () => {
+  const activeIndex = (): number | boolean => {
     const pathname =
-      typeof window !== 'undefined' ? window.location.pathname : '';
+      typeof window !== 'undefined'
+        ? `/${window.location.pathname.split('/')[1]}`
+        : '';
+
     const found = routes.findIndex(
-      route =>
-        (route.node.link || `/${route.node.name.toLowerCase()}`) === pathname
+      ({ node: { name, link } }) =>
+        (link || `/${name.toLowerCase()}`) === pathname
     );
+
     return found === -1 ? false : found;
   };
 
@@ -125,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       <List disablePadding>
         {routes.map((route, index) => (
           <ListItem
-            selected={activeIndex() == index}
+            selected={activeIndex() === index}
             component={Link}
             to={route.node.link || `/${route.node.name.toLowerCase()}`}
             key={route.node.strapiId}
