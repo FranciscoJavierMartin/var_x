@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Button, Typography, Chip, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Button,
+  Typography,
+  Chip,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
@@ -16,12 +24,27 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main,
     height: '45rem',
     width: '35rem',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: '58rem',
+    },
   },
   center: {
     backgroundColor: theme.palette.primary.main,
     height: '35rem',
     width: '45rem',
     position: 'absolute',
+    [theme.breakpoints.down('lg')]: {
+      width: '40rem',
+    },
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: '48rem',
+    },
   },
   icon: {
     height: '4rem',
@@ -48,6 +71,10 @@ const useStyles = makeStyles(theme => ({
   },
   chipContainer: {
     marginTop: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      marginTop: 0,
+      marginBottom: '1rem',
+    },
   },
   chipRoot: {
     height: '3rem',
@@ -91,6 +118,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const classes = useStyles();
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const imageIndex = getColorIndex(
     { node: { variants } },
     variants[selectedVariant],
@@ -119,7 +147,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       justifyContent='center'
       alignItems='flex-end'
       direction='column'
-      xs={6}
+      lg={6}
     >
       <Grid
         item
@@ -152,6 +180,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           item
           container
           justifyContent='space-between'
+          direction={matchesXS ? 'column' : 'row'}
           classes={{
             root: clsx(classes.detailsContainer, classes.sectionContainer),
           }}
@@ -200,8 +229,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         <Grid
           item
           container
-          justifyContent='space-between'
-          alignItems='center'
+          justifyContent={matchesXS ? 'space-around' : 'space-between'}
+          direction={matchesXS ? 'column' : 'row'}
+          alignItems={matchesXS ? 'flex-start' : 'center'}
           classes={{
             root: clsx(classes.actionsContainer, classes.sectionContainer),
           }}

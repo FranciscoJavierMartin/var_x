@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Theme, useMediaQuery } from '@material-ui/core';
 import ProductImages from '../components/product-detail/ProductImages';
 import Layout from '../components/ui/Layout';
 import ProductInfo from '../components/product-detail/ProductInfo';
 import { Product, Variant } from '../interfaces/product-details';
 import { RECENTLY_VIEWED } from '../constants/localStorage';
-import RecentlyViewed from '../components/product-detail/RecentlyView';
+import RecentlyViewed from '../components/product-detail/RecentlyViewed';
 import { getRecentlyViewProducts } from '../utils/localStorage';
 
 interface ProductDetailProps {
@@ -24,6 +24,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
   let recentlyView: Product[] = getRecentlyViewProducts();
 
@@ -69,7 +70,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   return (
     <Layout>
       <Grid container direction='column'>
-        <Grid item container>
+        <Grid item container direction={matchesMD ? 'column' : 'row'}>
           <ProductImages
             images={variants[selectedVariant].images}
             selectedImage={selectedImage}
