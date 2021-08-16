@@ -41,6 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
   reviewButton: {
     textTransform: 'none',
+    marginLeft: '-8px',
   },
   detailsContainer: {
     padding: '0.5rem 1rem',
@@ -50,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   },
   chipRoot: {
     height: '3rem',
-    width: '8rem',
+    width: 'auto',
     borderRadius: 50,
   },
   chipLabel: {

@@ -24,11 +24,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
+  const params = new URLSearchParams(window.location.search);
   let recentlyView: Product[] = getRecentlyViewProducts();
 
   useEffect(() => {
     // Get variant
-    const params = new URLSearchParams(window.location.search);
     const paramStyle = params.get('style');
     const styledVariantIndex = variants.findIndex(
       variant => variant.style === paramStyle
@@ -64,7 +64,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
 
     localStorage.setItem(RECENTLY_VIEWED, JSON.stringify(recentlyView));
-  }, []);
+  }, [params]);
 
   return (
     <Layout>
