@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, IconButton, makeStyles } from '@material-ui/core';
+import { Image } from '../../interfaces/product-details';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface ProductImagesProps {
-  images: { url: string }[];
+  images: Image[];
   selectedImage: number;
   setSelectedImage: React.Dispatch<React.SetStateAction<number>>;
 }

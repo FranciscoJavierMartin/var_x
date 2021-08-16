@@ -5,8 +5,8 @@ import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
 import QtyButton from '../product-list/QtyButton';
-import { Variant } from '../../interfaces/category-products';
-import { getColorIndex, getImagesByColor } from '../../utils/imageByColor';
+import { Variant } from '../../interfaces/product-details';
+import { getColorIndex } from '../../utils/imageByColor';
 
 import favorite from '../../images/favorite.svg';
 import subscription from '../../images/subscription.svg';
