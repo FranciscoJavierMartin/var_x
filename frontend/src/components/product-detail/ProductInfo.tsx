@@ -106,6 +106,7 @@ interface ProductInfoProps {
   variants: Variant[];
   selectedVariant: number;
   setSelectedVariant: React.Dispatch<React.SetStateAction<number>>;
+  stock: any;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -114,6 +115,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   variants,
   selectedVariant,
   setSelectedVariant,
+  stock,
 }) => {
   const classes = useStyles();
   const [selectedSize, setSelectedSize] = useState<string>('');
@@ -133,6 +135,23 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         acc.includes(color) ? acc : acc.concat([color]),
       []
     );
+
+  let stockDisplay: string;
+  switch (stock) {
+    case undefined:
+    case null:
+      stockDisplay = 'Loading inventory...';
+    case -1:
+      stockDisplay = 'Error loading inventory...';
+      break;
+    default:
+      if (stock[selectedVariant].qty === 0) {
+        stock = 'Out of stock';
+      } else {
+        stockDisplay = `${stock[selectedVariant].qty} currently in stock.`;
+      }
+      break;
+  }
 
   useEffect(() => {
     if (imageIndex !== -1) {
@@ -252,7 +271,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
               </Grid>
               <Grid item>
                 <Typography variant='h3' classes={{ root: classes.stock }}>
-                  12 Currently in stock
+                  {stockDisplay}
                 </Typography>
               </Grid>
             </Grid>

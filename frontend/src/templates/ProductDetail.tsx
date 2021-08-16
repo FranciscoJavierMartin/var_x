@@ -39,6 +39,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
+  const [stock, setStock] = useState<any>(null);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
   let recentlyView: Product[] = getRecentlyViewProducts();
@@ -49,6 +50,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
       variables: { id },
     }
   );
+
+  useEffect(() => {
+    if (error) {
+      setStock(-1);
+    } else if (data) {
+      setStock(data.product.variants);
+    }
+  }, [error, data]);
 
   useEffect(() => {
     // Get variant
@@ -104,6 +113,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             name={name}
             selectedVariant={selectedVariant}
             setSelectedVariant={setSelectedVariant}
+            stock={stock}
           />
         </Grid>
         <RecentlyViewed products={recentlyView} />
