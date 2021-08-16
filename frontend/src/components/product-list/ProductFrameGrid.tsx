@@ -63,13 +63,14 @@ const useStyles = makeStyles(theme => ({
 interface ProductFrameGridProps {
   product: Edge;
   variant: Variant;
-  selectedSize: string;
-  selectedColor: string;
-  setSelectedSize: React.Dispatch<React.SetStateAction<string>>;
-  setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
-  sizes: string[];
-  colors: string[];
+  selectedSize?: string;
+  selectedColor?: string;
+  setSelectedSize?: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedColor?: React.Dispatch<React.SetStateAction<string>>;
+  sizes?: string[];
+  colors?: string[];
   hasStyles: boolean;
+  disableQuickView?: boolean;
 }
 
 const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
@@ -82,6 +83,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   sizes,
   colors,
   hasStyles,
+  disableQuickView,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -94,7 +96,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   const imgURL = getImageByColor(
     product,
     variant,
-    selectedColor,
+    selectedColor || '',
     variant.images[0].url
   );
   const name = product.node.name.split(' ')[0];
@@ -112,7 +114,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         container
         direction='column'
         onClick={() =>
-          matchesMD
+          matchesMD || disableQuickView
             ? navigate(
                 `/${product.node.category.name.toLowerCase()}/${name.toLowerCase()}${
                   hasStyles ? `?style=${variant.style}` : ''
@@ -128,22 +130,24 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
           <Typography variant='h5'>{name}</Typography>
         </Grid>
       </Grid>
-      <QuickView
-        open={open}
-        setOpen={setOpen}
-        url={imgURL}
-        name={name}
-        price={variant.price}
-        product={product}
-        variant={variant}
-        selectedColor={selectedColor}
-        setSelectedSize={setSelectedSize}
-        setSelectedColor={setSelectedColor}
-        selectedSize={selectedSize}
-        sizes={sizes}
-        colors={colors}
-        hasStyles={hasStyles}
-      />
+      {!disableQuickView && (
+        <QuickView
+          open={open}
+          setOpen={setOpen}
+          url={imgURL}
+          name={name}
+          price={variant.price}
+          product={product}
+          variant={variant}
+          selectedColor={selectedColor!}
+          setSelectedSize={setSelectedSize!}
+          setSelectedColor={setSelectedColor!}
+          selectedSize={selectedSize!}
+          sizes={sizes || []}
+          colors={colors || []}
+          hasStyles={hasStyles}
+        />
+      )}
     </Grid>
   );
 };

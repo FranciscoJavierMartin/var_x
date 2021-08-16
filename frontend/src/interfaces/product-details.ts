@@ -15,10 +15,15 @@ export interface Variant {
   images: Image[];
 }
 
-export interface Product {
+export interface Node {
   name: string;
   strapiId: number;
   description: string;
   category: Category;
   variants: Variant[];
+  selectedVariant?: number;
+}
+
+export interface Product {
+  node: Node;
 }

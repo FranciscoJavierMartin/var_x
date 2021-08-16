@@ -5,6 +5,8 @@ import Layout from '../components/ui/Layout';
 import ProductInfo from '../components/product-detail/ProductInfo';
 import { Product, Variant } from '../interfaces/product-details';
 import { RECENTLY_VIEWED } from '../constants/localStorage';
+import RecentlyViewed from '../components/product-detail/RecentlyView';
+import { getRecentlyViewProducts } from '../utils/localStorage';
 
 interface ProductDetailProps {
   pageContext: {
@@ -22,8 +24,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
+  let recentlyView: Product[] = getRecentlyViewProducts();
 
   useEffect(() => {
+    // Get variant
     const params = new URLSearchParams(window.location.search);
     const paramStyle = params.get('style');
     const styledVariantIndex = variants.findIndex(
@@ -33,23 +37,30 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     if (styledVariantIndex !== -1) {
       setSelectedVariant(styledVariantIndex);
     }
-  }, []);
 
-  useEffect(() => {
-    const recentlyView: Product[] = JSON.parse(
-      window.localStorage.getItem(RECENTLY_VIEWED) || '[]'
-    );
+    // Get recently view products
+    recentlyView = getRecentlyViewProducts();
 
     if (recentlyView.length > 0) {
       if (recentlyView.length === 10) {
         recentlyView.shift();
       }
 
-      if (!recentlyView.some(product => product.name === name)) {
-        recentlyView.push(product);
+      if (
+        !recentlyView.some(
+          product =>
+            product.node.name === name &&
+            product.node.selectedVariant === styledVariantIndex
+        )
+      ) {
+        recentlyView.push({
+          node: { ...product.node, selectedVariant: styledVariantIndex },
+        });
       }
     } else {
-      recentlyView.push(product);
+      recentlyView.push({
+        node: { ...product.node, selectedVariant: styledVariantIndex },
+      });
     }
 
     localStorage.setItem(RECENTLY_VIEWED, JSON.stringify(recentlyView));
@@ -72,6 +83,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             setSelectedVariant={setSelectedVariant}
           />
         </Grid>
+        <RecentlyViewed products={recentlyView} />
       </Grid>
     </Layout>
   );
