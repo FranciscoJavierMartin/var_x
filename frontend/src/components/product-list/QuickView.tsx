@@ -16,7 +16,7 @@ import QtyButton from './QtyButton';
 
 import frame from '../../images/selected-frame.svg';
 import explore from '../../images/explore.svg';
-import { Edge } from '../../interfaces/category-products';
+import { Edge, Variant } from '../../interfaces/category-products';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -88,12 +88,14 @@ interface QuickViewProps {
   name: string;
   price: number;
   product: Edge;
+  variant: Variant;
   selectedSize: string;
   selectedColor: string;
   setSelectedSize: React.Dispatch<React.SetStateAction<string>>;
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
   sizes: string[];
   colors: string[];
+  hasStyles: boolean;
 }
 
 const QuickView: React.FC<QuickViewProps> = ({
@@ -103,12 +105,14 @@ const QuickView: React.FC<QuickViewProps> = ({
   name,
   price,
   product,
+  variant,
   selectedColor,
   selectedSize,
   setSelectedColor,
   setSelectedSize,
   sizes,
   colors,
+  hasStyles,
 }) => {
   const classes = useStyles();
 
@@ -125,7 +129,7 @@ const QuickView: React.FC<QuickViewProps> = ({
             component={Link}
             to={`/${product.node.category.name.toLowerCase()}/${product.node.name
               .split(' ')[0]
-              .toLowerCase()}`}
+              .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
           >
             <img
               src={url}
@@ -148,7 +152,7 @@ const QuickView: React.FC<QuickViewProps> = ({
                 component={Link}
                 to={`/${product.node.category.name.toLowerCase()}/${product.node.name
                   .split(' ')[0]
-                  .toLowerCase()}`}
+                  .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
               >
                 <Grid item>
                   <Typography variant='h4'>{name}</Typography>

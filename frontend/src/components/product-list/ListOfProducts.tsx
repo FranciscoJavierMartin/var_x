@@ -67,6 +67,10 @@ const FrameHelper = ({
       []
     );
 
+  const hasStyles: boolean = product.node.variants.some(
+    variant => variant.style
+  );
+
   return (
     <Frame
       variant={variant}
@@ -77,6 +81,7 @@ const FrameHelper = ({
       setSelectedSize={setSelectedSize}
       sizes={sizes}
       colors={colors}
+      hasStyles={hasStyles}
     />
   );
 };

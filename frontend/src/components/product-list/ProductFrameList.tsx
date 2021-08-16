@@ -57,6 +57,7 @@ interface ProductFrameListProps {
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
   sizes: string[];
   colors: string[];
+  hasStyles: boolean;
 }
 
 const ProductFrameList: React.FC<ProductFrameListProps> = ({
@@ -68,6 +69,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
   selectedColor,
   sizes,
   colors,
+  hasStyles,
 }) => {
   const classes = useStyles();
 
@@ -95,7 +97,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
             component={Link}
             to={`/${product.node.category.name.toLowerCase()}/${product.node.name
               .split(' ')[0]
-              .toLowerCase()}`}
+              .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
           >
             <img
               src={`${process.env.GATSBY_STRAPI_URL}${image.url}`}
@@ -120,7 +122,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
           component={Link}
           to={`/${product.node.category.name.toLowerCase()}/${product.node.name
             .split(' ')[0]
-            .toLowerCase()}`}
+            .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
         >
           <Grid item>
             <Typography variant='h4'>

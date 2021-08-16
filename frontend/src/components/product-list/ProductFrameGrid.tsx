@@ -69,6 +69,7 @@ interface ProductFrameGridProps {
   setSelectedColor: React.Dispatch<React.SetStateAction<string>>;
   sizes: string[];
   colors: string[];
+  hasStyles: boolean;
 }
 
 const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
@@ -80,6 +81,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   selectedSize,
   sizes,
   colors,
+  hasStyles,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -112,7 +114,9 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         onClick={() =>
           matchesMD
             ? navigate(
-                `/${product.node.category.name.toLowerCase()}/${name.toLowerCase()}`
+                `/${product.node.category.name.toLowerCase()}/${name.toLowerCase()}${
+                  hasStyles ? `?style=${variant.style}` : ''
+                }`
               )
             : setOpen(true)
         }
@@ -131,12 +135,14 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         name={name}
         price={variant.price}
         product={product}
+        variant={variant}
         selectedColor={selectedColor}
         setSelectedSize={setSelectedSize}
         setSelectedColor={setSelectedColor}
         selectedSize={selectedSize}
         sizes={sizes}
         colors={colors}
+        hasStyles={hasStyles}
       />
     </Grid>
   );
