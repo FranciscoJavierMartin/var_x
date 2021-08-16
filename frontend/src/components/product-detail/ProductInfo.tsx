@@ -6,7 +6,7 @@ import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
 import QtyButton from '../product-list/QtyButton';
 import { Variant } from '../../interfaces/category-products';
-import { getImagesByColor } from '../../utils/imageByColor';
+import { getColorIndex, getImagesByColor } from '../../utils/imageByColor';
 
 import favorite from '../../images/favorite.svg';
 import subscription from '../../images/subscription.svg';
@@ -90,12 +90,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const classes = useStyles();
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
-
-  const images = getImagesByColor(
+  const imageIndex = getColorIndex(
     { node: { variants } },
     variants[selectedVariant],
-    selectedColor,
-    variants[selectedVariant].images
+    selectedColor
   );
 
   const sizes = variants.map(variant => variant.size);
@@ -107,9 +105,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       []
     );
 
-    useEffect(() => {
-
-    }, [])
+  useEffect(() => {
+    if (imageIndex !== -1) {
+      setSelectedVariant(imageIndex);
+    }
+  }, [imageIndex]);
 
   return (
     <Grid

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import ProductImages from '../components/product-detail/ProductImages';
 import Layout from '../components/ui/Layout';
@@ -20,6 +20,17 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paramStyle = params.get('style');
+    const styledVariantIndex = variants.findIndex(
+      variant => variant.style === paramStyle
+    );
+    if (styledVariantIndex !== -1) {
+      setSelectedVariant(styledVariantIndex);
+    }
+  }, []);
 
   return (
     <Layout>
