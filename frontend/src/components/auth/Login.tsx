@@ -8,6 +8,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
+import clsx from 'clsx';
 import validate from '../../utils/validate';
 
 import accountIcon from '../../images/account.svg';
@@ -17,6 +18,7 @@ import hidePassword from '../../images/hide-password.svg';
 import showPassword from '../../images/show-password.svg';
 import addUserIcon from '../../images/add-user.svg';
 import forgotPasswordIcon from '../../images/forgot.svg';
+import close from '../../images/close.svg';
 
 const useStyles = makeStyles(theme => ({
   accountIcon: {
@@ -49,6 +51,15 @@ const useStyles = makeStyles(theme => ({
   visibleIcon: {
     padding: 0,
   },
+  passwordError: {
+    marginTop: 0,
+  },
+  close: {
+    paddingTop: 5,
+  },
+  reset: {
+    marginTop: '-4rem',
+  },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
       {
@@ -73,6 +84,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
   });
   const [errors, setErrors] = useState<any>({});
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [forgot, setForgot] = useState<boolean>(false);
 
   const fields = {
     email: {
@@ -91,6 +103,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
       helperText:
         'Your password must be at least eight characters and include one uppercase letter, one number, and one special character',
       placeholder: 'Password',
+      hidden: forgot,
       type: isPasswordVisible ? 'text' : 'password',
       startAdornment: <img src={passwordAdornment} alt='password icon' />,
       endAdornment: (
@@ -114,7 +127,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
           const valid = validate({ [field]: event.target.value });
           setErrors({ ...errors, [field]: !valid[field] });
         };
-        return (
+        return !(fieldValues as any).hidden ? (
           <Grid item key={field}>
             <TextField
               value={values[field]}
@@ -155,36 +168,60 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
               }}
             />
           </Grid>
-        );
+        ) : null;
       })}
       <Grid item>
         <Button
           variant='contained'
           color='secondary'
-          classes={{ root: classes.loginButton }}
+          classes={{
+            root: clsx(classes.loginButton, {
+              [classes.reset]: forgot,
+            }),
+          }}
         >
-          <Typography variant='h5'>Login</Typography>
-        </Button>
-      </Grid>
-      <Grid item>
-        <Button classes={{ root: classes.facebookButton }}>
-          <Typography
-            variant='h3'
-            classes={{ root: classes.facebookButtonText }}
-          >
-            Login with Facebook
+          <Typography variant='h5'>
+            {forgot ? 'Reset password' : 'Login'}
           </Typography>
         </Button>
       </Grid>
+      {forgot ? null : (
+        <Grid item>
+          <Button
+            classes={{
+              root: clsx(classes.facebookButton, {
+                [classes.passwordError]: errors.password,
+              }),
+            }}
+          >
+            <Typography
+              variant='h3'
+              classes={{ root: classes.facebookButtonText }}
+            >
+              Login with Facebook
+            </Typography>
+          </Button>
+        </Grid>
+      )}
       <Grid container item justifyContent='space-between'>
         <Grid item>
           <IconButton>
             <img src={addUserIcon} alt='sign up' />
           </IconButton>
         </Grid>
-        <Grid item>
-          <IconButton>
-            <img src={forgotPasswordIcon} alt='forgot password' />
+        <Grid
+          item
+          classes={{
+            root: clsx({
+              [classes.close]: forgot,
+            }),
+          }}
+        >
+          <IconButton onClick={() => setForgot(prevState => !prevState)}>
+            <img
+              src={forgot ? close : forgotPasswordIcon}
+              alt={forgot ? 'back to login' : 'forgot password'}
+            />
           </IconButton>
         </Grid>
       </Grid>
