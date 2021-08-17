@@ -49,6 +49,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
           <Grid
             container
             direction='column'
+            justifyContent='space-between'
             alignItems='center'
             classes={{ root: classes.inner }}
           >

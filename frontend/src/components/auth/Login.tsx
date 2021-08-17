@@ -18,12 +18,44 @@ import addUserIcon from '../../images/add-user.svg';
 import forgotPasswordIcon from '../../images/forgot.svg';
 
 const useStyles = makeStyles(theme => ({
-  textField: {},
-  input: {},
+  accountIcon: {
+    marginTop: '2rem',
+  },
+  textField: {
+    width: '20rem',
+  },
+  input: {
+    color: theme.palette.secondary.main,
+  },
   emailAdornment: {
     height: 17,
     width: 22,
     marginBottom: 10,
+  },
+  loginButton: {
+    width: '20rem',
+    borderRadius: 50,
+    textTransform: 'none',
+  },
+  facebookButton: {
+    marginTop: '-1rem',
+  },
+  facebookButtonText: {
+    fontSize: '1.5rem',
+    fontWeight: 700,
+    textTransform: 'none',
+  },
+  visibleIcon: {
+    padding: 0,
+  },
+  '@global': {
+    '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
+      {
+        borderBottom: `2px solid ${theme.palette.secondary.main}`,
+      },
+    '.MuiInput:underline:after': {
+      borderBottom: `2px solid ${theme.palette.primary.main}`,
+    },
   },
 }));
 
@@ -40,7 +72,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
 
   return (
     <>
-      <Grid item>
+      <Grid item classes={{ root: classes.accountIcon }}>
         <img src={accountIcon} alt='Login page icon' />
       </Grid>
       <Grid item>
@@ -66,6 +98,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
           value={password}
           onChange={e => setPassword(e.target.value)}
           classes={{ root: classes.textField }}
+          type={isPasswordVisible ? 'text' : 'password'}
           placeholder='Password'
           InputProps={{
             startAdornment: (
@@ -75,10 +108,15 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
             ),
             endAdornment: (
               <InputAdornment position='end'>
-                <img
-                  src={isPasswordVisible ? showPassword : hidePassword}
-                  alt={`${isPasswordVisible ? 'Show' : 'Hide'} password icon`}
-                />
+                <IconButton
+                  classes={{ root: classes.visibleIcon }}
+                  onClick={() => setIsPasswordVisible(prevState => !prevState)}
+                >
+                  <img
+                    src={isPasswordVisible ? showPassword : hidePassword}
+                    alt={`${isPasswordVisible ? 'Show' : 'Hide'} password icon`}
+                  />
+                </IconButton>
               </InputAdornment>
             ),
             classes: { input: classes.input },
@@ -86,13 +124,22 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
         />
       </Grid>
       <Grid item>
-        <Button variant='contained' color='secondary'>
+        <Button
+          variant='contained'
+          color='secondary'
+          classes={{ root: classes.loginButton }}
+        >
           <Typography variant='h5'>Login</Typography>
         </Button>
       </Grid>
       <Grid item>
-        <Button>
-          <Typography variant='h3'>Login with Facebook</Typography>
+        <Button classes={{ root: classes.facebookButton }}>
+          <Typography
+            variant='h3'
+            classes={{ root: classes.facebookButtonText }}
+          >
+            Login with Facebook
+          </Typography>
         </Button>
       </Grid>
       <Grid container item justifyContent='space-between'>
