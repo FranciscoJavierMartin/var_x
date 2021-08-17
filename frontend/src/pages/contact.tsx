@@ -125,7 +125,7 @@ const useStyles = makeStyles(theme => ({
   },
   emailAdornment: {
     height: 17,
-    width: 17,
+    width: 22,
     marginBottom: 10,
   },
   phoneAdornment: {
