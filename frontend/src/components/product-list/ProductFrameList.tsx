@@ -170,7 +170,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
             setSelectedColor={setSelectedColor}
           />
         </Grid>
-        <QtyButton />
+        <QtyButton stock={stock} selectedVariant={selectedVariant} />
       </Grid>
     </Grid>
   );

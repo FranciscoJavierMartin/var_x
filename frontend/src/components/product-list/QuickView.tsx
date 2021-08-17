@@ -120,7 +120,6 @@ const QuickView: React.FC<QuickViewProps> = ({
   stock,
 }) => {
   const classes = useStyles();
-
   const imageIndex = getColorIndex(product, variant, selectedColor);
   const selectedVariant =
     imageIndex === -1 ? product.node.variants.indexOf(variant) : imageIndex;
@@ -204,7 +203,7 @@ const QuickView: React.FC<QuickViewProps> = ({
                   selectedColor={selectedColor}
                 />
                 <span className={classes.qtyContainer}>
-                  <QtyButton />
+                  <QtyButton stock={stock} selectedVariant={selectedVariant} />
                 </span>
               </Grid>
             </Grid>

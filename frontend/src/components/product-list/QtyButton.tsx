@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   ButtonGroup,
@@ -9,6 +9,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import { Stock } from '../../interfaces/stock';
 
 import Cart from '../../images/Cart';
 
@@ -55,12 +56,33 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface QtyButtonProps {}
+interface QtyButtonProps {
+  stock: Stock;
+  selectedVariant: number;
+}
 
-const QtyButton: React.FC<QtyButtonProps> = ({}) => {
+const QtyButton: React.FC<QtyButtonProps> = ({ stock, selectedVariant }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [qty, setQty] = useState<number>(1);
+
+  const handleChange = (direction: 'increment' | 'decrement') => {
+    if (
+      stock &&
+      !(qty === stock[selectedVariant].qty && direction === 'increment') &&
+      !(qty === 1 && direction === 'decrement')
+    ) {
+      setQty(prevState =>
+        direction === 'increment' ? prevState + 1 : prevState - 1
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (stock && qty > stock[selectedVariant].qty) {
+      setQty(stock[selectedVariant].qty);
+    }
+  }, [stock, selectedVariant]);
 
   return (
     <Grid item>
@@ -72,7 +94,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({}) => {
         </Button>
         <ButtonGroup orientation='vertical'>
           <Button
-            onClick={() => setQty(prevState => prevState + 1)}
+            onClick={() => handleChange('increment')}
             classes={{ root: classes.editButtons }}
           >
             <Typography variant='h3' classes={{ root: classes.qtyText }}>
@@ -80,7 +102,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({}) => {
             </Typography>
           </Button>
           <Button
-            onClick={() => setQty(prevState => prevState - 1)}
+            onClick={() => handleChange('decrement')}
             classes={{ root: clsx(classes.editButtons, classes.minusButton) }}
           >
             <Typography
