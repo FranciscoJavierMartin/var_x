@@ -3,17 +3,18 @@ import {
   Button,
   IconButton,
   Typography,
-  TextField,
-  InputAdornment,
   Grid,
   makeStyles,
 } from '@material-ui/core';
+import clsx from 'clsx';
+import Fields from '../shared/Fields';
 
 import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
 import forward from '../../images/forward-outline.svg';
 import backward from '../../images/backwards-outline.svg';
 import { LOGIN_LABEL } from '../../constants/authPortalLabels';
+import { EmailPassword } from '../../utils/fieldsData';
 
 const useStyles = makeStyles(theme => ({
   addUserIcon: {
@@ -40,6 +41,17 @@ const useStyles = makeStyles(theme => ({
     height: '4rem',
     width: '4rem',
   },
+  visibleIcon: {
+    padding: 0,
+  },
+  emailAdornment: {
+    height: 17,
+    width: 22,
+    marginBottom: 10,
+  },
+  removeButtonMargin: {
+    marginTop: 0,
+  },
 }));
 
 interface SignUpProps {
@@ -49,7 +61,13 @@ interface SignUpProps {
 
 const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
   const classes = useStyles();
-  const [name, setName] = useState('');
+  const [values, setValues] = useState<{ [key: string]: string }>({
+    email: '',
+    password: '',
+    name: '',
+  });
+  const [errors, setErrors] = useState<{ [key: string]: any }>({});
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [info, setInfo] = useState<boolean>(false);
 
   const handleNavigate = (direction: 'forward' | 'backward') => {
@@ -58,47 +76,57 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
         setInfo(true);
         break;
       case 'backward':
-        const loginIndex = steps.findIndex(step => step.label === LOGIN_LABEL);
-        setSelectedStep(loginIndex);
+        if (info) {
+          setInfo(false);
+        } else {
+          const loginIndex = steps.findIndex(
+            step => step.label === LOGIN_LABEL
+          );
+          setSelectedStep(loginIndex);
+        }
         break;
     }
   };
+
+  const nameField = {
+    name: {
+      helperText: 'You must enter a name',
+      placeholder: 'Name',
+      startAdornment: <img src={nameAdornment} alt='name' />,
+    },
+  };
+
+  const fields = info
+    ? EmailPassword(classes.addUserIcon, false, false, isVisible, setIsVisible)
+    : nameField;
 
   return (
     <>
       <Grid item>
         <img src={addUserIcon} alt='new user' className={classes.addUserIcon} />
       </Grid>
-      <Grid item>
-        <TextField
-          value={name}
-          onChange={e => {
-            setName(e.target.value);
-          }}
-          classes={{ root: classes.textField }}
-          type={'text'}
-          placeholder={'Name'}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <img src={nameAdornment} alt='Name icon' />
-              </InputAdornment>
-            ),
-            classes: { input: classes.input },
-          }}
-        />
-      </Grid>
+      <Fields
+        fields={fields}
+        errors={errors}
+        setErrors={setErrors}
+        values={values}
+        setValues={setValues}
+      />
       <Grid item>
         <Button
           variant='contained'
           color='secondary'
-          classes={{ root: classes.facebookButton }}
+          classes={{
+            root: clsx(classes.facebookButton, {
+              [classes.removeButtonMargin]: info,
+            }),
+          }}
         >
           <Typography
             variant='h5'
             classes={{ root: classes.facebookButtonText }}
           >
-            Sign Up with Facebook
+            Sign Up{info ? '' : 'with Facebook'}
           </Typography>
         </Button>
       </Grid>
@@ -112,15 +140,17 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
             />
           </IconButton>
         </Grid>
-        <Grid item>
-          <IconButton onClick={() => handleNavigate('forward')}>
-            <img
-              src={forward}
-              alt='continue registration'
-              className={classes.navigation}
-            />
-          </IconButton>
-        </Grid>
+        {info ? null : (
+          <Grid item>
+            <IconButton onClick={() => handleNavigate('forward')}>
+              <img
+                src={forward}
+                alt='continue registration'
+                className={classes.navigation}
+              />
+            </IconButton>
+          </Grid>
+        )}
       </Grid>
     </>
   );
