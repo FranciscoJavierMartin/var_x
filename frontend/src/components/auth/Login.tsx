@@ -19,6 +19,7 @@ import showPassword from '../../images/show-password.svg';
 import addUserIcon from '../../images/add-user.svg';
 import forgotPasswordIcon from '../../images/forgot.svg';
 import close from '../../images/close.svg';
+import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
 
 const useStyles = makeStyles(theme => ({
   accountIcon: {
@@ -76,7 +77,7 @@ interface LoginProps {
   steps: { component: any; label: string }[];
 }
 
-const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
+const Login: React.FC<LoginProps> = ({ setSelectedStep, steps }) => {
   const classes = useStyles();
   const [values, setValues] = useState<{ [key: string]: string }>({
     email: '',
@@ -113,6 +114,11 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
         />
       ),
     },
+  };
+
+  const navigateSignUp = () => {
+    const signUpIndex = steps.findIndex(step => step.label === SIGN_UP_LABEL);
+    setSelectedStep(signUpIndex);
   };
 
   return (
@@ -205,7 +211,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
       )}
       <Grid container item justifyContent='space-between'>
         <Grid item>
-          <IconButton>
+          <IconButton onClick={navigateSignUp}>
             <img src={addUserIcon} alt='sign up' />
           </IconButton>
         </Grid>

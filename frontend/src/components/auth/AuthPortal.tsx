@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
 import Login from './Login';
 import SignUp from './SignUp';
-import { useEffect } from 'react';
+import { LOGIN_LABEL, SIGN_UP_LABEL } from '../../constants/authPortalLabels';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -30,11 +30,11 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
   const steps: { component: any; label: string }[] = [
     {
       component: Login,
-      label: 'Login',
+      label: LOGIN_LABEL,
     },
     {
       component: SignUp,
-      label: 'Sign Up',
+      label: SIGN_UP_LABEL,
     },
   ];
 
