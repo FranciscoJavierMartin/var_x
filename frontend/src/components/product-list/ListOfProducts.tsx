@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
+import { useQuery } from '@apollo/client';
 import ProductFrameGrid from './ProductFrameGrid';
 import ProductFrameList from './ProductFrameList';
 import { Edge, Variant } from '../../interfaces/category-products';
 import { Filters } from '../../interfaces/filters';
+import { GET_DETAILS } from '../../apollo/queries';
+import { QueryProductQty } from '../../interfaces/product-details';
+import { Stock } from '../../interfaces/stock';
 
 const useStyles = makeStyles<Theme, { layout: 'grid' | 'list' }>(theme => ({
   productContainer: {
@@ -57,6 +61,7 @@ const FrameHelper = ({
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
+  const [stock, setStock] = useState<Stock>(undefined);
 
   const sizes = product.node.variants.map(variant => variant.size);
   const colors = product.node.variants
@@ -71,6 +76,22 @@ const FrameHelper = ({
     variant => variant.style
   );
 
+
+  const { loading, error, data } = useQuery<QueryProductQty, { id: string }>(
+    GET_DETAILS,
+    {
+      variables: { id: `${product.node.strapiId}` },
+    }
+  );
+
+  useEffect(() => {
+    if (error) {
+      setStock(null);
+    } else if (data) {
+      setStock(data.product.variants);
+    }
+  }, [error, data]);
+
   return (
     <Frame
       variant={variant}
@@ -82,6 +103,7 @@ const FrameHelper = ({
       sizes={sizes}
       colors={colors}
       hasStyles={hasStyles}
+      stock={stock}
     />
   );
 };

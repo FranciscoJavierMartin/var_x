@@ -123,10 +123,6 @@ const ProductList: React.FC<ProductListProps> = ({
       }))
   );
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filterOptions, layout]);
-
   const scroll = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -193,6 +189,10 @@ const ProductList: React.FC<ProductListProps> = ({
   }
 
   const numPages = Math.ceil(content.length / productsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterOptions, layout]);
 
   return (
     <Layout>

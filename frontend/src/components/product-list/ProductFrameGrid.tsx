@@ -13,6 +13,7 @@ import { Edge, Variant } from '../../interfaces/category-products';
 
 import frame from '../../images/product-frame-grid.svg';
 import { getImageByColor } from '../../utils/imageByColor';
+import { Stock } from '../../interfaces/stock';
 
 const useStyles = makeStyles<Theme, { small: boolean }>(theme => ({
   frameContainer: {
@@ -83,6 +84,7 @@ interface ProductFrameGridProps {
   hasStyles: boolean;
   disableQuickView?: boolean;
   small?: boolean;
+  stock: Stock;
 }
 
 const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
@@ -97,6 +99,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   hasStyles,
   disableQuickView,
   small,
+  stock,
 }) => {
   const classes = useStyles({ small: !!small });
   const [open, setOpen] = useState<boolean>(false);
@@ -159,6 +162,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
           sizes={sizes || []}
           colors={colors || []}
           hasStyles={hasStyles}
+          stock={stock}
         />
       )}
     </Grid>

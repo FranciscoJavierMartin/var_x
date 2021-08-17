@@ -17,6 +17,9 @@ import QtyButton from './QtyButton';
 import frame from '../../images/selected-frame.svg';
 import explore from '../../images/explore.svg';
 import { Edge, Variant } from '../../interfaces/category-products';
+import { getColorIndex } from '../../utils/imageByColor';
+import { getStockDisplay } from '../../utils/getInfo';
+import { Stock } from '../../interfaces/stock';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -96,6 +99,7 @@ interface QuickViewProps {
   sizes: string[];
   colors: string[];
   hasStyles: boolean;
+  stock: Stock;
 }
 
 const QuickView: React.FC<QuickViewProps> = ({
@@ -113,8 +117,14 @@ const QuickView: React.FC<QuickViewProps> = ({
   sizes,
   colors,
   hasStyles,
+  stock,
 }) => {
   const classes = useStyles();
+
+  const imageIndex = getColorIndex(product, variant, selectedColor);
+  const selectedVariant =
+    imageIndex === -1 ? product.node.variants.indexOf(variant) : imageIndex;
+  const stockDisplay = getStockDisplay(stock, selectedVariant);
 
   return (
     <Dialog
@@ -160,7 +170,7 @@ const QuickView: React.FC<QuickViewProps> = ({
                 </Grid>
                 <Grid item>
                   <Typography variant='h3' classes={{ root: classes.stock }}>
-                    12 Currently In Stock
+                    {stockDisplay}
                   </Typography>
                   <Button classes={{ root: classes.detailButton }}>
                     <Typography

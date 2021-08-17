@@ -8,7 +8,9 @@ import QtyButton from './QtyButton';
 import { Edge, Image, Variant } from '../../interfaces/category-products';
 
 import frame from '../../images/product-frame-list.svg';
-import { getImagesByColor } from '../../utils/imageByColor';
+import { getColorIndex, getImagesByColor } from '../../utils/imageByColor';
+import { getStockDisplay } from '../../utils/getInfo';
+import { Stock } from '../../interfaces/stock';
 
 const useStyles = makeStyles(theme => ({
   frame: {
@@ -58,6 +60,7 @@ interface ProductFrameListProps {
   sizes: string[];
   colors: string[];
   hasStyles: boolean;
+  stock: Stock;
 }
 
 const ProductFrameList: React.FC<ProductFrameListProps> = ({
@@ -70,6 +73,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
   sizes,
   colors,
   hasStyles,
+  stock,
 }) => {
   const classes = useStyles();
 
@@ -79,6 +83,11 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
     selectedColor,
     variant.images
   );
+
+  const imageIndex = getColorIndex(product, variant, selectedColor);
+  const selectedVariant =
+    imageIndex === -1 ? product.node.variants.indexOf(variant) : imageIndex;
+  const stockDisplay = getStockDisplay(stock, selectedVariant);
 
   return (
     <Grid item container>
@@ -140,7 +149,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
           </Grid>
           <Grid item>
             <Typography variant='h3' classes={{ root: classes.stock }}>
-              12 Current In Stock
+              {stockDisplay}
             </Typography>
           </Grid>
         </Grid>

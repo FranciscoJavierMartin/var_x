@@ -18,6 +18,8 @@ import { getColorIndex } from '../../utils/imageByColor';
 
 import favorite from '../../images/favorite.svg';
 import subscription from '../../images/subscription.svg';
+import { getStockDisplay } from '../../utils/getInfo';
+import { Stock } from '../../interfaces/stock';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -106,7 +108,7 @@ interface ProductInfoProps {
   variants: Variant[];
   selectedVariant: number;
   setSelectedVariant: React.Dispatch<React.SetStateAction<number>>;
-  stock: any;
+  stock: Stock;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -136,22 +138,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       []
     );
 
-  let stockDisplay: string;
-  switch (stock) {
-    case undefined:
-    case null:
-      stockDisplay = 'Loading inventory...';
-    case -1:
-      stockDisplay = 'Error loading inventory...';
-      break;
-    default:
-      if (stock[selectedVariant].qty === 0) {
-        stock = 'Out of stock';
-      } else {
-        stockDisplay = `${stock[selectedVariant].qty} currently in stock.`;
-      }
-      break;
-  }
+  const stockDisplay: string = getStockDisplay(stock, selectedVariant);
 
   useEffect(() => {
     if (imageIndex !== -1) {

@@ -4,14 +4,16 @@ import { Grid, Theme, useMediaQuery } from '@material-ui/core';
 import ProductImages from '../components/product-detail/ProductImages';
 import Layout from '../components/ui/Layout';
 import ProductInfo from '../components/product-detail/ProductInfo';
+import RecentlyViewed from '../components/product-detail/RecentlyViewed';
 import {
   Product,
   QueryProductQty,
   Variant,
 } from '../interfaces/product-details';
 import { RECENTLY_VIEWED } from '../constants/localStorage';
-import RecentlyViewed from '../components/product-detail/RecentlyViewed';
 import { getRecentlyViewProducts } from '../utils/localStorage';
+import { GET_DETAILS } from '../apollo/queries';
+import { Stock } from '../interfaces/stock';
 
 interface ProductDetailProps {
   pageContext: {
@@ -24,22 +26,12 @@ interface ProductDetailProps {
   };
 }
 
-const GET_DETAILS = gql`
-  query getDetails($id: ID!) {
-    product(id: $id) {
-      variants {
-        qty
-      }
-    }
-  }
-`;
-
 const ProductDetail: React.FC<ProductDetailProps> = ({
   pageContext: { name, id, category, description, variants, product },
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
-  const [stock, setStock] = useState<any>(null);
+  const [stock, setStock] = useState<Stock>(undefined);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
   let recentlyView: Product[] = getRecentlyViewProducts();
@@ -53,7 +45,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   useEffect(() => {
     if (error) {
-      setStock(-1);
+      setStock(null);
     } else if (data) {
       setStock(data.product.variants);
     }
