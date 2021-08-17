@@ -19,6 +19,15 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     border: `2rem solid ${theme.palette.primary.main}`,
   },
+  '@global': {
+    '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
+      {
+        borderBottom: `2px solid ${theme.palette.secondary.main}`,
+      },
+    '.MuiInput:underline:after': {
+      borderBottom: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
 }));
 
 interface AuthPortalProps {}

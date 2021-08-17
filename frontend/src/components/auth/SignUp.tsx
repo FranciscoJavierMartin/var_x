@@ -13,10 +13,33 @@ import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
 import forward from '../../images/forward-outline.svg';
 import backward from '../../images/backwards-outline.svg';
+import { LOGIN_LABEL } from '../../constants/authPortalLabels';
 
 const useStyles = makeStyles(theme => ({
-  textField: {},
-  input: {},
+  addUserIcon: {
+    height: '10rem',
+    width: '11rem',
+    marginTop: '5rem',
+  },
+  textField: {
+    width: '20rem',
+  },
+  input: {
+    color: theme.palette.secondary.main,
+  },
+  facebookButton: {
+    width: '20rem',
+    borderRadius: 50,
+    marginTop: '-3rem',
+  },
+  facebookButtonText: {
+    textTransform: 'none',
+    fontSize: '1.5rem',
+  },
+  navigation: {
+    height: '4rem',
+    width: '4rem',
+  },
 }));
 
 interface SignUpProps {
@@ -24,14 +47,27 @@ interface SignUpProps {
   steps: { component: any; label: string }[];
 }
 
-const SignUp: React.FC<SignUpProps> = ({ setSelectedStep }) => {
+const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
   const classes = useStyles();
   const [name, setName] = useState('');
+  const [info, setInfo] = useState<boolean>(false);
+
+  const handleNavigate = (direction: 'forward' | 'backward') => {
+    switch (direction) {
+      case 'forward':
+        setInfo(true);
+        break;
+      case 'backward':
+        const loginIndex = steps.findIndex(step => step.label === LOGIN_LABEL);
+        setSelectedStep(loginIndex);
+        break;
+    }
+  };
 
   return (
     <>
       <Grid item>
-        <img src={addUserIcon} alt='new user' />
+        <img src={addUserIcon} alt='new user' className={classes.addUserIcon} />
       </Grid>
       <Grid item>
         <TextField
@@ -53,19 +89,36 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep }) => {
         />
       </Grid>
       <Grid item>
-        <Button variant='contained' color='secondary'>
-          <Typography variant='h5'>Sign Up with Facebook</Typography>
+        <Button
+          variant='contained'
+          color='secondary'
+          classes={{ root: classes.facebookButton }}
+        >
+          <Typography
+            variant='h5'
+            classes={{ root: classes.facebookButtonText }}
+          >
+            Sign Up with Facebook
+          </Typography>
         </Button>
       </Grid>
       <Grid item container justifyContent='space-between'>
         <Grid item>
-          <IconButton>
-            <img src={backward} alt='Back to login' />
+          <IconButton onClick={() => handleNavigate('backward')}>
+            <img
+              src={backward}
+              alt='Back to login'
+              className={classes.navigation}
+            />
           </IconButton>
         </Grid>
         <Grid item>
-          <IconButton>
-            <img src={forward} alt='continue registration' />
+          <IconButton onClick={() => handleNavigate('forward')}>
+            <img
+              src={forward}
+              alt='continue registration'
+              className={classes.navigation}
+            />
           </IconButton>
         </Grid>
       </Grid>
