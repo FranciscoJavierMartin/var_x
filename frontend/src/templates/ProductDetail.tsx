@@ -34,6 +34,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const [stock, setStock] = useState<Stock>(undefined);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
+  const paramStyle = params.get('style');
   let recentlyView: Product[] = getRecentlyViewProducts();
 
   const { loading, error, data } = useQuery<QueryProductQty, { id: string }>(
@@ -53,7 +54,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   useEffect(() => {
     // Get variant
-    const paramStyle = params.get('style');
     const styledVariantIndex = variants.findIndex(
       variant => variant.style === paramStyle
     );
@@ -88,7 +88,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
 
     localStorage.setItem(RECENTLY_VIEWED, JSON.stringify(recentlyView));
-  }, [params]);
+  }, [paramStyle]);
 
   return (
     <Layout>
