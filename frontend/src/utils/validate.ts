@@ -5,6 +5,8 @@ const validators: { [key: string]: (val: string) => boolean } = {
     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(val),
   name: (val: string): boolean => val.length > 3,
   message: (val: string): boolean => val.length > 3,
+  password: (val: string): boolean =>
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
 };
 
 export default function validate(values: { [key: string]: string }): {

@@ -8,6 +8,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
+import validate from '../../utils/validate';
 
 import accountIcon from '../../images/account.svg';
 import EmailAdornment from '../../images/EmailAdornment';
@@ -66,63 +67,96 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ setSelectedStep }) => {
   const classes = useStyles();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState('');
+  const [values, setValues] = useState<{ [key: string]: string }>({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState<any>({});
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
+  const fields = {
+    email: {
+      helperText: 'Invalid email',
+      placeholder: 'Email',
+      type: 'text',
+      startAdornment: (
+        <InputAdornment position='start'>
+          <span className={classes.emailAdornment}>
+            <EmailAdornment />
+          </span>
+        </InputAdornment>
+      ),
+    },
+    password: {
+      helperText:
+        'Your password must be at least eight characters and include one uppercase letter, one number, and one special character',
+      placeholder: 'Password',
+      type: isPasswordVisible ? 'text' : 'password',
+      startAdornment: <img src={passwordAdornment} alt='password icon' />,
+      endAdornment: (
+        <img
+          src={isPasswordVisible ? showPassword : hidePassword}
+          alt={`${isPasswordVisible ? 'Show' : 'Hide'} password icon`}
+        />
+      ),
+    },
+  };
 
   return (
     <>
       <Grid item classes={{ root: classes.accountIcon }}>
         <img src={accountIcon} alt='Login page icon' />
       </Grid>
-      <Grid item>
-        <TextField
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          classes={{ root: classes.textField }}
-          placeholder='Email'
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <span className={classes.emailAdornment}>
-                  <EmailAdornment />
-                </span>
-              </InputAdornment>
-            ),
-            classes: { input: classes.input },
-          }}
-        />
-      </Grid>
-      <Grid item>
-        <TextField
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          classes={{ root: classes.textField }}
-          type={isPasswordVisible ? 'text' : 'password'}
-          placeholder='Password'
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <img src={passwordAdornment} alt='password icon' />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton
-                  classes={{ root: classes.visibleIcon }}
-                  onClick={() => setIsPasswordVisible(prevState => !prevState)}
-                >
-                  <img
-                    src={isPasswordVisible ? showPassword : hidePassword}
-                    alt={`${isPasswordVisible ? 'Show' : 'Hide'} password icon`}
-                  />
-                </IconButton>
-              </InputAdornment>
-            ),
-            classes: { input: classes.input },
-          }}
-        />
-      </Grid>
+      {Object.entries(fields).map(([field, fieldValues]) => {
+        const validateHelper = (
+          event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+        ) => {
+          const valid = validate({ [field]: event.target.value });
+          setErrors({ ...errors, [field]: !valid[field] });
+        };
+        return (
+          <Grid item key={field}>
+            <TextField
+              value={values[field]}
+              onChange={e => {
+                if (errors[field]) {
+                  validateHelper(e);
+                }
+                setValues(prevState => ({
+                  ...prevState,
+                  [field]: e.target.value,
+                }));
+              }}
+              classes={{ root: classes.textField }}
+              type={fieldValues.type}
+              placeholder={fieldValues.placeholder}
+              onBlur={e => validateHelper(e)}
+              error={errors[field]}
+              helperText={errors[field] && fieldValues.helperText}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    {fieldValues.startAdornment}
+                  </InputAdornment>
+                ),
+                endAdornment: fieldValues.hasOwnProperty('endAdornment') ? (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      classes={{ root: classes.visibleIcon }}
+                      onClick={() =>
+                        setIsPasswordVisible(prevState => !prevState)
+                      }
+                    >
+                      {(fieldValues as any).endAdornment}
+                    </IconButton>
+                  </InputAdornment>
+                ) : undefined,
+                classes: { input: classes.input },
+              }}
+            />
+          </Grid>
+        );
+      })}
       <Grid item>
         <Button
           variant='contained'
