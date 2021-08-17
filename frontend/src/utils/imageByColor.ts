@@ -6,7 +6,10 @@ export function getColorIndex(
   color: string
 ): number {
   return product.node.variants.findIndex(
-    item => item.color === color && variant.style === item.style
+    item =>
+      item.color === color &&
+      variant.style === item.style &&
+      item.size === variant.size
   );
 }
 

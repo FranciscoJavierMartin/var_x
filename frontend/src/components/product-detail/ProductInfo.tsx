@@ -120,7 +120,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   stock,
 }) => {
   const classes = useStyles();
-  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedSize, setSelectedSize] = useState<string>(
+    variants[selectedVariant].size
+  );
   const [selectedColor, setSelectedColor] = useState<string>('');
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const imageIndex = getColorIndex(
@@ -131,10 +133,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
   const sizes = variants.map(variant => variant.size);
   const colors = variants
-    .map(variant => variant.color)
+    .map(variant => ({
+      color: variant.color,
+      size: variant.size,
+      style: variant.style,
+    }))
     .reduce(
-      (acc: string[], color: string) =>
-        acc.includes(color) ? acc : acc.concat([color]),
+      (
+        acc: string[],
+        { color, size, style }: { color: string; size: string; style: string }
+      ) =>
+        !acc.includes(color) &&
+        size === selectedSize &&
+        style === variants[selectedVariant].style
+          ? acc.concat([color])
+          : acc,
       []
     );
 
@@ -145,6 +158,17 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       setSelectedVariant(imageIndex);
     }
   }, [imageIndex]);
+
+  useEffect(() => {
+    setSelectedColor('');
+    const newVariantIndex = variants.findIndex(
+      variant =>
+        variant.size === selectedSize &&
+        variant.style === variants[selectedVariant].style &&
+        variant.color === colors[0]
+    );
+    setSelectedVariant(newVariantIndex);
+  }, [selectedSize]);
 
   return (
     <Grid

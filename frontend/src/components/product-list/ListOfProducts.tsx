@@ -59,16 +59,26 @@ const FrameHelper = ({
   product: Edge;
   variant: Variant;
 }) => {
-  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedSize, setSelectedSize] = useState<string>(variant.size);
   const [selectedColor, setSelectedColor] = useState<string>('');
+  const [selectedVariant, setSelectedVariant] = useState<Variant>();
   const [stock, setStock] = useState<Stock>(undefined);
 
   const sizes = product.node.variants.map(variant => variant.size);
   const colors = product.node.variants
-    .map(variant => variant.color)
+    .map(item => ({
+      color: item.color,
+      size: item.size,
+      style: item.style,
+    }))
     .reduce(
-      (acc: string[], color: string) =>
-        acc.includes(color) ? acc : acc.concat([color]),
+      (
+        acc: string[],
+        { color, size, style }: { color: string; size: string; style: string }
+      ) =>
+        !acc.includes(color) && size === selectedSize && style === variant.style
+          ? acc.concat([color])
+          : acc,
       []
     );
 
@@ -76,13 +86,25 @@ const FrameHelper = ({
     variant => variant.style
   );
 
-
   const { loading, error, data } = useQuery<QueryProductQty, { id: string }>(
     GET_DETAILS,
     {
       variables: { id: `${product.node.strapiId}` },
     }
   );
+
+  useEffect(() => {
+    if (selectedSize) {
+      setSelectedColor('');
+      const newVariantIndex = product.node.variants.findIndex(
+        variant =>
+          variant.size === selectedSize &&
+          variant.style === variant.style &&
+          variant.color === colors[0]
+      );
+      setSelectedVariant(product.node.variants[newVariantIndex]);
+    }
+  }, [selectedSize]);
 
   useEffect(() => {
     if (error) {
@@ -94,7 +116,7 @@ const FrameHelper = ({
 
   return (
     <Frame
-      variant={variant}
+      variant={selectedVariant || variant}
       product={product}
       selectedColor={selectedColor}
       selectedSize={selectedSize}
