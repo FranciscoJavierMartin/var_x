@@ -76,7 +76,9 @@ const FrameHelper = ({
         acc: string[],
         { color, size, style }: { color: string; size: string; style: string }
       ) =>
-        !acc.includes(color) && size === selectedSize && style === variant.style
+        !acc.includes(color) &&
+        size === (selectedSize || variant.size) &&
+        style === variant.style
           ? acc.concat([color])
           : acc,
       []
@@ -95,14 +97,14 @@ const FrameHelper = ({
 
   useEffect(() => {
     if (selectedSize) {
-      setSelectedColor('');
-      const newVariantIndex = product.node.variants.findIndex(
+      const newVariant = product.node.variants.find(
         variant =>
           variant.size === selectedSize &&
           variant.style === variant.style &&
           variant.color === colors[0]
       );
-      setSelectedVariant(product.node.variants[newVariantIndex]);
+      setSelectedVariant(newVariant);
+      setSelectedColor(newVariant?.color || '');
     }
   }, [selectedSize]);
 
@@ -118,8 +120,8 @@ const FrameHelper = ({
     <Frame
       variant={selectedVariant || variant}
       product={product}
-      selectedColor={selectedColor}
-      selectedSize={selectedSize}
+      selectedColor={selectedColor || variant.color}
+      selectedSize={selectedSize || variant.size}
       setSelectedColor={setSelectedColor}
       setSelectedSize={setSelectedSize}
       sizes={sizes}
