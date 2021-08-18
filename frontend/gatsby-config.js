@@ -14,7 +14,10 @@ module.exports = {
       resolve: 'gatsby-plugin-web-font-loader',
       options: {
         google: {
-          families: ['Montserrat:n6,n5,n4,n3:latin', 'Philosopher:i7:latin'],
+          families: [
+            'Montserrat:700,600,500,400,300:latin',
+            'Philosopher:700:latin',
+          ],
         },
       },
     },
