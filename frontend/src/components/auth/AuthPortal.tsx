@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
 import Login from './Login';
 import SignUp from './SignUp';
-import { COMPLETE_LABEL, LOGIN_LABEL, SIGN_UP_LABEL } from '../../constants/authPortalLabels';
 import Complete from './Complete';
+import { UserContext } from '../../contexts';
+import {
+  COMPLETE_LABEL,
+  LOGIN_LABEL,
+  SIGN_UP_LABEL,
+} from '../../constants/authPortalLabels';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -36,6 +41,8 @@ interface AuthPortalProps {}
 const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
   const classes = useStyles();
   const [selectedStep, setSelectedStep] = useState<number>(0);
+  const { user, dispatchUser } = useContext(UserContext);
+  console.log(user);
 
   const steps: { component: any; label: string }[] = [
     {
@@ -49,7 +56,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
     {
       component: Complete,
       label: COMPLETE_LABEL,
-    }
+    },
   ];
 
   return (
