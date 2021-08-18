@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import axios from 'axios';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
 import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
@@ -73,9 +74,25 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep, steps }) => {
     setIsPasswordVisible
   );
 
+  const disabled =
+    Object.values(errors).some(error => error) ||
+    Object.keys(errors).length !== Object.keys(values).length;
+
   const navigateSignUp = () => {
     const signUpIndex = steps.findIndex(step => step.label === SIGN_UP_LABEL);
     setSelectedStep(signUpIndex);
+  };
+
+  const handleLogin = () => {
+    axios
+      .post(`${process.env.GATSBY_STRAPI_URL}/auth/local`, {
+        identifier: values.email,
+        password: values.password,
+      })
+      .then(response => {
+        console.log('UserProfile', response.data);
+      })
+      .catch(console.log);
   };
 
   return (
@@ -94,6 +111,8 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep, steps }) => {
         <Button
           variant='contained'
           color='secondary'
+          disabled={!forgot && disabled}
+          onClick={() => (forgot ? null : handleLogin())}
           classes={{
             root: clsx(classes.loginButton, {
               [classes.reset]: forgot,
