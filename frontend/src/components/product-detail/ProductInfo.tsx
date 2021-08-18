@@ -123,7 +123,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const [selectedSize, setSelectedSize] = useState<string>(
     variants[selectedVariant].size
   );
-  const [selectedColor, setSelectedColor] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>(
+    variants[selectedVariant].color
+  );
+
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const imageIndex = getColorIndex(
     { node: { variants } },
@@ -160,7 +163,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   }, [imageIndex]);
 
   useEffect(() => {
-    setSelectedColor('');
     const newVariantIndex = variants.findIndex(
       variant =>
         variant.size === selectedSize &&
@@ -168,6 +170,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         variant.color === colors[0]
     );
     setSelectedVariant(newVariantIndex);
+    setSelectedColor(variants[newVariantIndex].color);
   }, [selectedSize]);
 
   return (
