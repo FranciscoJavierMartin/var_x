@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
 import Login from './Login';
 import SignUp from './SignUp';
-import { LOGIN_LABEL, SIGN_UP_LABEL } from '../../constants/authPortalLabels';
+import { COMPLETE_LABEL, LOGIN_LABEL, SIGN_UP_LABEL } from '../../constants/authPortalLabels';
+import Complete from './Complete';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -45,6 +46,10 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
       component: SignUp,
       label: SIGN_UP_LABEL,
     },
+    {
+      component: Complete,
+      label: COMPLETE_LABEL,
+    }
   ];
 
   return (

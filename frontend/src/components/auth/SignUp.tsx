@@ -13,7 +13,7 @@ import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
 import forward from '../../images/forward-outline.svg';
 import backward from '../../images/backwards-outline.svg';
-import { LOGIN_LABEL } from '../../constants/authPortalLabels';
+import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
 import { EmailPassword } from '../../utils/fieldsData';
 
 const useStyles = makeStyles(theme => ({
@@ -97,8 +97,15 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
   };
 
   const fields = info
-    ? EmailPassword(classes.addUserIcon, false, false, isVisible, setIsVisible)
+    ? EmailPassword(classes, false, false, isVisible, setIsVisible)
     : nameField;
+
+  const handleComplete = () => {
+    const completeIndex = steps.findIndex(
+      step => step.label === COMPLETE_LABEL
+    );
+    setSelectedStep(completeIndex);
+  };
 
   return (
     <>
@@ -116,6 +123,7 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
         <Button
           variant='contained'
           color='secondary'
+          onClick={() => (info ? handleComplete() : null)}
           classes={{
             root: clsx(classes.facebookButton, {
               [classes.removeButtonMargin]: info,
