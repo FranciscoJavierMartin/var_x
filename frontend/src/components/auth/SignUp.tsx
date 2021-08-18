@@ -7,6 +7,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import axios from 'axios';
 import Fields from '../shared/Fields';
 
 import addUserIcon from '../../images/add-user.svg';
@@ -66,9 +67,42 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
     password: '',
     name: '',
   });
-  const [errors, setErrors] = useState<{ [key: string]: any }>({});
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [info, setInfo] = useState<boolean>(false);
+
+  const nameField = {
+    name: {
+      helperText: 'You must enter a name',
+      placeholder: 'Name',
+      startAdornment: <img src={nameAdornment} alt='name' />,
+    },
+  };
+
+  const fields = info
+    ? EmailPassword(classes, false, false, isVisible, setIsVisible)
+    : nameField;
+
+  const disabled =
+    Object.values(errors).some(error => error) ||
+    Object.keys(errors).length !== Object.keys(values).length;
+
+  const handleComplete = () => {
+    axios
+      .post(`${process.env.GATSBY_STRAPI_URL}/auth/local/register`, {
+        username: values.name,
+        email: values.email,
+        password: values.password,
+      })
+      .then(response => {
+        console.log('User Profile', response.data);
+      })
+      .catch(err => console.log(err));
+    const completeIndex = steps.findIndex(
+      step => step.label === COMPLETE_LABEL
+    );
+    setSelectedStep(completeIndex);
+  };
 
   const handleNavigate = (direction: 'forward' | 'backward') => {
     switch (direction) {
@@ -88,25 +122,6 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
     }
   };
 
-  const nameField = {
-    name: {
-      helperText: 'You must enter a name',
-      placeholder: 'Name',
-      startAdornment: <img src={nameAdornment} alt='name' />,
-    },
-  };
-
-  const fields = info
-    ? EmailPassword(classes, false, false, isVisible, setIsVisible)
-    : nameField;
-
-  const handleComplete = () => {
-    const completeIndex = steps.findIndex(
-      step => step.label === COMPLETE_LABEL
-    );
-    setSelectedStep(completeIndex);
-  };
-
   return (
     <>
       <Grid item>
@@ -123,6 +138,7 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
         <Button
           variant='contained'
           color='secondary'
+          disabled={info && disabled}
           onClick={() => (info ? handleComplete() : null)}
           classes={{
             root: clsx(classes.facebookButton, {

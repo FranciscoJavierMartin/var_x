@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  TextField,
-  InputAdornment,
-  makeStyles,
-} from '@material-ui/core';
+import { Grid, TextField, InputAdornment, makeStyles } from '@material-ui/core';
 import validate from '../../utils/validate';
 
 const useStyles = makeStyles(theme => ({
@@ -42,26 +37,35 @@ const Fields: React.FC<FieldsProps> = ({
         const validateHelper = (
           event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
         ) => {
-          const valid = validate({ [field]: event.target.value });
-          setErrors({ ...errors, [field]: !valid[field] });
+          return validate({ [field]: event.target.value });
         };
         return !(fieldValues as any).hidden ? (
           <Grid item key={field}>
             <TextField
               value={values[field]}
               onChange={e => {
-                if (errors[field]) {
-                  validateHelper(e);
+                const valid = validateHelper(e);
+                if (errors[field] || valid[field]) {
+                  setErrors(prevState => ({
+                    ...prevState,
+                    [field]: !valid[field],
+                  }));
                 }
                 setValues(prevState => ({
                   ...prevState,
                   [field]: e.target.value,
                 }));
               }}
+              onBlur={e => {
+                const valid = validateHelper(e);
+                setErrors(prevState => ({
+                  ...prevState,
+                  [field]: !valid[field],
+                }));
+              }}
               classes={{ root: classes.textField }}
               type={fieldValues.type}
               placeholder={fieldValues.placeholder}
-              onBlur={e => validateHelper(e)}
               error={errors[field]}
               helperText={errors[field] && fieldValues.helperText}
               InputProps={{

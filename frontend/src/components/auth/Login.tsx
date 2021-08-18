@@ -61,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ setSelectedStep, steps }) => {
     email: '',
     password: '',
   });
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [forgot, setForgot] = useState<boolean>(false);
 

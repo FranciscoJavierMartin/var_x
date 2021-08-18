@@ -278,11 +278,7 @@ const ContactPage: React.FC = () => {
                       HTMLInputElement | HTMLTextAreaElement
                     >
                   ) => {
-                    const valid = validate({ [field]: event.target.value });
-                    setErrors(prevErrors => ({
-                      ...prevErrors,
-                      [field]: !valid[field],
-                    }));
+                    return validate({ [field]: event.target.value });
                   };
                   return (
                     <Grid
@@ -297,25 +293,25 @@ const ContactPage: React.FC = () => {
                     >
                       <TextField
                         value={values[field]}
-                        onChange={(
-                          event: React.ChangeEvent<
-                            HTMLInputElement | HTMLTextAreaElement
-                          >
-                        ) => {
-                          if (values[field]) {
-                            validateHelper(event);
+                        onChange={e => {
+                          const valid = validateHelper(e);
+                          if (errors[field] || valid[field]) {
+                            setErrors(prevState => ({
+                              ...prevState,
+                              [field]: !valid[field],
+                            }));
                           }
                           setValues(prevState => ({
                             ...prevState,
-                            [field]: event.target.value,
+                            [field]: e.target.value,
                           }));
                         }}
-                        onBlur={(
-                          event: React.ChangeEvent<
-                            HTMLInputElement | HTMLTextAreaElement
-                          >
-                        ) => {
-                          validateHelper(event);
+                        onBlur={e => {
+                          const valid = validateHelper(e);
+                          setErrors(prevState => ({
+                            ...prevState,
+                            [field]: !valid[field],
+                          }));
                         }}
                         error={errors[field]}
                         helperText={errors[field] && value.helperText}
