@@ -1,6 +1,6 @@
 import { USER_STORAGED } from '../../constants/localStorage';
 import { User } from '../../interfaces/user';
-import { ActionTypes, UserActionsTypes } from '../actions/actions-types';
+import { ActionTypes, UserActionsTypes } from './actions';
 
 export default function userReducer(
   state: User,

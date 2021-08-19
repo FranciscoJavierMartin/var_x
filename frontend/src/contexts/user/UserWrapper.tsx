@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer, createContext } from 'react';
 import axios from 'axios';
-import userReducer from '../reducers/user-reducer';
+import userReducer from './reducer';
 import { Roles, User, UserContextState } from '../../interfaces/user';
 import { USER_STORAGED } from '../../constants/localStorage';
-import { setUser } from '../actions';
+import { setUser } from './actions';
 
 const defaultUser: User = {
   username: 'Guest',

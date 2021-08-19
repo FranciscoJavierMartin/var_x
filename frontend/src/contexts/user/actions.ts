@@ -10,3 +10,10 @@ export interface SetUserType {
 }
 
 export type UserActionsTypes = SetUserType;
+
+export const setUser = (user: User): SetUserType => {
+  return {
+    type: ActionTypes.SET_USER,
+    payload: user,
+  };
+};

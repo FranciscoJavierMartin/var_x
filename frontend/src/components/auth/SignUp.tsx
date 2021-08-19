@@ -12,8 +12,7 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
 import { EmailPassword } from '../../utils/fieldsData';
-import { setUser } from '../../contexts/actions';
-import { SetUserType } from '../../contexts/actions/actions-types';
+import { setUser, SetUserType } from '../../contexts/user/actions';
 import { AuthResponse } from '../../interfaces/responses';
 import { User } from '../../interfaces/user';
 
