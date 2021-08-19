@@ -77,6 +77,7 @@ const Login: React.FC<LoginProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [forgot, setForgot] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fields = EmailPassword(
     classes,
@@ -96,17 +97,21 @@ const Login: React.FC<LoginProps> = ({
   };
 
   const handleLogin = () => {
+    setLoading(true);
     axios
       .post<AuthResponse>(`${process.env.GATSBY_STRAPI_URL}/auth/local`, {
         identifier: values.email,
         password: values.password,
       })
       .then(response => {
+        setLoading(false);
         dispatchUser(
           setUser({ ...response.data.user, jwt: response.data.jwt })
         );
       })
-      .catch(console.log);
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -125,7 +130,7 @@ const Login: React.FC<LoginProps> = ({
         <Button
           variant='contained'
           color='secondary'
-          disabled={!forgot && disabled}
+          disabled={loading || (!forgot && disabled)}
           onClick={() => (forgot ? null : handleLogin())}
           classes={{
             root: clsx(classes.loginButton, {
@@ -133,9 +138,13 @@ const Login: React.FC<LoginProps> = ({
             }),
           }}
         >
-          <Typography variant='h5'>
-            {forgot ? 'Reset password' : 'Login'}
-          </Typography>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Typography variant='h5'>
+              {forgot ? 'Reset password' : 'Login'}
+            </Typography>
+          )}
         </Button>
       </Grid>
       {forgot ? null : (

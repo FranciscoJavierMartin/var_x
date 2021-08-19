@@ -3,6 +3,7 @@ import {
   Button,
   IconButton,
   Typography,
+  CircularProgress,
   Grid,
   makeStyles,
 } from '@material-ui/core';
@@ -81,6 +82,7 @@ const SignUp: React.FC<SignUpProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [info, setInfo] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const nameField = {
     name: {
@@ -99,6 +101,7 @@ const SignUp: React.FC<SignUpProps> = ({
     Object.keys(errors).length !== Object.keys(values).length;
 
   const handleComplete = () => {
+    setLoading(true);
     axios
       .post<AuthResponse>(
         `${process.env.GATSBY_STRAPI_URL}/auth/local/register`,
@@ -109,15 +112,18 @@ const SignUp: React.FC<SignUpProps> = ({
         }
       )
       .then(response => {
+        setLoading(false);
         dispatchUser(
           setUser({ ...response.data.user, jwt: response.data.jwt })
         );
+        const completeIndex = steps.findIndex(
+          step => step.label === COMPLETE_LABEL
+        );
+        setSelectedStep(completeIndex);
       })
-      .catch(err => console.log(err));
-    const completeIndex = steps.findIndex(
-      step => step.label === COMPLETE_LABEL
-    );
-    setSelectedStep(completeIndex);
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const handleNavigate = (direction: 'forward' | 'backward') => {
@@ -154,7 +160,7 @@ const SignUp: React.FC<SignUpProps> = ({
         <Button
           variant='contained'
           color='secondary'
-          disabled={info && disabled}
+          disabled={loading || (info && disabled)}
           onClick={() => (info ? handleComplete() : null)}
           classes={{
             root: clsx(classes.facebookButton, {
@@ -162,12 +168,16 @@ const SignUp: React.FC<SignUpProps> = ({
             }),
           }}
         >
-          <Typography
-            variant='h5'
-            classes={{ root: classes.facebookButtonText }}
-          >
-            Sign Up{info ? '' : 'with Facebook'}
-          </Typography>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Typography
+              variant='h5'
+              classes={{ root: classes.facebookButtonText }}
+            >
+              Sign Up{info ? '' : 'with Facebook'}
+            </Typography>
+          )}
         </Button>
       </Grid>
       <Grid item container justifyContent='space-between'>
