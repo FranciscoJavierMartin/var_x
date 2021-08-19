@@ -1,17 +1,18 @@
-import { ActionTypes } from '../actions/actions-types';
+import { USER_STORAGED } from '../../constants/localStorage';
+import { ActionTypes, UserActionsTypes } from '../actions/actions-types';
 
-export default function useReducer(state: any, action: any) {
-  const { user } = action.payload;
-
-  let newState = { ...state };
+export default function userReducer(state: any, action: UserActionsTypes) {
+  let newState: any;
 
   switch (action.type) {
     case ActionTypes.SET_USER:
-      localStorage.setItem('user', JSON.stringify(user));
-      newState = user;
-      return newState;
+      const { user } = action.payload;
+      localStorage.setItem(USER_STORAGED, JSON.stringify(user));
+      newState = { ...state, user };
       break;
-      default:
-        return state;
+    default:
+      newState = state;
   }
+
+  return newState;
 }

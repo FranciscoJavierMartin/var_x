@@ -1,1 +1,2 @@
 export const RECENTLY_VIEWED = 'RECENTLY_VIEWED';
+export const USER_STORAGED = 'USER_STORAGED';
