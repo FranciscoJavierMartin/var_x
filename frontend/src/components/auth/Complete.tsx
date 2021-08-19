@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Typography, makeStyles, Button } from '@material-ui/core';
-import { UserState } from '../../interfaces/user';
+import { User } from '../../interfaces/user';
 import { SetUserType } from '../../contexts/actions/actions-types';
 
 import checkmark from '../../images/checkmark-outline.svg';
@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 interface CompleteProps {
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
   steps: { component: any; label: string }[];
-  user: UserState;
+  user: User;
   dispatchUser: React.Dispatch<SetUserType>;
 }
 

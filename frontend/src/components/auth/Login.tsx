@@ -3,8 +3,9 @@ import {
   Button,
   IconButton,
   Grid,
-  makeStyles,
+  CircularProgress,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import axios from 'axios';
@@ -14,6 +15,7 @@ import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
 import { setUser } from '../../contexts/actions';
 import { SetUserType } from '../../contexts/actions/actions-types';
 import { AuthResponse } from '../../interfaces/responses';
+import { User } from '../../interfaces/user';
 
 import accountIcon from '../../images/account.svg';
 import addUserIcon from '../../images/add-user.svg';
@@ -57,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 interface LoginProps {
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
   steps: { component: any; label: string }[];
-  user: UserState;
+  user: User;
   dispatchUser: React.Dispatch<SetUserType>;
 }
 
