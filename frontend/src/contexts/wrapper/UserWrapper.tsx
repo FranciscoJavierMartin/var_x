@@ -1,7 +1,9 @@
-import React, { useReducer, createContext } from 'react';
+import React, { useEffect, useReducer, createContext } from 'react';
+import axios from 'axios';
 import userReducer from '../reducers/user-reducer';
 import { Roles, User, UserContextState } from '../../interfaces/user';
 import { USER_STORAGED } from '../../constants/localStorage';
+import { setUser } from '../actions';
 
 const defaultUser: User = {
   username: 'Guest',
@@ -24,11 +26,33 @@ export const UserContext = createContext<UserContextState>(
 );
 
 export function UserWrapper({ children }: any) {
-  const userFromLocalStorage = localStorage.getItem(USER_STORAGED);
-  const storedUser: User = userFromLocalStorage
-    ? JSON.parse(userFromLocalStorage)
-    : defaultUser;
-  const [user, dispatchUser] = useReducer(userReducer, storedUser);
+  const storedUser = JSON.parse(localStorage.getItem(USER_STORAGED)!);
+  const [user, dispatchUser] = useReducer(
+    userReducer,
+    storedUser || defaultUser
+  );
+
+  useEffect(() => {
+    if (storedUser) {
+      setTimeout(() => {
+        // FIXME: Get token
+        axios
+          .get(`${process.env.GATSBY_STRAPi_URL}/users/me`, {
+            headers: {
+              Authorization: `Bearer ${storedUser.jwt}`,
+            },
+          })
+          .then(response => {
+            console.log(response);
+            // dispatchUser(setUser({ ...response.data, jwt: storedUser.jwt }));
+          })
+          .catch(error => {
+            console.log(error);
+            dispatchUser(setUser(defaultUser));
+          });
+      }, 3000);
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, dispatchUser, defaultUser }}>

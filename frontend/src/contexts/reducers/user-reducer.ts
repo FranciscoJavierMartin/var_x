@@ -10,8 +10,12 @@ export default function userReducer(
 
   switch (action.type) {
     case ActionTypes.SET_USER:
-      localStorage.setItem(USER_STORAGED, JSON.stringify(action.payload));
-      newState = { ...state, ...action.payload };
+      if (action.payload.username === 'Guest') {
+        localStorage.removeItem(USER_STORAGED);
+      } else {
+        localStorage.setItem(USER_STORAGED, JSON.stringify(action.payload));
+      }
+      newState = action.payload;
       break;
     default:
       newState = state;
