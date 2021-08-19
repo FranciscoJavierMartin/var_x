@@ -35,19 +35,16 @@ export function UserWrapper({ children }: any) {
   useEffect(() => {
     if (storedUser) {
       setTimeout(() => {
-        // FIXME: Get token
         axios
-          .get(`${process.env.GATSBY_STRAPi_URL}/users/me`, {
+          .get(`${process.env.GATSBY_STRAPI_URL}/users/me`, {
             headers: {
               Authorization: `Bearer ${storedUser.jwt}`,
             },
           })
           .then(response => {
-            console.log(response);
-            // dispatchUser(setUser({ ...response.data, jwt: storedUser.jwt }));
+            dispatchUser(setUser({ ...response.data, jwt: storedUser.jwt }));
           })
-          .catch(error => {
-            console.log(error);
+          .catch(() => {
             dispatchUser(setUser(defaultUser));
           });
       }, 3000);
