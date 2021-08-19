@@ -1,8 +1,12 @@
 import { USER_STORAGED } from '../../constants/localStorage';
+import { UserState } from '../../interfaces/user';
 import { ActionTypes, UserActionsTypes } from '../actions/actions-types';
 
-export default function userReducer(state: any, action: UserActionsTypes) {
-  let newState: any;
+export default function userReducer(
+  state: UserState,
+  action: UserActionsTypes
+): UserState {
+  let newState: UserState;
 
   switch (action.type) {
     case ActionTypes.SET_USER:

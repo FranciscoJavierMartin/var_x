@@ -42,7 +42,6 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
   const classes = useStyles();
   const [selectedStep, setSelectedStep] = useState<number>(0);
   const { user, dispatchUser } = useContext(UserContext);
-  console.log(user);
 
   const steps: { component: any; label: string }[] = [
     {
@@ -79,6 +78,8 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
                 <Step.component
                   key={Step.label}
                   setSelectedStep={setSelectedStep}
+                  user={user}
+                  dispatchUser={dispatchUser}
                   steps={steps}
                 />
               ) : null

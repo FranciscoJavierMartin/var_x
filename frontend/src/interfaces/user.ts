@@ -1,8 +1,15 @@
+import { SetUserType } from "../contexts/actions/actions-types";
+
+export enum Roles {
+  authenticated = 'authenticated',
+  public = 'public',
+}
+
 export interface Role {
   id: number;
   name: string;
   description: string;
-  type: string;
+  type: Roles;
 }
 
 export interface User {
@@ -15,4 +22,14 @@ export interface User {
   role: Role;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface UserState {
+  user: User;
+}
+
+export interface UserContextState {
+  user: UserState;
+  dispatchUser: React.Dispatch<SetUserType>;
+  defaultUser: User;
 }

@@ -11,6 +11,9 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
 import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
+import { UserState } from '../../interfaces/user';
+import { setUser } from '../../contexts/actions';
+import { SetUserType } from '../../contexts/actions/actions-types';
 
 import accountIcon from '../../images/account.svg';
 import addUserIcon from '../../images/add-user.svg';
@@ -54,9 +57,16 @@ const useStyles = makeStyles(theme => ({
 interface LoginProps {
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
   steps: { component: any; label: string }[];
+  user: UserState;
+  dispatchUser: React.Dispatch<SetUserType>;
 }
 
-const Login: React.FC<LoginProps> = ({ setSelectedStep, steps }) => {
+const Login: React.FC<LoginProps> = ({
+  setSelectedStep,
+  steps,
+  user,
+  dispatchUser,
+}) => {
   const classes = useStyles();
   const [values, setValues] = useState<{ [key: string]: string }>({
     email: '',

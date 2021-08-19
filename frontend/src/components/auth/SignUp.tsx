@@ -9,13 +9,15 @@ import {
 import clsx from 'clsx';
 import axios from 'axios';
 import Fields from '../shared/Fields';
+import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
+import { EmailPassword } from '../../utils/fieldsData';
+import { UserState } from '../../interfaces/user';
+import { SetUserType } from '../../contexts/actions/actions-types';
 
 import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
 import forward from '../../images/forward-outline.svg';
 import backward from '../../images/backwards-outline.svg';
-import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
-import { EmailPassword } from '../../utils/fieldsData';
 
 const useStyles = makeStyles(theme => ({
   addUserIcon: {
@@ -58,6 +60,8 @@ const useStyles = makeStyles(theme => ({
 interface SignUpProps {
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
   steps: { component: any; label: string }[];
+  user: UserState;
+  dispatchUser: React.Dispatch<SetUserType>;
 }
 
 const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
