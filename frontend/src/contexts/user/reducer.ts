@@ -1,6 +1,6 @@
 import { USER_STORAGED } from '../../constants/localStorage';
 import { User } from '../../interfaces/user';
-import { ActionTypes, UserActionsTypes } from './actions';
+import { UserActionTypes, UserActionsTypes } from './actions';
 
 export default function userReducer(
   state: User,
@@ -9,7 +9,7 @@ export default function userReducer(
   let newState: User;
 
   switch (action.type) {
-    case ActionTypes.SET_USER:
+    case UserActionTypes.SET_USER:
       if (action.payload.username === 'Guest') {
         localStorage.removeItem(USER_STORAGED);
       } else {

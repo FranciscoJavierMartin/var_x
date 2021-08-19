@@ -25,7 +25,7 @@ export const UserContext = createContext<UserContextState>(
   {} as UserContextState
 );
 
-export function UserWrapper({ children }: any) {
+export const UserWrapper: React.FC = ({ children }) => {
   const storedUser = JSON.parse(localStorage.getItem(USER_STORAGED)!);
   const [user, dispatchUser] = useReducer(
     userReducer,
@@ -56,4 +56,4 @@ export function UserWrapper({ children }: any) {
       {children}
     </UserContext.Provider>
   );
-}
+};

@@ -8,6 +8,8 @@ const red = '#E84A5F';
 const offBlack = '#2A363B';
 const grey = '#747474';
 const white = '#FFF';
+const error = '#FF3232';
+const success = '#4BB543';
 
 const theme = createTheme({
   palette: {
@@ -23,6 +25,8 @@ const theme = createTheme({
       red,
       offBlack,
       white,
+      error,
+      success,
     },
   },
   typography: {

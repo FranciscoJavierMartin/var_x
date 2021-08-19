@@ -1,4 +1,4 @@
-import { SetUserType } from '../contexts/actions/actions-types';
+import { UserActionsTypes } from '../contexts/user/actions';
 
 export enum Roles {
   authenticated = 'authenticated',
@@ -27,6 +27,6 @@ export interface User {
 
 export interface UserContextState {
   user: User;
-  dispatchUser: React.Dispatch<SetUserType>;
+  dispatchUser: React.Dispatch<UserActionsTypes>;
   defaultUser: User;
 }

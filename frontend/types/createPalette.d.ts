@@ -5,5 +5,7 @@ declare module '@material-ui/core/styles/createPalette' {
     lightRed: string;
     red: string;
     offBlack: string;
+    error: string;
+    success: string;
   }
 }

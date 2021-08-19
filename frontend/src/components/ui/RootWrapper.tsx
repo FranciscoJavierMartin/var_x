@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from '@material-ui/core';
 import { ApolloWrapper } from '../../apollo/ApolloWrapper';
-import { UserWrapper } from '../../contexts';
+import { UserWrapper, FeedbackWrapper } from '../../contexts';
 import theme from './theme';
 
 interface RootWrapperProps {
@@ -12,7 +12,9 @@ const RootWrapper: React.FC<RootWrapperProps> = ({ element }) => {
   return (
     <ThemeProvider theme={theme}>
       <ApolloWrapper>
-        <UserWrapper>{element}</UserWrapper>
+        <UserWrapper>
+          <FeedbackWrapper>{element}</FeedbackWrapper>
+        </UserWrapper>
       </ApolloWrapper>
     </ThemeProvider>
   );
