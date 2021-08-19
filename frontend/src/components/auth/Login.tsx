@@ -11,9 +11,9 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
 import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
-import { UserState } from '../../interfaces/user';
 import { setUser } from '../../contexts/actions';
 import { SetUserType } from '../../contexts/actions/actions-types';
+import { AuthResponse } from '../../interfaces/responses';
 
 import accountIcon from '../../images/account.svg';
 import addUserIcon from '../../images/add-user.svg';
@@ -95,12 +95,14 @@ const Login: React.FC<LoginProps> = ({
 
   const handleLogin = () => {
     axios
-      .post(`${process.env.GATSBY_STRAPI_URL}/auth/local`, {
+      .post<AuthResponse>(`${process.env.GATSBY_STRAPI_URL}/auth/local`, {
         identifier: values.email,
         password: values.password,
       })
       .then(response => {
-        console.log('UserProfile', response.data);
+        dispatchUser(
+          setUser({ ...response.data.user, jwt: response.data.jwt })
+        );
       })
       .catch(console.log);
   };

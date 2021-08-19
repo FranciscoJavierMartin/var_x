@@ -11,8 +11,10 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
 import { EmailPassword } from '../../utils/fieldsData';
-import { UserState } from '../../interfaces/user';
+import { setUser } from '../../contexts/actions';
 import { SetUserType } from '../../contexts/actions/actions-types';
+import { AuthResponse } from '../../interfaces/responses';
+import { User } from '../../interfaces/user';
 
 import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
@@ -60,11 +62,16 @@ const useStyles = makeStyles(theme => ({
 interface SignUpProps {
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
   steps: { component: any; label: string }[];
-  user: UserState;
+  user: User;
   dispatchUser: React.Dispatch<SetUserType>;
 }
 
-const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
+const SignUp: React.FC<SignUpProps> = ({
+  setSelectedStep,
+  steps,
+  user,
+  dispatchUser,
+}) => {
   const classes = useStyles();
   const [values, setValues] = useState<{ [key: string]: string }>({
     email: '',
@@ -93,13 +100,18 @@ const SignUp: React.FC<SignUpProps> = ({ setSelectedStep, steps }) => {
 
   const handleComplete = () => {
     axios
-      .post(`${process.env.GATSBY_STRAPI_URL}/auth/local/register`, {
-        username: values.name,
-        email: values.email,
-        password: values.password,
-      })
+      .post<AuthResponse>(
+        `${process.env.GATSBY_STRAPI_URL}/auth/local/register`,
+        {
+          username: values.name,
+          email: values.email,
+          password: values.password,
+        }
+      )
       .then(response => {
-        console.log('User Profile', response.data);
+        dispatchUser(
+          setUser({ ...response.data.user, jwt: response.data.jwt })
+        );
       })
       .catch(err => console.log(err));
     const completeIndex = steps.findIndex(

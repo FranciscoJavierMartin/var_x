@@ -1,4 +1,4 @@
-import { SetUserType } from "../contexts/actions/actions-types";
+import { SetUserType } from '../contexts/actions/actions-types';
 
 export enum Roles {
   authenticated = 'authenticated',
@@ -19,17 +19,14 @@ export interface User {
   provider: string;
   confirmed: boolean;
   blocked?: boolean;
+  jwt?: string;
   role: Role;
   created_at: Date;
   updated_at: Date;
 }
 
-export interface UserState {
-  user: User;
-}
-
 export interface UserContextState {
-  user: UserState;
+  user: User;
   dispatchUser: React.Dispatch<SetUserType>;
   defaultUser: User;
 }

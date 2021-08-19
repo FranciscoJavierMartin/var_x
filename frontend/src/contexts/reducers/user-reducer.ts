@@ -1,18 +1,17 @@
 import { USER_STORAGED } from '../../constants/localStorage';
-import { UserState } from '../../interfaces/user';
+import { User } from '../../interfaces/user';
 import { ActionTypes, UserActionsTypes } from '../actions/actions-types';
 
 export default function userReducer(
-  state: UserState,
+  state: User,
   action: UserActionsTypes
-): UserState {
-  let newState: UserState;
+): User {
+  let newState: User;
 
   switch (action.type) {
     case ActionTypes.SET_USER:
-      const { user } = action.payload;
-      localStorage.setItem(USER_STORAGED, JSON.stringify(user));
-      newState = { ...state, user };
+      localStorage.setItem(USER_STORAGED, JSON.stringify(action.payload));
+      newState = { ...state, ...action.payload };
       break;
     default:
       newState = state;

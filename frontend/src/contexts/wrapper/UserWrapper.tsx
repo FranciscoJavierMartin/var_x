@@ -1,6 +1,7 @@
 import React, { useReducer, createContext } from 'react';
 import userReducer from '../reducers/user-reducer';
 import { Roles, User, UserContextState } from '../../interfaces/user';
+import { USER_STORAGED } from '../../constants/localStorage';
 
 const defaultUser: User = {
   username: 'Guest',
@@ -23,7 +24,11 @@ export const UserContext = createContext<UserContextState>(
 );
 
 export function UserWrapper({ children }: any) {
-  const [user, dispatchUser] = useReducer(userReducer, { user: defaultUser });
+  const userFromLocalStorage = localStorage.getItem(USER_STORAGED);
+  const storedUser: User = userFromLocalStorage
+    ? JSON.parse(userFromLocalStorage)
+    : defaultUser;
+  const [user, dispatchUser] = useReducer(userReducer, storedUser);
 
   return (
     <UserContext.Provider value={{ user, dispatchUser, defaultUser }}>

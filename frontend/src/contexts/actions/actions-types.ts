@@ -6,7 +6,7 @@ export enum ActionTypes {
 
 export interface SetUserType {
   type: ActionTypes.SET_USER;
-  payload: { user: User };
+  payload: User;
 }
 
 export type UserActionsTypes = SetUserType;
