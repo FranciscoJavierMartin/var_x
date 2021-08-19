@@ -3,6 +3,7 @@ import { Button, makeStyles } from '@material-ui/core';
 import Layout from '../components/ui/Layout';
 import AuthPortal from '../components/auth/AuthPortal';
 import { UserContext } from '../contexts';
+import { setUser } from '../contexts/user/actions';
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -12,7 +13,9 @@ const Account: React.FC<AccountProps> = ({}) => {
   const classes = useStyles();
   const { user, defaultUser, dispatchUser } = useContext(UserContext);
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    dispatchUser(setUser(defaultUser));
+  };
 
   return (
     <Layout>
