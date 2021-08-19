@@ -20,6 +20,7 @@ export interface User {
   confirmed: boolean;
   blocked?: boolean;
   jwt?: string;
+  onboarding?: boolean;
   role: Role;
   created_at: Date;
   updated_at: Date;

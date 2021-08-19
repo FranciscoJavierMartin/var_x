@@ -42,7 +42,13 @@ export const UserWrapper: React.FC = ({ children }) => {
             },
           })
           .then(response => {
-            dispatchUser(setUser({ ...response.data, jwt: storedUser.jwt }));
+            dispatchUser(
+              setUser({
+                ...response.data,
+                jwt: storedUser.jwt,
+                onboarding: true,
+              })
+            );
           })
           .catch(() => {
             dispatchUser(setUser(defaultUser));

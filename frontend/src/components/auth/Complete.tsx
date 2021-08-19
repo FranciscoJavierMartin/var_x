@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Typography, makeStyles, Button } from '@material-ui/core';
 import { User } from '../../interfaces/user';
-import { SetUserType } from '../../contexts/user/actions';
+import { SetUserType, setUser } from '../../contexts/user/actions';
 import { FeedbackActionsTypes } from '../../contexts/feedback/actions';
 import { FeedbackState } from '../../interfaces/feedback';
 
@@ -35,8 +35,14 @@ interface CompleteProps {
   dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
 }
 
-const Complete: React.FC<CompleteProps> = ({}) => {
+const Complete: React.FC<CompleteProps> = ({ dispatchUser, user }) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    return () => {
+      dispatchUser(setUser({ ...user, onboarding: true }));
+    };
+  }, []);
 
   return (
     <>

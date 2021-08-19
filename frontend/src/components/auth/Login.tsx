@@ -114,7 +114,11 @@ const Login: React.FC<LoginProps> = ({
       .then(response => {
         setLoading(false);
         dispatchUser(
-          setUser({ ...response.data.user, jwt: response.data.jwt })
+          setUser({
+            ...response.data.user,
+            jwt: response.data.jwt,
+            onboarding: true,
+          })
         );
       })
       .catch(error => {
