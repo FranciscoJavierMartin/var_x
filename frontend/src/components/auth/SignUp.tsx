@@ -12,9 +12,15 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
 import { EmailPassword } from '../../utils/fieldsData';
+import {
+  FeedbackActionsTypes,
+  openSnackbar,
+  SnackbarStatus,
+} from '../../contexts/feedback/actions';
 import { setUser, SetUserType } from '../../contexts/user/actions';
 import { AuthResponse } from '../../interfaces/responses';
 import { User } from '../../interfaces/user';
+import { FeedbackState } from '../../interfaces/feedback';
 
 import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
@@ -64,13 +70,15 @@ interface SignUpProps {
   steps: { component: any; label: string }[];
   user: User;
   dispatchUser: React.Dispatch<SetUserType>;
+  feedback: FeedbackState;
+  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
 }
 
 const SignUp: React.FC<SignUpProps> = ({
   setSelectedStep,
   steps,
-  user,
   dispatchUser,
+  dispatchFeedback,
 }) => {
   const classes = useStyles();
   const [values, setValues] = useState<{ [key: string]: string }>({
@@ -120,8 +128,14 @@ const SignUp: React.FC<SignUpProps> = ({
         );
         setSelectedStep(completeIndex);
       })
-      .catch(() => {
+      .catch(error => {
         setLoading(false);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            error.response.data.message[0].messages[0].message
+          )
+        );
       });
   };
 

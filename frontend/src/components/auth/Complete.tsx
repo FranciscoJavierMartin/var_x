@@ -2,6 +2,8 @@ import React from 'react';
 import { Grid, Typography, makeStyles, Button } from '@material-ui/core';
 import { User } from '../../interfaces/user';
 import { SetUserType } from '../../contexts/user/actions';
+import { FeedbackActionsTypes } from '../../contexts/feedback/actions';
+import { FeedbackState } from '../../interfaces/feedback';
 
 import checkmark from '../../images/checkmark-outline.svg';
 import forward from '../../images/forward-outline.svg';
@@ -29,9 +31,11 @@ interface CompleteProps {
   steps: { component: any; label: string }[];
   user: User;
   dispatchUser: React.Dispatch<SetUserType>;
+  feedback: FeedbackState;
+  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
 }
 
-const Complete: React.FC<CompleteProps> = ({ setSelectedStep, steps }) => {
+const Complete: React.FC<CompleteProps> = ({}) => {
   const classes = useStyles();
 
   return (

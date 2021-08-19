@@ -1,5 +1,6 @@
 export enum FeedbackActionTypes {
-  SET_SNACKBAR = 'SET_SNACKBAR',
+  OPEN_SNACKBAR = 'OPEN_SNACKBAR',
+  CLOSE_SNACKBAR = 'CLOSE_SNACKBAR',
 }
 
 export enum SnackbarStatus {
@@ -7,22 +8,28 @@ export enum SnackbarStatus {
   Success,
 }
 
-export interface SetSnackbarType {
-  type: FeedbackActionTypes.SET_SNACKBAR;
+export interface OpenSnackbarType {
+  type: FeedbackActionTypes.OPEN_SNACKBAR;
   payload: {
     status: SnackbarStatus;
     message: string;
-    open: boolean;
   };
 }
 
-export type FeedbarActionsTypes = SetSnackbarType;
+export interface CloseSnackbarType {
+  type: FeedbackActionTypes.CLOSE_SNACKBAR;
+}
 
-export const setSnackbar = (
+export type FeedbackActionsTypes = OpenSnackbarType | CloseSnackbarType;
+
+export const openSnackbar = (
   status: SnackbarStatus,
-  message: string,
-  open: boolean
-): FeedbarActionsTypes => ({
-  type: FeedbackActionTypes.SET_SNACKBAR,
-  payload: { status, message, open },
+  message: string
+): OpenSnackbarType => ({
+  type: FeedbackActionTypes.OPEN_SNACKBAR,
+  payload: { status, message },
+});
+
+export const closeSnackbar = (): CloseSnackbarType => ({
+  type: FeedbackActionTypes.CLOSE_SNACKBAR,
 });

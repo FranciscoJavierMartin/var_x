@@ -1,6 +1,6 @@
 import React, { useReducer, createContext } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
-import { setSnackbar, SnackbarStatus } from './actions';
+import { closeSnackbar, openSnackbar, SnackbarStatus } from './actions';
 import feedbackReducer from './reducer';
 import { FeedbackContextState } from '../../interfaces/feedback';
 
@@ -26,7 +26,7 @@ export const FeedbackWrapper: React.FC = ({ children }) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         autoHideDuration={6000}
         onClose={() =>
-          dispatchFeedback(setSnackbar(SnackbarStatus.Success, '', false))
+          dispatchFeedback(closeSnackbar())
         }
         ContentProps={{
           style: {

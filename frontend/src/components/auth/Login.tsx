@@ -13,8 +13,14 @@ import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
 import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
 import { setUser, SetUserType } from '../../contexts/user/actions';
+import {
+  FeedbackActionsTypes,
+  openSnackbar,
+  SnackbarStatus,
+} from '../../contexts/feedback/actions';
 import { AuthResponse } from '../../interfaces/responses';
 import { User } from '../../interfaces/user';
+import { FeedbackState } from '../../interfaces/feedback';
 
 import accountIcon from '../../images/account.svg';
 import addUserIcon from '../../images/add-user.svg';
@@ -60,13 +66,15 @@ interface LoginProps {
   steps: { component: any; label: string }[];
   user: User;
   dispatchUser: React.Dispatch<SetUserType>;
+  feedback: FeedbackState;
+  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
 }
 
 const Login: React.FC<LoginProps> = ({
   setSelectedStep,
   steps,
-  user,
   dispatchUser,
+  dispatchFeedback,
 }) => {
   const classes = useStyles();
   const [values, setValues] = useState<{ [key: string]: string }>({
@@ -97,6 +105,7 @@ const Login: React.FC<LoginProps> = ({
 
   const handleLogin = () => {
     setLoading(true);
+
     axios
       .post<AuthResponse>(`${process.env.GATSBY_STRAPI_URL}/auth/local`, {
         identifier: values.email,
@@ -108,8 +117,14 @@ const Login: React.FC<LoginProps> = ({
           setUser({ ...response.data.user, jwt: response.data.jwt })
         );
       })
-      .catch(() => {
+      .catch(error => {
         setLoading(false);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            error.response.data.message[0].messages[0].message
+          )
+        );
       });
   };
 

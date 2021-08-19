@@ -1,33 +1,38 @@
-import { useTheme } from '@material-ui/core';
 import { FeedbackState } from '../../interfaces/feedback';
 import {
   FeedbackActionTypes,
-  FeedbarActionsTypes,
+  FeedbackActionsTypes,
   SnackbarStatus,
 } from './actions';
+import {
+  error as errorColor,
+  success as successColor,
+} from '../../components/ui/theme';
 
 export default function feedbackReducer(
   state: FeedbackState,
-  action: FeedbarActionsTypes
+  action: FeedbackActionsTypes
 ): FeedbackState {
   let newState: FeedbackState;
-  const theme = useTheme();
 
   switch (action.type) {
-    case FeedbackActionTypes.SET_SNACKBAR:
-      const { open, status, message } = action.payload;
-      if (!open) {
-        newState = state;
-      } else {
-        newState = {
-          ...state,
-          backgroundColor:
-            status === SnackbarStatus.Error
-              ? theme.palette.common.error
-              : theme.palette.common.success,
-          message,
-        };
-      }
+    case FeedbackActionTypes.OPEN_SNACKBAR:
+      const { status, message } = action.payload;
+      newState = {
+        ...state,
+        open: true,
+        backgroundColor:
+          status === SnackbarStatus.Error ? errorColor : successColor,
+        message,
+      };
+      break;
+    case FeedbackActionTypes.CLOSE_SNACKBAR:
+      newState = {
+        ...state,
+        open: false,
+        backgroundColor: 'transparent',
+        message: '',
+      };
       break;
     default:
       newState = state;
