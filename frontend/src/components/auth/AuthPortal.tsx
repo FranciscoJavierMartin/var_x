@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
+import axios from 'axios';
 import Login from './Login';
 import SignUp from './SignUp';
 import Complete from './Complete';
 import { UserContext, FeedbackContext } from '../../contexts';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
+import { setUser } from '../../contexts/user/actions';
 import {
   COMPLETE_LABEL,
   LOGIN_LABEL,
@@ -68,11 +71,36 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const code = params.get('code');
+    const access_token = params.get('access_token');
+
     if (code) {
       const resetStepIndex = steps.findIndex(
         step => step.label === RESET_LABEL
       );
       setSelectedStep(resetStepIndex);
+    } else if (access_token) {
+      axios
+        .get(`${process.env.GATSBY_STRAPI_URL}/auth/facebook/callback`, {
+          params: { access_token },
+        })
+        .then(response => {
+          dispatchUser(
+            setUser({
+              ...response.data.user,
+              jwt: response.data.jwt,
+              onboarding: true,
+            })
+          );
+          history.replaceState(null, '', location.pathname);
+        })
+        .catch(error => {
+          dispatchFeedback(
+            openSnackbar(
+              SnackbarStatus.Error,
+              'Connecting to Facebook failed, please try again.'
+            )
+          );
+        });
     }
   }, []);
 

@@ -161,6 +161,12 @@ const SignUp: React.FC<SignUpProps> = ({
         <Button
           variant='contained'
           color='secondary'
+          component={!info ? 'a' : undefined}
+          href={
+            !info
+              ? `${process.env.GATSBY_STRAPI_URL}/connect/facebook`
+              : undefined
+          }
           disabled={loading || (info && disabled)}
           onClick={() => (info ? handleComplete() : null)}
           classes={{
