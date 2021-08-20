@@ -1,15 +1,37 @@
-import React, { useState } from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import axios from 'axios';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
-import { FeedbackActionsTypes } from '../../contexts/feedback/actions';
+import {
+  FeedbackActionsTypes,
+  openSnackbar,
+  SnackbarStatus,
+} from '../../contexts/feedback/actions';
 import { UserActionsTypes } from '../../contexts/user/actions';
 import { User } from '../../interfaces/user';
 import { FeedbackState } from '../../interfaces/feedback';
 
 import accountIcon from '../../images/account.svg';
+import { LOGIN_LABEL } from '../../constants/authPortalLabels';
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  icon: {
+    marginTop: '2rem',
+  },
+  resetButton: {
+    width: '20rem',
+    borderRadius: 50,
+    textTransform: 'none',
+    marginBottom: '4rem',
+  },
+}));
 
 interface ResetProps {
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
@@ -20,7 +42,11 @@ interface ResetProps {
   dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
 }
 
-const Reset: React.FC<ResetProps> = ({}) => {
+const Reset: React.FC<ResetProps> = ({
+  steps,
+  setSelectedStep,
+  dispatchFeedback,
+}) => {
   const classes = useStyles();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [values, setValues] = useState<{ [key: string]: string }>({
@@ -28,6 +54,8 @@ const Reset: React.FC<ResetProps> = ({}) => {
     password: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const { password } = EmailPassword(
     classes,
@@ -41,9 +69,56 @@ const Reset: React.FC<ResetProps> = ({}) => {
     confirmation: { ...password, placeholder: 'Confirm Password' },
   };
 
+  const handleReset = () => {
+    setLoading(true);
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    axios
+      .post(`${process.env.GATSBY_STRAPI_URL}/auth/reset-password`, {
+        code,
+        password: values.password,
+        passwordConfirmation: values.confirmation,
+      })
+      .then(() => {
+        setLoading(false);
+        setSuccess(true);
+        dispatchFeedback(
+          openSnackbar(SnackbarStatus.Success, 'Password reset successfully')
+        );
+      })
+      .catch(error => {
+        setLoading(false);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            error.response.data.message[0].messages[0].message
+          )
+        );
+      });
+  };
+
+  const disabled =
+    Object.values(errors).some(error => error) ||
+    Object.keys(errors).length !== Object.keys(values).length ||
+    values.password !== values.confirmation;
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (success) {
+      timer = setTimeout(() => {
+        history.replaceState(null, '', location.pathname);
+        const loginIndex = steps.findIndex(step => step.label === LOGIN_LABEL);
+        setSelectedStep(loginIndex);
+      }, 6000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [success]);
+
   return (
     <>
-      <Grid item>
+      <Grid item classes={{ root: classes.icon }}>
         <img src={accountIcon} alt='reset password page' />
       </Grid>
       <Fields
@@ -53,6 +128,21 @@ const Reset: React.FC<ResetProps> = ({}) => {
         values={values}
         setValues={setValues}
       />
+      <Grid item>
+        <Button
+          variant='contained'
+          color='secondary'
+          classes={{ root: classes.resetButton }}
+          onClick={handleReset}
+          disabled={disabled}
+        >
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Typography variant='h5'>Reset password</Typography>
+          )}
+        </Button>
+      </Grid>
     </>
   );
 };

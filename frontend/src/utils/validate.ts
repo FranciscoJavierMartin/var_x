@@ -7,6 +7,8 @@ const validators: { [key: string]: (val: string) => boolean } = {
   message: (val: string): boolean => val.length > 3,
   password: (val: string): boolean =>
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
+  confimation: (val: string): boolean =>
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
 };
 
 export default function validate(values: { [key: string]: string }): {

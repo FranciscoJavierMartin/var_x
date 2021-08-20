@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   IconButton,
@@ -85,6 +85,7 @@ const Login: React.FC<LoginProps> = ({
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [forgot, setForgot] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const fields = EmailPassword(
     classes,
@@ -141,13 +142,10 @@ const Login: React.FC<LoginProps> = ({
       })
       .then(response => {
         setLoading(false);
+        setSuccess(true);
         dispatchFeedback(
           openSnackbar(SnackbarStatus.Success, 'Reset code sent')
         );
-
-        setTimeout(() => {
-          setForgot(false);
-        }, 6000);
       })
       .catch(error => {
         setLoading(false);
@@ -159,6 +157,18 @@ const Login: React.FC<LoginProps> = ({
         );
       });
   };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (success) {
+      timer = setTimeout(() => {
+        setForgot(false);
+      }, 6000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [success]);
 
   return (
     <>
