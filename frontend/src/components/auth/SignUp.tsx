@@ -10,17 +10,12 @@ import {
 import clsx from 'clsx';
 import axios from 'axios';
 import Fields from '../shared/Fields';
-import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
 import { EmailPassword } from '../../utils/fieldsData';
-import {
-  FeedbackActionsTypes,
-  openSnackbar,
-  SnackbarStatus,
-} from '../../contexts/feedback/actions';
-import { setUser, SetUserType } from '../../contexts/user/actions';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
+import { setUser } from '../../contexts/user/actions';
 import { AuthResponse } from '../../interfaces/responses';
-import { User } from '../../interfaces/user';
-import { FeedbackState } from '../../interfaces/feedback';
+import { AuthStepsProps } from '../../interfaces/auth-steps-props';
+import { COMPLETE_LABEL, LOGIN_LABEL } from '../../constants/authPortalLabels';
 
 import addUserIcon from '../../images/add-user.svg';
 import nameAdornment from '../../images/name-adornment.svg';
@@ -65,14 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface SignUpProps {
-  setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
-  steps: { component: any; label: string }[];
-  user: User;
-  dispatchUser: React.Dispatch<SetUserType>;
-  feedback: FeedbackState;
-  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
-}
+interface SignUpProps extends AuthStepsProps {}
 
 const SignUp: React.FC<SignUpProps> = ({
   setSelectedStep,

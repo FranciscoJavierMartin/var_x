@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { Grid, Typography, makeStyles, Button } from '@material-ui/core';
-import { User } from '../../interfaces/user';
-import { SetUserType, setUser } from '../../contexts/user/actions';
-import { FeedbackActionsTypes } from '../../contexts/feedback/actions';
-import { FeedbackState } from '../../interfaces/feedback';
+import { setUser } from '../../contexts/user/actions';
+import { AuthStepsProps } from '../../interfaces/auth-steps-props';
 
 import checkmark from '../../images/checkmark-outline.svg';
 import forward from '../../images/forward-outline.svg';
@@ -26,14 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface CompleteProps {
-  setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
-  steps: { component: any; label: string }[];
-  user: User;
-  dispatchUser: React.Dispatch<SetUserType>;
-  feedback: FeedbackState;
-  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
-}
+interface CompleteProps extends AuthStepsProps {}
 
 const Complete: React.FC<CompleteProps> = ({ dispatchUser, user }) => {
   const classes = useStyles();

@@ -12,15 +12,10 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
 import { SIGN_UP_LABEL } from '../../constants/authPortalLabels';
-import { setUser, SetUserType } from '../../contexts/user/actions';
-import {
-  FeedbackActionsTypes,
-  openSnackbar,
-  SnackbarStatus,
-} from '../../contexts/feedback/actions';
+import { setUser } from '../../contexts/user/actions';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import { AuthResponse } from '../../interfaces/responses';
-import { User } from '../../interfaces/user';
-import { FeedbackState } from '../../interfaces/feedback';
+import { AuthStepsProps } from '../../interfaces/auth-steps-props';
 
 import accountIcon from '../../images/account.svg';
 import addUserIcon from '../../images/add-user.svg';
@@ -61,14 +56,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface LoginProps {
-  setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
-  steps: { component: any; label: string }[];
-  user: User;
-  dispatchUser: React.Dispatch<SetUserType>;
-  feedback: FeedbackState;
-  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
-}
+interface LoginProps extends AuthStepsProps {}
 
 const Login: React.FC<LoginProps> = ({
   setSelectedStep,

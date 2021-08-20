@@ -9,17 +9,11 @@ import {
 import axios from 'axios';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
-import {
-  FeedbackActionsTypes,
-  openSnackbar,
-  SnackbarStatus,
-} from '../../contexts/feedback/actions';
-import { UserActionsTypes } from '../../contexts/user/actions';
-import { User } from '../../interfaces/user';
-import { FeedbackState } from '../../interfaces/feedback';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
+import { LOGIN_LABEL } from '../../constants/authPortalLabels';
+import { AuthStepsProps } from '../../interfaces/auth-steps-props';
 
 import accountIcon from '../../images/account.svg';
-import { LOGIN_LABEL } from '../../constants/authPortalLabels';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -33,14 +27,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ResetProps {
-  setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
-  steps: { component: any; label: string }[];
-  user: User;
-  dispatchUser: React.Dispatch<UserActionsTypes>;
-  feedback: FeedbackState;
-  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
-}
+interface ResetProps extends AuthStepsProps {}
 
 const Reset: React.FC<ResetProps> = ({
   steps,
