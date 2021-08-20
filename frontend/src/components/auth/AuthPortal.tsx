@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
 import Login from './Login';
 import SignUp from './SignUp';
@@ -7,8 +7,10 @@ import { UserContext, FeedbackContext } from '../../contexts';
 import {
   COMPLETE_LABEL,
   LOGIN_LABEL,
+  RESET_LABEL,
   SIGN_UP_LABEL,
 } from '../../constants/authPortalLabels';
+import Reset from './Reset';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -57,7 +59,22 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
       component: Complete,
       label: COMPLETE_LABEL,
     },
+    {
+      component: Reset,
+      label: RESET_LABEL,
+    },
   ];
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    if (code) {
+      const resetStepIndex = steps.findIndex(
+        step => step.label === RESET_LABEL
+      );
+      setSelectedStep(resetStepIndex);
+    }
+  }, []);
 
   return (
     <Grid
