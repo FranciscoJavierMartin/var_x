@@ -132,6 +132,34 @@ const Login: React.FC<LoginProps> = ({
       });
   };
 
+  const handleForgot = () => {
+    setLoading(true);
+
+    axios
+      .post(`${process.env.GATSBY_STRAPI_URL}/auth/forgot-password`, {
+        email: values.email,
+      })
+      .then(response => {
+        setLoading(false);
+        dispatchFeedback(
+          openSnackbar(SnackbarStatus.Success, 'Reset code sent')
+        );
+
+        setTimeout(() => {
+          setForgot(false);
+        }, 6000);
+      })
+      .catch(error => {
+        setLoading(false);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            error.response.data.message.message
+          )
+        );
+      });
+  };
+
   return (
     <>
       <Grid item classes={{ root: classes.accountIcon }}>
@@ -149,7 +177,7 @@ const Login: React.FC<LoginProps> = ({
           variant='contained'
           color='secondary'
           disabled={loading || (!forgot && disabled)}
-          onClick={() => (forgot ? null : handleLogin())}
+          onClick={() => (forgot ? handleForgot() : handleLogin())}
           classes={{
             root: clsx(classes.loginButton, {
               [classes.reset]: forgot,
