@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Grid, Button, Typography, makeStyles } from '@material-ui/core';
+import { useSprings, animated } from 'react-spring';
+import useResizeAware from 'react-resize-aware';
 import { UserContext } from '../../contexts';
 
 import accountIcon from '../../images/account.svg';
@@ -28,43 +30,87 @@ const useStyles = makeStyles(theme => ({
     height: '12rem',
     width: '12rem',
   },
-  button: {
-    height: '22rem',
-    width: '22rem',
-    borderRadius: 25,
-  },
 }));
+
+const AnimatedButton = animated(Button);
+
+const buttons = [
+  {
+    label: 'Settings',
+    icon: settingsIcon,
+  },
+  {
+    label: 'Order history',
+    icon: orderHistoryIcon,
+  },
+  {
+    label: 'Favorites',
+    icon: favoritesIcon,
+  },
+  {
+    label: 'Subscriptions',
+    icon: subscriptionIcon,
+  },
+];
 
 interface SettingsPortalProps {}
 
 const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
+  const [selectedSetting, setSelectedSetting] = useState<string>('');
   const { user } = useContext(UserContext);
   const classes = useStyles();
+  const [resizeListener, sizes] = useResizeAware();
 
-  const buttons = [
-    {
-      label: 'Settings',
-      icon: settingsIcon,
-    },
-    {
-      label: 'Order history',
-      icon: orderHistoryIcon,
-    },
-    {
-      label: 'Favorites',
-      icon: favoritesIcon,
-    },
-    {
-      label: 'Subscriptions',
-      icon: subscriptionIcon,
-    },
-  ];
+  const handleClick = (label: string) => {
+    if (selectedSetting === label) {
+      setSelectedSetting('');
+    } else {
+      setSelectedSetting(label);
+    }
+  };
+
+  const springs = useSprings(
+    buttons.length,
+    buttons.map(button => ({
+      to: async (next: any, cancel: any) => {
+        const scale = {
+          transform:
+            selectedSetting === button.label || !selectedSetting
+              ? 'scale(1)'
+              : 'scale(0)',
+          delay: selectedSetting ? 600 : 0,
+        };
+
+        const size = {
+          height: selectedSetting === button.label ? '60rem' : '22rem',
+          width:
+            selectedSetting === button.label ? `${sizes.width}px` : '352px',
+          borderRadius: selectedSetting === button.label ? 0 : 25,
+        };
+
+        const hide = {
+          display:
+            selectedSetting === button.label || !selectedSetting
+              ? 'flex'
+              : 'none',
+          delay: 150,
+        };
+
+        await next(selectedSetting ? scale : size);
+        await next(hide);
+        await next(selectedSetting ? size : scale);
+      },
+    }))
+  );
 
   return (
     <Grid container direction='column' alignItems='center'>
+      {resizeListener}
       <Grid item>
         <img src={accountIcon} alt='settings page' />
       </Grid>
+      {sizes.width} x {sizes.height}
+      <animated.div></animated.div>
       <Grid item>
         <Typography variant='h4' classes={{ root: classes.name }}>
           Welcome back, {user.username}
@@ -77,26 +123,27 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         justifyContent='space-around'
         classes={{ root: classes.dashboard }}
       >
-        {buttons.map(button => (
-          <Grid item key={button.label}>
-            <Button
+        {springs.map((prop, i) => (
+          <Grid item key={buttons[i].label}>
+            <AnimatedButton
               variant='contained'
               color='primary'
-              classes={{ root: classes.button }}
+              onClick={() => handleClick(buttons[i].label)}
+              style={prop}
             >
               <Grid container direction='column'>
                 <Grid item>
                   <img
-                    src={button.icon}
-                    alt={button.label}
+                    src={buttons[i].icon}
+                    alt={buttons[i].label}
                     className={classes.icon}
                   />
                 </Grid>
                 <Grid item>
-                  <Typography variant='h5'>{button.label}</Typography>
+                  <Typography variant='h5'>{buttons[i].label}</Typography>
                 </Grid>
               </Grid>
-            </Button>
+            </AnimatedButton>
           </Grid>
         ))}
       </Grid>
