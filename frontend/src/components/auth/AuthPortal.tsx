@@ -5,7 +5,6 @@ import SignUp from './SignUp';
 import Complete from './Complete';
 import Reset from './Reset';
 import { UserContext, FeedbackContext } from '../../contexts';
-import { AuthStepsProps } from '../../interfaces/auth-steps-props';
 import {
   COMPLETE_LABEL,
   LOGIN_LABEL,
