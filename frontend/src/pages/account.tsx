@@ -1,31 +1,17 @@
 import React, { useContext } from 'react';
-import { Button, makeStyles } from '@material-ui/core';
 import Layout from '../components/ui/Layout';
 import AuthPortal from '../components/auth/AuthPortal';
+import SettingsPortal from '../components/settings/SettingsPortal';
 import { UserContext } from '../contexts';
-import { setUser } from '../contexts/user/actions';
-
-const useStyles = makeStyles(theme => ({}));
 
 interface AccountProps {}
 
 const Account: React.FC<AccountProps> = ({}) => {
-  const classes = useStyles();
-  const { user, defaultUser, dispatchUser } = useContext(UserContext);
-
-  const handleLogout = () => {
-    dispatchUser(setUser(defaultUser));
-  };
+  const { user } = useContext(UserContext);
 
   return (
     <Layout>
-      {user.jwt && user.onboarding ? (
-        <Button variant='contained' onClick={handleLogout}>
-          Logout
-        </Button>
-      ) : (
-        <AuthPortal />
-      )}
+      {user.jwt && user.onboarding ? <SettingsPortal /> : <AuthPortal />}
     </Layout>
   );
 };
