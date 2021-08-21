@@ -3,14 +3,15 @@ import { Grid, Paper, makeStyles } from '@material-ui/core';
 import Login from './Login';
 import SignUp from './SignUp';
 import Complete from './Complete';
+import Reset from './Reset';
 import { UserContext, FeedbackContext } from '../../contexts';
+import { AuthStepsProps } from '../../interfaces/auth-steps-props';
 import {
   COMPLETE_LABEL,
   LOGIN_LABEL,
   RESET_LABEL,
   SIGN_UP_LABEL,
 } from '../../constants/authPortalLabels';
-import Reset from './Reset';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -51,6 +52,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const steps: { component: any; label: string }[] = [
+  {
+    component: Login,
+    label: LOGIN_LABEL,
+  },
+  {
+    component: SignUp,
+    label: SIGN_UP_LABEL,
+  },
+  {
+    component: Complete,
+    label: COMPLETE_LABEL,
+  },
+  {
+    component: Reset,
+    label: RESET_LABEL,
+  },
+];
+
 interface AuthPortalProps {}
 
 const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
@@ -58,25 +78,6 @@ const AuthPortal: React.FC<AuthPortalProps> = ({}) => {
   const [selectedStep, setSelectedStep] = useState<number>(0);
   const { user, dispatchUser } = useContext(UserContext);
   const { feedback, dispatchFeedback } = useContext(FeedbackContext);
-
-  const steps: { component: any; label: string }[] = [
-    {
-      component: Login,
-      label: LOGIN_LABEL,
-    },
-    {
-      component: SignUp,
-      label: SIGN_UP_LABEL,
-    },
-    {
-      component: Complete,
-      label: COMPLETE_LABEL,
-    },
-    {
-      component: Reset,
-      label: RESET_LABEL,
-    },
-  ];
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
