@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     width: '20rem',
     borderRadius: 50,
     textTransform: 'none',
+    [theme.breakpoints.down('xs')]: {
+      width: '15rem',
+    },
   },
   facebookButton: {
     marginTop: '-1rem',
@@ -53,6 +56,11 @@ const useStyles = makeStyles(theme => ({
   },
   reset: {
     marginTop: '-4rem',
+  },
+  buttonText: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.5rem',
+    },
   },
 }));
 
@@ -128,7 +136,7 @@ const Login: React.FC<LoginProps> = ({
       .post(`${process.env.GATSBY_STRAPI_URL}/auth/forgot-password`, {
         email: values.email,
       })
-      .then(response => {
+      .then(() => {
         setLoading(false);
         setSuccess(true);
         dispatchFeedback(
@@ -185,8 +193,8 @@ const Login: React.FC<LoginProps> = ({
           {loading ? (
             <CircularProgress />
           ) : (
-            <Typography variant='h5'>
-              {forgot ? 'Reset password' : 'Login'}
+            <Typography variant='h5' classes={{ root: classes.buttonText }}>
+              {forgot ? 'Forgot password' : 'Login'}
             </Typography>
           )}
         </Button>

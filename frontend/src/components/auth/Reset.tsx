@@ -24,6 +24,14 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 50,
     textTransform: 'none',
     marginBottom: '4rem',
+    [theme.breakpoints.down('xs')]: {
+      width: '15rem',
+    },
+  },
+  buttonText: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.5rem',
+    },
   },
 }));
 
@@ -126,7 +134,9 @@ const Reset: React.FC<ResetProps> = ({
           {loading ? (
             <CircularProgress />
           ) : (
-            <Typography variant='h5'>Reset password</Typography>
+            <Typography variant='h5' classes={{ root: classes.buttonText }}>
+              Reset password
+            </Typography>
           )}
         </Button>
       </Grid>
