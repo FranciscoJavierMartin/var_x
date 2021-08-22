@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Grid,
-  makeStyles,
-  Typography,
-  useTheme,
-} from '@material-ui/core';
+import { Grid, makeStyles, useTheme } from '@material-ui/core';
 import Fields from '../shared/Fields';
+import Slots from './Slots';
+import { EmailPassword } from '../../utils/fieldsData';
 
 import fingerprint from '../../images/fingerprint.svg';
 import NameAdornment from '../../images/NameAdornment';
 import PhoneAdornment from '../../images/PhoneAdornment';
-import { EmailPassword } from '../../utils/fieldsData';
 
 const useStyles = makeStyles(theme => ({
   phoneAdornment: {
@@ -34,27 +29,6 @@ const useStyles = makeStyles(theme => ({
     '& > :not(:first-child)': {
       marginLeft: '5rem',
     },
-  },
-  slot: {
-    backgroundColor: theme.palette.common.white,
-    borderRadius: 25,
-    width: '2.5rem',
-    height: '2.5rem',
-    minWidth: 0,
-    border: `0.15rem solid ${theme.palette.secondary.main}`,
-    '&:hover': {
-      backgroundColor: theme.palette.common.white,
-    },
-  },
-  slotWrapper: {
-    marginLeft: '2rem',
-    '& > :not(:first-child)': {
-      marginLeft: '-0.5rem',
-    },
-  },
-  slotText: {
-    color: theme.palette.secondary.main,
-    marginLeft: '-0.25rem',
   },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
@@ -136,15 +110,7 @@ const Details: React.FC<DetailsProps> = ({}) => {
         </Grid>
       ))}
       <Grid container>
-        <Grid item classes={{ root: classes.slotWrapper }}>
-          {[1, 2, 3].map(slot => (
-            <Button classes={{ root: classes.slot }} key={slot}>
-              <Typography variant='h5' classes={{ root: classes.slotText }}>
-                {slot}
-              </Typography>
-            </Button>
-          ))}
-        </Grid>
+        <Slots />
       </Grid>
     </Grid>
   );

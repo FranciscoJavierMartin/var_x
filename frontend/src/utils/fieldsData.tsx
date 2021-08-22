@@ -37,7 +37,11 @@ export const EmailPassword = (
         classes={{ root: classes.visibleIcon }}
         onClick={() => setIsPasswordVisible(prevState => !prevState)}
       >
-        {isPasswordVisible ? <ShowPassword /> : <HidePassword />}
+        {isPasswordVisible ? (
+          <ShowPassword color={isWhite ? '#fff' : undefined} />
+        ) : (
+          <HidePassword color={isWhite ? '#fff' : undefined} />
+        )}
       </IconButton>
     ),
   },
