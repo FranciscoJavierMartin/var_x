@@ -9,6 +9,11 @@ const validators: { [key: string]: (val: string) => boolean } = {
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
   confimation: (val: string): boolean =>
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
+  street: (val: string): boolean =>
+    /^(\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\d*)?$/.test(
+      val
+    ),
+  zip: (val: string): boolean => /^\d{5}(-\d{4})?$/.test(val),
 };
 
 export default function validate(values: { [key: string]: string }): {

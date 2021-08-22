@@ -12,11 +12,15 @@ const Settings: React.FC<SettingsProps> = ({}) => {
   const classes = useStyles();
 
   return (
-    <Grid container>
-      <Details />
-      <Payments />
-      <Location />
-    </Grid>
+    <>
+      <Grid container>
+        <Details />
+        <Payments />
+      </Grid>
+      <Grid container>
+        <Location />
+      </Grid>
+    </>
   );
 };
 
