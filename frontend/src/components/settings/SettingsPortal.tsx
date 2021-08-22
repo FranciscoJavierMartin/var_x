@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Grid, Button, Typography, makeStyles } from '@material-ui/core';
-import { useSprings, animated } from 'react-spring';
+import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
+import Settings from './Settings';
 import { UserContext } from '../../contexts';
 
 import accountIcon from '../../images/account.svg';
@@ -33,11 +34,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AnimatedButton = animated(Button);
+const AnimatedGrid = animated(Grid);
 
 const buttons = [
   {
     label: 'Settings',
     icon: settingsIcon,
+    component: Settings,
   },
   {
     label: 'Order history',
@@ -57,6 +60,7 @@ interface SettingsPortalProps {}
 
 const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
   const [selectedSetting, setSelectedSetting] = useState<string>('');
+  const [showComponent, setShowComponent] = useState<boolean>(false);
   const { user } = useContext(UserContext);
   const classes = useStyles();
   const [resizeListener, sizes] = useResizeAware();
@@ -103,6 +107,25 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
     }))
   );
 
+  const styles = useSpring({
+    opacity: !selectedSetting || showComponent ? 1 : 0,
+    delay: !selectedSetting || showComponent ? 0 : 1350,
+  });
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (!selectedSetting) {
+      setShowComponent(false);
+    } else {
+      timer = setTimeout(() => {
+        setShowComponent(true);
+      }, 2000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [selectedSetting]);
+
   return (
     <Grid container direction='column' alignItems='center'>
       {resizeListener}
@@ -123,29 +146,39 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         justifyContent='space-around'
         classes={{ root: classes.dashboard }}
       >
-        {springs.map((prop, i) => (
-          <Grid item key={buttons[i].label}>
-            <AnimatedButton
-              variant='contained'
-              color='primary'
-              onClick={() => handleClick(buttons[i].label)}
-              style={prop}
-            >
-              <Grid container direction='column'>
-                <Grid item>
-                  <img
-                    src={buttons[i].icon}
-                    alt={buttons[i].label}
-                    className={classes.icon}
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography variant='h5'>{buttons[i].label}</Typography>
-                </Grid>
-              </Grid>
-            </AnimatedButton>
-          </Grid>
-        ))}
+        {springs.map((prop, i) => {
+          const button = buttons[i];
+          const Component = button.component;
+          return (
+            <Grid item key={button.label}>
+              <AnimatedButton
+                variant='contained'
+                color='primary'
+                onClick={() => handleClick(button.label)}
+                style={prop}
+              >
+                <AnimatedGrid container direction='column' style={styles}>
+                  {selectedSetting === button.label && showComponent ? (
+                    <Component />
+                  ) : (
+                    <>
+                      <Grid item>
+                        <img
+                          src={button.icon}
+                          alt={button.label}
+                          className={classes.icon}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Typography variant='h5'>{button.label}</Typography>
+                      </Grid>
+                    </>
+                  )}
+                </AnimatedGrid>
+              </AnimatedButton>
+            </Grid>
+          );
+        })}
       </Grid>
     </Grid>
   );
