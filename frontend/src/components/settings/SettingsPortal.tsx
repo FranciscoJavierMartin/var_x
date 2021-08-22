@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Grid, Button, Typography, makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
 import Settings from './Settings';
@@ -30,6 +31,15 @@ const useStyles = makeStyles(theme => ({
   icon: {
     height: '12rem',
     width: '12rem',
+  },
+  button: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  addHover: {
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: theme.palette.secondary.main,
+    },
   },
 }));
 
@@ -150,33 +160,42 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
           const button = buttons[i];
           const Component = button.component;
           return (
-            <Grid item key={button.label}>
-              <AnimatedButton
-                variant='contained'
-                color='primary'
-                onClick={() => handleClick(button.label)}
-                style={prop}
+            <AnimatedGrid
+              key={button.label}
+              item
+              onClick={() => (showComponent ? null : handleClick(button.label))}
+              style={prop}
+              classes={{
+                root: clsx(classes.button, {
+                  [classes.addHover]: !showComponent,
+                }),
+              }}
+            >
+              <AnimatedGrid
+                container
+                direction='column'
+                justifyContent='center'
+                alignItems='center'
+                style={styles}
               >
-                <AnimatedGrid container direction='column' style={styles}>
-                  {selectedSetting === button.label && showComponent ? (
-                    <Component />
-                  ) : (
-                    <>
-                      <Grid item>
-                        <img
-                          src={button.icon}
-                          alt={button.label}
-                          className={classes.icon}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <Typography variant='h5'>{button.label}</Typography>
-                      </Grid>
-                    </>
-                  )}
-                </AnimatedGrid>
-              </AnimatedButton>
-            </Grid>
+                {selectedSetting === button.label && showComponent ? (
+                  <Component />
+                ) : (
+                  <>
+                    <Grid item>
+                      <img
+                        src={button.icon}
+                        alt={button.label}
+                        className={classes.icon}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography variant='h5'>{button.label}</Typography>
+                    </Grid>
+                  </>
+                )}
+              </AnimatedGrid>
+            </AnimatedGrid>
           );
         })}
       </Grid>
