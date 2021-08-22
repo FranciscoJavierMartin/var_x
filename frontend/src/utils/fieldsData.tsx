@@ -2,16 +2,17 @@ import React from 'react';
 import { IconButton } from '@material-ui/core';
 
 import EmailAdornment from '../images/EmailAdornment';
-import passwordAdornment from '../images/password-adornment.svg';
-import hidePasswordIcon from '../images/hide-password.svg';
-import showPasswordIcon from '../images/show-password.svg';
+import PasswordAdornment from '../images/PasswordAdornment';
+import HidePassword from '../images/HidePassword';
+import ShowPassword from '../images/ShowPassword';
 
 export const EmailPassword = (
   classes: any,
   hideEmail: boolean,
   hidePassword: boolean,
   isPasswordVisible: boolean,
-  setIsPasswordVisible: React.Dispatch<React.SetStateAction<boolean>>
+  setIsPasswordVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  isWhite?: boolean
 ) => ({
   email: {
     helperText: 'Invalid email',
@@ -20,7 +21,7 @@ export const EmailPassword = (
     hidden: hideEmail,
     startAdornment: (
       <span className={classes.emailAdornment}>
-        <EmailAdornment />
+        <EmailAdornment color={isWhite ? '#fff' : undefined} />
       </span>
     ),
   },
@@ -30,16 +31,13 @@ export const EmailPassword = (
     placeholder: 'Password',
     hidden: hidePassword,
     type: isPasswordVisible ? 'text' : 'password',
-    startAdornment: <img src={passwordAdornment} alt='password icon' />,
+    startAdornment: <PasswordAdornment color={isWhite ? '#fff' : undefined} />,
     endAdornment: (
       <IconButton
         classes={{ root: classes.visibleIcon }}
         onClick={() => setIsPasswordVisible(prevState => !prevState)}
       >
-        <img
-          src={isPasswordVisible ? showPasswordIcon : hidePasswordIcon}
-          alt={`${isPasswordVisible ? 'Show' : 'Hide'} password icon`}
-        />
+        {isPasswordVisible ? <ShowPassword /> : <HidePassword />}
       </IconButton>
     ),
   },

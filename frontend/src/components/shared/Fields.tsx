@@ -1,8 +1,14 @@
 import React from 'react';
-import { Grid, TextField, InputAdornment, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  InputAdornment,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import validate from '../../utils/validate';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { isWhite?: boolean }>(theme => ({
   textField: {
     width: '20rem',
     [theme.breakpoints.down('xs')]: {
@@ -10,7 +16,8 @@ const useStyles = makeStyles(theme => ({
     },
   },
   input: {
-    color: theme.palette.secondary.main,
+    color: ({ isWhite }) =>
+      isWhite ? theme.palette.common.white : theme.palette.secondary.main,
   },
   visibleIcon: {
     padding: 0,
@@ -23,6 +30,7 @@ interface FieldsProps {
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
   values: { [key: string]: string };
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  isWhite?: boolean;
 }
 
 const Fields: React.FC<FieldsProps> = ({
@@ -31,8 +39,9 @@ const Fields: React.FC<FieldsProps> = ({
   setErrors,
   values,
   setValues,
+  isWhite,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ isWhite });
 
   return (
     <>

@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  makeStyles,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import Fields from '../shared/Fields';
 
 import fingerprint from '../../images/fingerprint.svg';
-import nameAdornment from '../../images/name-adornment.svg';
+import NameAdornment from '../../images/NameAdornment';
 import PhoneAdornment from '../../images/PhoneAdornment';
 import { EmailPassword } from '../../utils/fieldsData';
 
@@ -24,6 +30,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '3rem',
   },
   fieldContainer: {
+    marginBottom: '3rem',
     '& > :not(:first-child)': {
       marginLeft: '5rem',
     },
@@ -72,20 +79,22 @@ const Details: React.FC<DetailsProps> = ({}) => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const classes = useStyles();
+  const theme = useTheme();
 
   const email_password = EmailPassword(
     classes,
     false,
     false,
     isVisible,
-    setIsVisible
+    setIsVisible,
+    true
   );
 
   const name_phone = {
     name: {
       helperText: 'You must enter a name',
       placeholder: 'Name',
-      startAdornment: <img src={nameAdornment} alt='name' />,
+      startAdornment: <NameAdornment color={theme.palette.common.white} />,
     },
     phone: {
       helperText: 'Invalid',
@@ -122,6 +131,7 @@ const Details: React.FC<DetailsProps> = ({}) => {
             setValues={setValues}
             errors={errors}
             setErrors={setErrors}
+            isWhite
           />
         </Grid>
       ))}
