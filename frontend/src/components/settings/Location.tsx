@@ -8,6 +8,9 @@ import streetAdornment from '../../images/street-adornment.svg';
 import zipAdornment from '../../images/zip-adornment.svg';
 
 const useStyles = makeStyles(theme => ({
+  locationContainer: {
+    position: 'relative',
+  },
   icon: {
     marginBottom: '3rem',
   },
@@ -19,6 +22,10 @@ const useStyles = makeStyles(theme => ({
   chipWrapper: {
     marginTop: '2rem',
     marginBottom: '3rem',
+  },
+  slotsContainer: {
+    position: 'absolute',
+    bottom: 0
   },
 }));
 
@@ -46,7 +53,15 @@ const Location: React.FC<LocationProps> = ({}) => {
   };
 
   return (
-    <Grid item container direction='column' xs={6} alignItems='center'>
+    <Grid
+      item
+      container
+      direction='column'
+      xs={6}
+      justifyContent='center'
+      alignItems='center'
+      classes={{ root: classes.locationContainer }}
+    >
       <Grid item>
         <img
           src={locationIcon}
@@ -73,7 +88,7 @@ const Location: React.FC<LocationProps> = ({}) => {
       <Grid item classes={{ root: classes.chipWrapper }}>
         <Chip label='City, State' />
       </Grid>
-      <Grid item container>
+      <Grid item container classes={{ root: classes.slotsContainer }}>
         <Slots />
       </Grid>
     </Grid>

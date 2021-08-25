@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Grid, Button, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Typography, makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
@@ -13,7 +13,7 @@ import favoritesIcon from '../../images/favorite.svg';
 import subscriptionIcon from '../../images/subscription.svg';
 import background from '../../images/repeating-smallest.svg';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
   name: {
     color: theme.palette.secondary.main,
   },
@@ -24,8 +24,10 @@ const useStyles = makeStyles(theme => ({
     backgroundImage: `url(${background})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'repeat',
-    borderTop: `0.5rem solid ${theme.palette.primary.main}`,
-    borderBottom: `0.5rem solid ${theme.palette.primary.main}`,
+    borderTop: ({ showComponent }) =>
+      `${showComponent ? 0 : 0.5}rem solid ${theme.palette.primary.main}`,
+    borderBottom: ({ showComponent }) =>
+      `${showComponent ? 0 : 0.5}rem solid ${theme.palette.primary.main}`,
     margin: '5rem 0',
   },
   icon: {
@@ -43,7 +45,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AnimatedButton = animated(Button);
 const AnimatedGrid = animated(Grid);
 
 const buttons = [
@@ -72,8 +73,8 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
   const [selectedSetting, setSelectedSetting] = useState<string>('');
   const [showComponent, setShowComponent] = useState<boolean>(false);
   const { user } = useContext(UserContext);
-  const classes = useStyles();
   const [resizeListener, sizes] = useResizeAware();
+  const classes = useStyles({ showComponent });
 
   const handleClick = (label: string) => {
     if (selectedSetting === label) {
@@ -179,7 +180,7 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
                 style={styles}
               >
                 {selectedSetting === button.label && showComponent ? (
-                  <Component />
+                  <Component setSelectedSetting={setSelectedSetting} />
                 ) : (
                   <>
                     <Grid item>

@@ -5,6 +5,10 @@ import card from '../../images/card.svg';
 import Slots from './Slots';
 
 const useStyles = makeStyles(theme => ({
+  paymentsContainer: {
+    borderLeft: `4px solid ${theme.palette.common.white}`,
+    position: 'relative',
+  },
   icon: {
     marginBottom: '3rem',
   },
@@ -27,6 +31,10 @@ const useStyles = makeStyles(theme => ({
     fontStyle: 'italic',
     color: theme.palette.primary.main,
   },
+  slotsContainer: {
+    position: 'absolute',
+    bottom: 0,
+  },
 }));
 
 const cards = [
@@ -42,7 +50,15 @@ const Payments: React.FC<PaymentsProps> = ({}) => {
   const classes = useStyles();
 
   return (
-    <Grid item container direction='column' xs={6} alignItems='center'>
+    <Grid
+      item
+      container
+      direction='column'
+      xs={6}
+      justifyContent='center'
+      alignItems='center'
+      classes={{ root: classes.paymentsContainer }}
+    >
       <Grid item>
         <img src={card} alt='payment settings' className={classes.icon} />
       </Grid>
@@ -72,7 +88,7 @@ const Payments: React.FC<PaymentsProps> = ({}) => {
           </Grid>
         )}
       </Grid>
-      <Grid item container>
+      <Grid item container classes={{ root: classes.slotsContainer }}>
         <Slots />
       </Grid>
     </Grid>

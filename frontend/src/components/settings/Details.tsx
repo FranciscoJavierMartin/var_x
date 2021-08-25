@@ -9,6 +9,9 @@ import NameAdornment from '../../images/NameAdornment';
 import PhoneAdornment from '../../images/PhoneAdornment';
 
 const useStyles = makeStyles(theme => ({
+  detailsContainer: {
+    position: 'relative',
+  },
   phoneAdornment: {
     height: 25.122,
     width: 25.173,
@@ -29,6 +32,10 @@ const useStyles = makeStyles(theme => ({
     '& > :not(:first-child)': {
       marginLeft: '5rem',
     },
+  },
+  slotsContainer: {
+    position: 'absolute',
+    bottom: 0,
   },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
@@ -84,7 +91,15 @@ const Details: React.FC<DetailsProps> = ({}) => {
   const fields = [name_phone, email_password];
 
   return (
-    <Grid item container direction='column' xs={6} alignItems='center'>
+    <Grid
+      item
+      container
+      direction='column'
+      xs={6}
+      justifyContent='center'
+      alignItems='center'
+      classes={{ root: classes.detailsContainer }}
+    >
       <Grid item>
         <img
           src={fingerprint}
@@ -109,7 +124,7 @@ const Details: React.FC<DetailsProps> = ({}) => {
           />
         </Grid>
       ))}
-      <Grid container>
+      <Grid item container classes={{ root: classes.slotsContainer }}>
         <Slots />
       </Grid>
     </Grid>
