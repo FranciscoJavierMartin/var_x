@@ -1,10 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Grid, Typography, makeStyles, Theme } from '@material-ui/core';
+import { Button, Grid, Typography, makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
 import Settings from './Settings';
 import { UserContext } from '../../contexts';
+import { setUser } from '../../contexts/user/actions';
 
 import accountIcon from '../../images/account.svg';
 import settingsIcon from '../../images/settings.svg';
@@ -43,6 +44,9 @@ const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
       backgroundColor: theme.palette.secondary.main,
     },
   },
+  logout: {
+    color: theme.palette.error.main,
+  },
 }));
 
 const AnimatedGrid = animated(Grid);
@@ -72,16 +76,20 @@ interface SettingsPortalProps {}
 const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
   const [selectedSetting, setSelectedSetting] = useState<string>('');
   const [showComponent, setShowComponent] = useState<boolean>(false);
-  const { user } = useContext(UserContext);
+  const { user, dispatchUser, defaultUser } = useContext(UserContext);
   const [resizeListener, sizes] = useResizeAware();
   const classes = useStyles({ showComponent });
 
-  const handleClick = (label: string) => {
+  const handleClick = (label: string): void => {
     if (selectedSetting === label) {
       setSelectedSetting('');
     } else {
       setSelectedSetting(label);
     }
+  };
+
+  const handleLogout = (): void => {
+    dispatchUser(setUser(defaultUser));
   };
 
   const springs = useSprings(
@@ -148,6 +156,13 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         <Typography variant='h4' classes={{ root: classes.name }}>
           Welcome back, {user.username}
         </Typography>
+      </Grid>
+      <Grid item>
+        <Button onClick={handleLogout}>
+          <Typography variant='h5' classes={{ root: classes.logout }}>
+            Logout
+          </Typography>
+        </Button>
       </Grid>
       <Grid
         item
