@@ -176,7 +176,7 @@ const SignUp: React.FC<SignUpProps> = ({
               variant='h5'
               classes={{ root: classes.facebookButtonText }}
             >
-              Sign Up{info ? '' : 'with Facebook'}
+              Sign Up{info ? '' : ' with Facebook'}
             </Typography>
           )}
         </Button>

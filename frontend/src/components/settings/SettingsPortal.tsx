@@ -143,7 +143,6 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
       <Grid item>
         <img src={accountIcon} alt='settings page' />
       </Grid>
-      {sizes.width} x {sizes.height}
       <animated.div></animated.div>
       <Grid item>
         <Typography variant='h4' classes={{ root: classes.name }}>
