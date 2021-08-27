@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Typography, Grid, makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   slot: {
@@ -24,19 +25,46 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
     marginLeft: '-0.25rem',
   },
+  selected: {
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+  },
+  selectedText: {
+    color: theme.palette.common.white,
+  },
 }));
 
-interface SlotsProps {}
+interface SlotsProps {
+  slot: number;
+  setSlot: React.Dispatch<React.SetStateAction<number>>;
+}
 
-const Slots: React.FC<SlotsProps> = ({}) => {
+const Slots: React.FC<SlotsProps> = ({ slot, setSlot }) => {
   const classes = useStyles();
 
   return (
     <Grid item classes={{ root: classes.slotWrapper }}>
-      {[1, 2, 3].map(slot => (
-        <Button classes={{ root: classes.slot }} key={slot}>
-          <Typography variant='h5' classes={{ root: classes.slotText }}>
-            {slot}
+      {[1, 2, 3].map((n: number, index: number) => (
+        <Button
+          onClick={() => setSlot(index)}
+          classes={{
+            root: clsx(classes.slot, {
+              [classes.selected]: slot === index,
+            }),
+          }}
+          key={n}
+        >
+          <Typography
+            variant='h5'
+            classes={{
+              root: clsx(classes.slotText, {
+                [classes.selectedText]: slot === index,
+              }),
+            }}
+          >
+            {n}
           </Typography>
         </Button>
       ))}

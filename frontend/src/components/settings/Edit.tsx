@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, IconButton, makeStyles, useTheme } from '@material-ui/core';
+import { User } from '../../interfaces/user';
 
 import BackwardsOutline from '../../images/BackwardsOutline';
 import editIcon from '../../images/edit.svg';
@@ -16,10 +17,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface EditProps {
+  user: User;
   setSelectedSetting: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Edit: React.FC<EditProps> = ({ setSelectedSetting }) => {
+const Edit: React.FC<EditProps> = ({ user, setSelectedSetting }) => {
   const classes = useStyles();
   const theme = useTheme();
 

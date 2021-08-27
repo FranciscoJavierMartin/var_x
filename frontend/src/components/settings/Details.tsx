@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, makeStyles, useTheme } from '@material-ui/core';
 import Fields from '../shared/Fields';
 import Slots from './Slots';
 import { EmailPassword } from '../../utils/fieldsData';
+import { User } from '../../interfaces/user';
 
 import fingerprint from '../../images/fingerprint.svg';
 import NameAdornment from '../../images/NameAdornment';
@@ -48,17 +49,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface DetailsProps {}
+interface DetailsProps {
+  user: User;
+}
 
-const Details: React.FC<DetailsProps> = ({}) => {
+const Details: React.FC<DetailsProps> = ({ user }) => {
   const [values, setValues] = useState<{ [key: string]: string }>({
     name: '',
     phone: '',
     email: '',
-    password: '',
+    password: '********',
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [slot, setSlot] = useState<number>(0);
   const classes = useStyles();
   const theme = useTheme();
 
@@ -89,6 +93,10 @@ const Details: React.FC<DetailsProps> = ({}) => {
   };
 
   const fields = [name_phone, email_password];
+
+  useEffect(() => {
+    setValues({ ...user.contactInfo[slot], password: '********' });
+  }, [slot]);
 
   return (
     <Grid
@@ -125,7 +133,7 @@ const Details: React.FC<DetailsProps> = ({}) => {
         </Grid>
       ))}
       <Grid item container classes={{ root: classes.slotsContainer }}>
-        <Slots />
+        <Slots slot={slot} setSlot={setSlot} />
       </Grid>
     </Grid>
   );

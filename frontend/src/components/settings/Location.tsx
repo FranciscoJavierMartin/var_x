@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Chip, makeStyles } from '@material-ui/core';
 import Fields from '../shared/Fields';
 import Slots from './Slots';
+import { LocationInfo, User } from '../../interfaces/user';
 
 import locationIcon from '../../images/location.svg';
 import streetAdornment from '../../images/street-adornment.svg';
@@ -25,19 +26,24 @@ const useStyles = makeStyles(theme => ({
   },
   slotsContainer: {
     position: 'absolute',
-    bottom: 0
+    bottom: 0,
   },
 }));
 
-interface LocationProps {}
+interface LocationProps {
+  user: User;
+}
 
-const Location: React.FC<LocationProps> = ({}) => {
-  const classes = useStyles();
+const Location: React.FC<LocationProps> = ({ user }) => {
+  const [slot, setSlot] = useState<number>(0);
   const [values, setValues] = useState<{ [key: string]: string }>({
     street: '',
     zip: '',
+    city: '',
+    state: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const classes = useStyles();
 
   const fields = {
     street: {
@@ -51,6 +57,10 @@ const Location: React.FC<LocationProps> = ({}) => {
       startAdornment: <img src={zipAdornment} alt='zip code' />,
     },
   };
+
+  useEffect(() => {
+    setValues({ ...user.locations[slot] });
+  }, [slot]);
 
   return (
     <Grid
@@ -86,10 +96,14 @@ const Location: React.FC<LocationProps> = ({}) => {
         />
       </Grid>
       <Grid item classes={{ root: classes.chipWrapper }}>
-        <Chip label='City, State' />
+        <Chip
+          label={
+            values.city ? `${values.city}, ${values.state}` : 'City, State'
+          }
+        />
       </Grid>
       <Grid item container classes={{ root: classes.slotsContainer }}>
-        <Slots />
+        <Slots slot={slot} setSlot={setSlot} />
       </Grid>
     </Grid>
   );

@@ -12,12 +12,33 @@ export interface Role {
   type: Roles;
 }
 
+export interface PaymentMethod {
+  brand: string;
+  last4: string;
+}
+
+export interface ContactInfo {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface LocationInfo {
+  street: string;
+  zip: string;
+  city: string;
+  state: string;
+}
+
 export interface User {
   id: number;
   username: string;
   email: string;
   provider: string;
   confirmed: boolean;
+  paymentMethods: PaymentMethod[];
+  contactInfo: ContactInfo[];
+  locations: LocationInfo[];
   blocked?: boolean;
   jwt?: string;
   onboarding?: boolean;

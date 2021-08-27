@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import Details from './Details';
 import Payments from './Payments';
 import Location from './Location';
 import Edit from './Edit';
+import { UserContext } from '../../contexts';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {
@@ -20,20 +21,21 @@ interface SettingsProps {
 }
 
 const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
+  const { user } = useContext(UserContext);
   const classes = useStyles();
 
   return (
     <>
       <Grid container classes={{ root: classes.sectionContainer }}>
-        <Details />
-        <Payments />
+        <Details user={user} />
+        <Payments user={user} />
       </Grid>
       <Grid
         container
         classes={{ root: clsx(classes.bottomRow, classes.sectionContainer) }}
       >
-        <Location />
-        <Edit setSelectedSetting={setSelectedSetting} />
+        <Location user={user} />
+        <Edit user={user} setSelectedSetting={setSelectedSetting} />
       </Grid>
     </>
   );
