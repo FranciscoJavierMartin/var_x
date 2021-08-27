@@ -32,16 +32,23 @@ const useStyles = makeStyles(theme => ({
 
 interface LocationProps {
   user: User;
+  edit: boolean;
+  setChangesMade: React.Dispatch<React.SetStateAction<boolean>>;
+  values: { [key: string]: string };
+  setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  slot: number;
+  setSlot: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const Location: React.FC<LocationProps> = ({ user }) => {
-  const [slot, setSlot] = useState<number>(0);
-  const [values, setValues] = useState<{ [key: string]: string }>({
-    street: '',
-    zip: '',
-    city: '',
-    state: '',
-  });
+const Location: React.FC<LocationProps> = ({
+  user,
+  edit,
+  setChangesMade,
+  values,
+  setValues,
+  slot,
+  setSlot,
+}) => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const classes = useStyles();
 
@@ -61,6 +68,16 @@ const Location: React.FC<LocationProps> = ({ user }) => {
   useEffect(() => {
     setValues({ ...user.locations[slot] });
   }, [slot]);
+
+  useEffect(() => {
+    const changed = Object.keys(user.contactInfo[slot]).some(
+      field => values[field] !== (user.contactInfo[slot] as any)[field]
+    );
+
+    if (changed) {
+      setChangesMade(true);
+    }
+  }, [values]);
 
   return (
     <Grid
@@ -93,6 +110,7 @@ const Location: React.FC<LocationProps> = ({ user }) => {
           errors={errors}
           setErrors={setErrors}
           isWhite
+          disabled={!edit}
         />
       </Grid>
       <Grid item classes={{ root: classes.chipWrapper }}>

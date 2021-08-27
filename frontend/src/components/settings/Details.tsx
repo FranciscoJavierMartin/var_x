@@ -51,18 +51,25 @@ const useStyles = makeStyles(theme => ({
 
 interface DetailsProps {
   user: User;
+  edit: boolean;
+  setChangesMade: React.Dispatch<React.SetStateAction<boolean>>;
+  values: { [key: string]: string };
+  setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  slot: number;
+  setSlot: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const Details: React.FC<DetailsProps> = ({ user }) => {
-  const [values, setValues] = useState<{ [key: string]: string }>({
-    name: '',
-    phone: '',
-    email: '',
-    password: '********',
-  });
+const Details: React.FC<DetailsProps> = ({
+  user,
+  edit,
+  setChangesMade,
+  values,
+  setValues,
+  slot,
+  setSlot,
+}) => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [slot, setSlot] = useState<number>(0);
   const classes = useStyles();
   const theme = useTheme();
 
@@ -98,6 +105,16 @@ const Details: React.FC<DetailsProps> = ({ user }) => {
     setValues({ ...user.contactInfo[slot], password: '********' });
   }, [slot]);
 
+  useEffect(() => {
+    const changed = Object.keys(user.contactInfo[slot]).some(
+      field => values[field] !== (user.contactInfo[slot] as any)[field]
+    );
+
+    if (changed) {
+      setChangesMade(true);
+    }
+  }, [values]);
+
   return (
     <Grid
       item
@@ -129,6 +146,7 @@ const Details: React.FC<DetailsProps> = ({ user }) => {
             errors={errors}
             setErrors={setErrors}
             isWhite
+            disabled={!edit}
           />
         </Grid>
       ))}

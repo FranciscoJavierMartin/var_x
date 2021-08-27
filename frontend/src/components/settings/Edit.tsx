@@ -1,6 +1,15 @@
-import React from 'react';
-import { Grid, IconButton, makeStyles, useTheme } from '@material-ui/core';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import {
+  Grid,
+  IconButton,
+  CircularProgress,
+  makeStyles,
+  useTheme,
+} from '@material-ui/core';
 import { User } from '../../interfaces/user';
+import { FeedbackContext } from '../../contexts';
+import { openSnackbar } from '../../contexts/feedback/actions';
 
 import BackwardsOutline from '../../images/BackwardsOutline';
 import editIcon from '../../images/edit.svg';
@@ -19,11 +28,39 @@ const useStyles = makeStyles(theme => ({
 interface EditProps {
   user: User;
   setSelectedSetting: React.Dispatch<React.SetStateAction<string>>;
+  edit: boolean;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  changesMade: boolean;
+  details: { [key: string]: string };
+  locations: { [key: string]: string };
+  detailSlot: number;
+  locationSlot: number;
 }
 
-const Edit: React.FC<EditProps> = ({ user, setSelectedSetting }) => {
+const Edit: React.FC<EditProps> = ({
+  setSelectedSetting,
+  edit,
+  setEdit,
+  changesMade,
+  details,
+  locations,
+  detailSlot,
+  locationSlot,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { dispatchFeedback } = useContext(FeedbackContext);
+
   const classes = useStyles();
   const theme = useTheme();
+
+  const handleEdit = (): void => {
+    setEdit(prevState => !prevState);
+
+    if(edit && changesMade){
+      setIsLoading(true);
+      
+    }
+  };
 
   return (
     <Grid
@@ -42,8 +79,12 @@ const Edit: React.FC<EditProps> = ({ user, setSelectedSetting }) => {
         </IconButton>
       </Grid>
       <Grid item>
-        <IconButton>
-          <img src={editIcon} alt='edit settings' className={classes.icon} />
+        <IconButton onClick={handleEdit}>
+          <img
+            src={edit ? saveIcon : editIcon}
+            alt={`${edit ? 'save' : 'edit'} settings`}
+            className={classes.icon}
+          />
         </IconButton>
       </Grid>
     </Grid>

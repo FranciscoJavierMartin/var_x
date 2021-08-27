@@ -31,6 +31,7 @@ interface FieldsProps {
   values: { [key: string]: string };
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   isWhite?: boolean;
+  disabled?: boolean;
 }
 
 const Fields: React.FC<FieldsProps> = ({
@@ -40,6 +41,7 @@ const Fields: React.FC<FieldsProps> = ({
   values,
   setValues,
   isWhite,
+  disabled,
 }) => {
   const classes = useStyles({ isWhite });
 
@@ -77,6 +79,7 @@ const Fields: React.FC<FieldsProps> = ({
               }}
               classes={{ root: classes.textField }}
               type={fieldValues.type}
+              disabled={disabled}
               placeholder={fieldValues.placeholder}
               error={errors[field]}
               helperText={errors[field] && fieldValues.helperText}
