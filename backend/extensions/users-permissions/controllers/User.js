@@ -8,13 +8,13 @@ const sanitizeUser = (user) =>
 module.exports = {
   async setSettings(ctx) {
     const { id, contactInfo, locations } = ctx.state.user;
-    const { details, detailsSlot, location, locationSlot } = ctx.request.body;
+    const { details, detailSlot, location, locationSlot } = ctx.request.body;
 
     let newInfo = [...contactInfo];
     let newLocations = [...locations];
 
-    if (typeof details !== "undefined" && typeof detailsSlot !== "undefined") {
-      newInfo[detailsSlot] = details;
+    if (typeof details !== "undefined" && typeof detailSlot !== "undefined") {
+      newInfo[detailSlot] = details;
     }
 
     if (

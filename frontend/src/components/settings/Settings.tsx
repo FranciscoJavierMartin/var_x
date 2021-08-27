@@ -21,7 +21,7 @@ interface SettingsProps {
 }
 
 const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
-  const { user } = useContext(UserContext);
+  const { user, dispatchUser } = useContext(UserContext);
   const [edit, setEdit] = useState<boolean>(false);
   const [changesMade, setChangesMade] = useState<boolean>(false);
   const [detailValues, setDetailValues] = useState<{ [key: string]: string }>({
@@ -72,6 +72,7 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
         />
         <Edit
           user={user}
+          dispatchUser={dispatchUser}
           edit={edit}
           setEdit={setEdit}
           changesMade={changesMade}
