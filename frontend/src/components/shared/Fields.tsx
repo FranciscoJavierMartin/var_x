@@ -8,21 +8,23 @@ import {
 } from '@material-ui/core';
 import validate from '../../utils/validate';
 
-const useStyles = makeStyles<Theme, { isWhite?: boolean }>(theme => ({
-  textField: {
-    width: '20rem',
-    [theme.breakpoints.down('xs')]: {
-      width: '15rem',
+const useStyles = makeStyles<Theme, { isWhite?: boolean; fullWidth?: boolean }>(
+  theme => ({
+    textField: {
+      width: ({ fullWidth }) => (fullWidth ? undefined : '20rem'),
+      [theme.breakpoints.down('xs')]: {
+        width: ({ fullWidth }) => (fullWidth ? undefined : '15rem'),
+      },
     },
-  },
-  input: {
-    color: ({ isWhite }) =>
-      isWhite ? theme.palette.common.white : theme.palette.secondary.main,
-  },
-  visibleIcon: {
-    padding: 0,
-  },
-}));
+    input: {
+      color: ({ isWhite }) =>
+        isWhite ? theme.palette.common.white : theme.palette.secondary.main,
+    },
+    visibleIcon: {
+      padding: 0,
+    },
+  })
+);
 
 interface FieldsProps {
   fields: { [key: string]: any };
@@ -32,6 +34,7 @@ interface FieldsProps {
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   isWhite?: boolean;
   disabled?: boolean;
+  fullWidth?: boolean;
 }
 
 const Fields: React.FC<FieldsProps> = ({
@@ -42,8 +45,9 @@ const Fields: React.FC<FieldsProps> = ({
   setValues,
   isWhite,
   disabled,
+  fullWidth,
 }) => {
-  const classes = useStyles({ isWhite });
+  const classes = useStyles({ isWhite, fullWidth });
 
   return (
     <>
@@ -80,6 +84,7 @@ const Fields: React.FC<FieldsProps> = ({
               classes={{ root: classes.textField }}
               type={fieldValues.type}
               disabled={disabled}
+              fullWidth={fullWidth}
               placeholder={fieldValues.placeholder}
               error={errors[field]}
               helperText={errors[field] && fieldValues.helperText}

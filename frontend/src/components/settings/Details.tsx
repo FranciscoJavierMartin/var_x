@@ -74,7 +74,6 @@ const Details: React.FC<DetailsProps> = ({
   const theme = useTheme();
 
   const email_password = EmailPassword(
-    classes,
     false,
     false,
     isVisible,

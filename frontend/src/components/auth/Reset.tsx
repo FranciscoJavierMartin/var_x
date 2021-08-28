@@ -52,13 +52,7 @@ const Reset: React.FC<ResetProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const { password } = EmailPassword(
-    classes,
-    true,
-    false,
-    isVisible,
-    setIsVisible
-  );
+  const { password } = EmailPassword(true, false, isVisible, setIsVisible);
   const fields = {
     password,
     confirmation: { ...password, placeholder: 'Confirm Password' },

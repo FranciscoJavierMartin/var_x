@@ -84,7 +84,6 @@ const Login: React.FC<LoginProps> = ({
   const [success, setSuccess] = useState<boolean>(false);
 
   const fields = EmailPassword(
-    classes,
     false,
     forgot,
     isPasswordVisible,

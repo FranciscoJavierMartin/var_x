@@ -7,7 +7,6 @@ import HidePassword from '../images/HidePassword';
 import ShowPassword from '../images/ShowPassword';
 
 export const EmailPassword = (
-  classes: any,
   hideEmail: boolean,
   hidePassword: boolean,
   isPasswordVisible: boolean,
@@ -20,7 +19,7 @@ export const EmailPassword = (
     type: 'text',
     hidden: hideEmail,
     startAdornment: (
-      <span className={classes.emailAdornment}>
+      <span style={{ height: 17, width: 22, marginBottom: 10 }}>
         <EmailAdornment color={isWhite ? '#fff' : undefined} />
       </span>
     ),
@@ -34,7 +33,7 @@ export const EmailPassword = (
     startAdornment: <PasswordAdornment color={isWhite ? '#fff' : undefined} />,
     endAdornment: (
       <IconButton
-        classes={{ root: classes.visibleIcon }}
+        style={{ padding: 0 }}
         onClick={() => setIsPasswordVisible(prevState => !prevState)}
       >
         {isPasswordVisible ? (

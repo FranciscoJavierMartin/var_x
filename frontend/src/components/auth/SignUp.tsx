@@ -88,7 +88,7 @@ const SignUp: React.FC<SignUpProps> = ({
   };
 
   const fields = info
-    ? EmailPassword(classes, false, false, isVisible, setIsVisible)
+    ? EmailPassword(false, false, isVisible, setIsVisible)
     : nameField;
 
   const disabled =

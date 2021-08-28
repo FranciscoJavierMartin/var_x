@@ -1,4 +1,4 @@
-import { FeedbarActionsTypes } from '../contexts/feedback/actions';
+import { FeedbackActionsTypes } from '../contexts/feedback/actions';
 
 export interface FeedbackState {
   open: boolean;
@@ -8,5 +8,5 @@ export interface FeedbackState {
 
 export interface FeedbackContextState {
   feedback: FeedbackState;
-  dispatchFeedback: React.Dispatch<FeedbarActionsTypes>;
+  dispatchFeedback: React.Dispatch<FeedbackActionsTypes>;
 }

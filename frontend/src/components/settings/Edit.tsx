@@ -7,6 +7,7 @@ import {
   makeStyles,
   useTheme,
 } from '@material-ui/core';
+import ConfirmationDialog from './ConfirmationDialog';
 import { User } from '../../interfaces/user';
 import { FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
@@ -52,6 +53,7 @@ const Edit: React.FC<EditProps> = ({
   locationSlot,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const { dispatchFeedback } = useContext(FeedbackContext);
 
   const classes = useStyles();
@@ -59,11 +61,14 @@ const Edit: React.FC<EditProps> = ({
 
   const handleEdit = (): void => {
     setEdit(prevState => !prevState);
+    const { password, ...newDetails } = details;
+
+    if (password !== '********') {
+      setIsDialogOpen(true);
+    }
 
     if (edit && changesMade) {
       setIsLoading(true);
-
-      const { password, ...newDetails } = details;
 
       axios
         .post(
@@ -128,6 +133,12 @@ const Edit: React.FC<EditProps> = ({
           </IconButton>
         )}
       </Grid>
+      <ConfirmationDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        user={user}
+        dispatchFeedback={dispatchFeedback}
+      />
     </Grid>
   );
 };
