@@ -43,6 +43,12 @@ const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
         marginBottom: ({ showComponent }) => (showComponent ? 0 : '5rem'),
       },
     },
+    [theme.breakpoints.down('xs')]: {
+      padding: '2rem 0',
+      '& > :not(:last-child)': {
+        marginBottom: ({ showComponent }) => (showComponent ? 0 : '2rem'),
+      },
+    },
   },
   icon: {
     height: '12rem',
@@ -98,8 +104,11 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
   const classes = useStyles({ showComponent });
   const matchesLG = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
-  const buttonWidth = matchesMD
+  const buttonWidth = matchesXS
+    ? `${sizes.width || 0 - 64}px`
+    : matchesMD
     ? `${sizes.width || 0 - 160}px`
     : matchesLG
     ? '288px'
