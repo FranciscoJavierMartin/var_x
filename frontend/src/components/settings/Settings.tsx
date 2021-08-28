@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import Details from './Details';
@@ -24,12 +24,18 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
   const { user, dispatchUser } = useContext(UserContext);
   const [edit, setEdit] = useState<boolean>(false);
   const [changesMade, setChangesMade] = useState<boolean>(false);
+
   const [detailValues, setDetailValues] = useState<{ [key: string]: string }>({
     name: '',
     phone: '',
     email: '',
     password: '********',
   });
+  const [detailErrors, setDetailErrors] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [detailSlot, setDetailSlot] = useState<number>(0);
+
   const [locationValues, setLocationValues] = useState<{
     [key: string]: string;
   }>({
@@ -38,10 +44,23 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
     city: '',
     state: '',
   });
-  const [detailSlot, setDetailSlot] = useState<number>(0);
+  const [locationErrors, setLocationErrors] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [locationSlot, setLocationSlot] = useState<number>(0);
 
   const classes = useStyles();
+
+  const allErrors = { ...detailErrors, ...locationErrors };
+  const isError = Object.values(allErrors).some(error => error);
+
+  useEffect(() => {
+    setDetailErrors({});
+  }, [detailSlot]);
+
+  useEffect(() => {
+    setLocationErrors({});
+  }, [locationSlot]);
 
   return (
     <>
@@ -54,6 +73,8 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
           setValues={setDetailValues}
           slot={detailSlot}
           setSlot={setDetailSlot}
+          errors={detailErrors}
+          setErrors={setDetailErrors}
         />
         <Payments user={user} edit={edit} />
       </Grid>
@@ -69,6 +90,8 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
           setValues={setLocationValues}
           slot={locationSlot}
           setSlot={setLocationSlot}
+          errors={locationErrors}
+          setErrors={setLocationErrors}
         />
         <Edit
           user={user}
@@ -81,6 +104,7 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
           locations={locationValues}
           detailSlot={detailSlot}
           locationSlot={locationSlot}
+          isError={isError}
         />
       </Grid>
     </>

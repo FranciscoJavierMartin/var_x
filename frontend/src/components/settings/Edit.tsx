@@ -38,6 +38,7 @@ interface EditProps {
   locations: { [key: string]: string };
   detailSlot: number;
   locationSlot: number;
+  isError: boolean;
 }
 
 const Edit: React.FC<EditProps> = ({
@@ -51,56 +52,69 @@ const Edit: React.FC<EditProps> = ({
   locations,
   detailSlot,
   locationSlot,
+  isError,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { dispatchFeedback } = useContext(FeedbackContext);
 
   const classes = useStyles();
   const theme = useTheme();
 
   const handleEdit = (): void => {
-    setEdit(prevState => !prevState);
-    const { password, ...newDetails } = details;
-
-    if (password !== '********') {
-      setIsDialogOpen(true);
-    }
-
-    if (edit && changesMade) {
-      setIsLoading(true);
-
-      axios
-        .post(
-          `${process.env.GATSBY_STRAPI_URL}/users-permissions/set-settings`,
-          {
-            details: newDetails,
-            detailSlot,
-            location: locations,
-            locationSlot,
-          },
-          { headers: { Authorization: `Bearer ${user.jwt}` } }
+    if (edit && isError) {
+      dispatchFeedback(
+        openSnackbar(
+          SnackbarStatus.Error,
+          'All fields must be valid before saving'
         )
-        .then(response => {
-          console.log(response);
-          setIsLoading(false);
-          dispatchFeedback(
-            openSnackbar(SnackbarStatus.Success, 'Settings saved successfully')
-          );
-          dispatchUser(
-            setUser({ ...response.data, jwt: user.jwt, onboarding: true })
-          );
-        })
-        .catch(error => {
-          setIsLoading(false);
-          console.error(error);
-          dispatchFeedback(
-            openSnackbar(
-              SnackbarStatus.Error,
-              'There was a problem saving your settings, please try again'
-            )
-          );
-        });
+      );
+    } else {
+      setEdit(prevState => !prevState);
+      const { password, ...newDetails } = details;
+
+      if (password !== '********') {
+        setIsDialogOpen(true);
+      }
+
+      if (edit && changesMade) {
+        setIsLoading(true);
+
+        axios
+          .post(
+            `${process.env.GATSBY_STRAPI_URL}/users-permissions/set-settings`,
+            {
+              details: newDetails,
+              detailSlot,
+              location: locations,
+              locationSlot,
+            },
+            { headers: { Authorization: `Bearer ${user.jwt}` } }
+          )
+          .then(response => {
+            console.log(response);
+            setIsLoading(false);
+            dispatchFeedback(
+              openSnackbar(
+                SnackbarStatus.Success,
+                'Settings saved successfully'
+              )
+            );
+            dispatchUser(
+              setUser({ ...response.data, jwt: user.jwt, onboarding: true })
+            );
+          })
+          .catch(error => {
+            setIsLoading(false);
+            console.error(error);
+            dispatchFeedback(
+              openSnackbar(
+                SnackbarStatus.Error,
+                'There was a problem saving your settings, please try again'
+              )
+            );
+          });
+      }
     }
   };
 

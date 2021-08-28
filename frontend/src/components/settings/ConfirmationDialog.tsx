@@ -59,6 +59,10 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     confirmation: { ...password, placeholder: 'New password' },
   };
 
+  const disabled =
+    Object.values(errors).some(error => error) ||
+    Object.keys(errors).length !== Object.keys(values).length;
+
   const handleConfirm = (): void => {
     setIsLoading(true);
 
@@ -111,6 +115,13 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       });
   };
 
+  const handleCancel = (): void => {
+    setIsDialogOpen(false);
+    dispatchFeedback(
+      openSnackbar(SnackbarStatus.Error, 'Your password has not been changed')
+    );
+  };
+
   return (
     <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
       <DialogTitle disableTypography>
@@ -134,7 +145,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={() => setIsDialogOpen(false)}
+          onClick={handleCancel}
           color='primary'
           disabled={isLoading}
           classes={{ root: classes.button }}
@@ -144,6 +155,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         <Button
           onClick={handleConfirm}
           color='secondary'
+          disabled={isLoading || disabled}
           classes={{ root: classes.button }}
         >
           {isLoading ? <CircularProgress /> : 'Yes, change my password'}

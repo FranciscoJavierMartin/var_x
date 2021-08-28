@@ -40,6 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 interface PaymentsProps {
   user: User;
+  edit: boolean;
 }
 
 const Payments: React.FC<PaymentsProps> = ({ user }) => {

@@ -38,6 +38,8 @@ interface LocationProps {
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   slot: number;
   setSlot: React.Dispatch<React.SetStateAction<number>>;
+  errors: { [key: string]: boolean };
+  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }
 
 const Location: React.FC<LocationProps> = ({
@@ -48,8 +50,9 @@ const Location: React.FC<LocationProps> = ({
   setValues,
   slot,
   setSlot,
+  errors,
+  setErrors,
 }) => {
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const classes = useStyles();
 
   const fields = {

@@ -57,6 +57,8 @@ interface DetailsProps {
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   slot: number;
   setSlot: React.Dispatch<React.SetStateAction<number>>;
+  errors: { [key: string]: boolean };
+  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }
 
 const Details: React.FC<DetailsProps> = ({
@@ -67,8 +69,9 @@ const Details: React.FC<DetailsProps> = ({
   setValues,
   slot,
   setSlot,
+  errors,
+  setErrors,
 }) => {
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const classes = useStyles();
   const theme = useTheme();
