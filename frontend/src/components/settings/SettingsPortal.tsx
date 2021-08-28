@@ -1,5 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Grid, Typography, makeStyles, Theme } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  Typography,
+  makeStyles,
+  Theme,
+  useMediaQuery,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
@@ -30,10 +37,17 @@ const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
     borderBottom: ({ showComponent }) =>
       `${showComponent ? 0 : 0.5}rem solid ${theme.palette.primary.main}`,
     margin: '5rem 0',
+    [theme.breakpoints.down('md')]: {
+      padding: '5rem 0',
+    },
   },
   icon: {
     height: '12rem',
     width: '12rem',
+    [theme.breakpoints.down('lg')]: {
+      height: '10rem',
+      width: '10rem',
+    },
   },
   button: {
     backgroundColor: theme.palette.primary.main,
@@ -79,6 +93,11 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
   const { user, dispatchUser, defaultUser } = useContext(UserContext);
   const [resizeListener, sizes] = useResizeAware();
   const classes = useStyles({ showComponent });
+  const matchesLG = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
+  const buttonWidth = matchesLG ? '288px' : '352px';
+  const buttonHeight = matchesLG ? '18rem' : '22rem';
 
   const handleClick = (label: string): void => {
     if (selectedSetting === label) {
@@ -105,10 +124,11 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         };
 
         const size = {
-          height: selectedSetting === button.label ? '60rem' : '22rem',
+          height: selectedSetting === button.label ? '60rem' : buttonHeight,
           width:
-            selectedSetting === button.label ? `${sizes.width}px` : '352px',
+            selectedSetting === button.label ? `${sizes.width}px` : buttonWidth,
           borderRadius: selectedSetting === button.label ? 0 : 25,
+          delay: selectedSetting ? 600 : 0,
         };
 
         const hide = {
@@ -169,6 +189,7 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         container
         alignItems='center'
         justifyContent='space-around'
+        direction={matchesMD ? 'column' : 'row'}
         classes={{ root: classes.dashboard }}
       >
         {springs.map((prop, i) => {
