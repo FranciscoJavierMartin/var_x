@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, makeStyles, useTheme } from '@material-ui/core';
+import {
+  Grid,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 import Fields from '../shared/Fields';
 import Slots from './Slots';
 import { EmailPassword } from '../../utils/fieldsData';
@@ -12,6 +18,10 @@ import PhoneAdornment from '../../images/PhoneAdornment';
 const useStyles = makeStyles(theme => ({
   detailsContainer: {
     position: 'relative',
+    [theme.breakpoints.down('md')]: {
+      borderBottom: `4px solid ${theme.palette.common.white}`,
+      height: '30rem',
+    },
   },
   phoneAdornment: {
     height: 25.122,
@@ -27,11 +37,21 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     marginBottom: '3rem',
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '1rem',
+    },
   },
   fieldContainer: {
     marginBottom: '2rem',
     '& > :not(:first-child)': {
       marginLeft: '5rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '1rem',
+      '& > :not(:first-child)': {
+        marginLeft: 0,
+        marginTop: '1rem',
+      },
     },
   },
   slotsContainer: {
@@ -75,6 +95,7 @@ const Details: React.FC<DetailsProps> = ({
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const classes = useStyles();
   const theme = useTheme();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const email_password = EmailPassword(
     false,
@@ -122,7 +143,8 @@ const Details: React.FC<DetailsProps> = ({
       item
       container
       direction='column'
-      xs={6}
+      lg={6}
+      xs={12}
       justifyContent='center'
       alignItems='center'
       classes={{ root: classes.detailsContainer }}
@@ -138,8 +160,10 @@ const Details: React.FC<DetailsProps> = ({
         <Grid
           container
           justifyContent='center'
+          alignItems={matchesXS ? 'center' : undefined}
           key={i}
           classes={{ root: classes.fieldContainer }}
+          direction={matchesXS ? 'column' : 'row'}
         >
           <Fields
             fields={pair}
@@ -149,6 +173,7 @@ const Details: React.FC<DetailsProps> = ({
             setErrors={setErrors}
             isWhite
             disabled={!edit}
+            settings
           />
         </Grid>
       ))}

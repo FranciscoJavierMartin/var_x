@@ -8,23 +8,25 @@ import {
 } from '@material-ui/core';
 import validate from '../../utils/validate';
 
-const useStyles = makeStyles<Theme, { isWhite?: boolean; fullWidth?: boolean }>(
-  theme => ({
-    textField: {
-      width: ({ fullWidth }) => (fullWidth ? undefined : '20rem'),
-      [theme.breakpoints.down('xs')]: {
-        width: ({ fullWidth }) => (fullWidth ? undefined : '15rem'),
-      },
+const useStyles = makeStyles<
+  Theme,
+  { isWhite?: boolean; fullWidth?: boolean; settings?: boolean }
+>(theme => ({
+  textField: {
+    width: ({ fullWidth, settings }) =>
+      fullWidth ? undefined : settings ? '15rem' : '20rem',
+    [theme.breakpoints.down('xs')]: {
+      width: ({ fullWidth }) => (fullWidth ? undefined : '15rem'),
     },
-    input: {
-      color: ({ isWhite }) =>
-        isWhite ? theme.palette.common.white : theme.palette.secondary.main,
-    },
-    visibleIcon: {
-      padding: 0,
-    },
-  })
-);
+  },
+  input: {
+    color: ({ isWhite }) =>
+      isWhite ? theme.palette.common.white : theme.palette.secondary.main,
+  },
+  visibleIcon: {
+    padding: 0,
+  },
+}));
 
 interface FieldsProps {
   fields: { [key: string]: any };
@@ -35,6 +37,7 @@ interface FieldsProps {
   isWhite?: boolean;
   disabled?: boolean;
   fullWidth?: boolean;
+  settings?: boolean;
 }
 
 const Fields: React.FC<FieldsProps> = ({
@@ -46,8 +49,9 @@ const Fields: React.FC<FieldsProps> = ({
   isWhite,
   disabled,
   fullWidth,
+  settings,
 }) => {
-  const classes = useStyles({ isWhite, fullWidth });
+  const classes = useStyles({ isWhite, fullWidth, settings });
 
   return (
     <>

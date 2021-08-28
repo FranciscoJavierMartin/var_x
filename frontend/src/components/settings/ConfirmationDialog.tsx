@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
   Button,
   CircularProgress,
-  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -11,6 +10,8 @@ import {
   DialogActions,
   Typography,
   makeStyles,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import Fields from '../shared/Fields';
 import { EmailPassword } from '../../utils/fieldsData';
@@ -51,6 +52,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const classes = useStyles();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const { password } = EmailPassword(false, false, isVisible, setIsVisible);
 
@@ -125,12 +127,16 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   return (
     <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
       <DialogTitle disableTypography>
-        <Typography variant='h3' classes={{ root: classes.title }}>
+        <Typography
+          align={matchesXS ? 'center' : undefined}
+          variant='h3'
+          classes={{ root: classes.title }}
+        >
           Change password
         </Typography>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText align={matchesXS ? 'center' : undefined}>
           You are changing your account password. Please confirm old password
           and new password.
         </DialogContentText>

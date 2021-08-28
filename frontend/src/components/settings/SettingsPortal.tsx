@@ -38,13 +38,13 @@ const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
       `${showComponent ? 0 : 0.5}rem solid ${theme.palette.primary.main}`,
     margin: '5rem 0',
     [theme.breakpoints.down('md')]: {
-      padding: '5rem 0',
+      padding: ({ showComponent }) => (showComponent ? 0 : '5rem 0'),
       '& > :not(:last-child)': {
         marginBottom: ({ showComponent }) => (showComponent ? 0 : '5rem'),
       },
     },
     [theme.breakpoints.down('xs')]: {
-      padding: '2rem 0',
+      padding: ({ showComponent }) => (showComponent ? 0 : '2rem 0'),
       '& > :not(:last-child)': {
         marginBottom: ({ showComponent }) => (showComponent ? 0 : '2rem'),
       },
@@ -140,7 +140,12 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         };
 
         const size = {
-          height: selectedSetting === button.label ? '60rem' : buttonHeight,
+          height:
+            selectedSetting === button.label
+              ? matchesMD
+                ? '120rem'
+                : '60rem'
+              : buttonHeight,
           width:
             selectedSetting === button.label ? `${sizes.width}px` : buttonWidth,
           borderRadius: selectedSetting === button.label ? 0 : 25,

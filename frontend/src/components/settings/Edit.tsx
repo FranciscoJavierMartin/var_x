@@ -20,6 +20,10 @@ import saveIcon from '../../images/save.svg';
 const useStyles = makeStyles(theme => ({
   editContainer: {
     borderLeft: `4px solid ${theme.palette.common.white}`,
+    [theme.breakpoints.down('md')]: {
+      height: '30rem',
+      borderLeft: 0,
+    },
   },
   icon: {
     height: '8rem',
@@ -55,7 +59,7 @@ const Edit: React.FC<EditProps> = ({
   isError,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const { dispatchFeedback } = useContext(FeedbackContext);
 
   const classes = useStyles();
@@ -92,7 +96,7 @@ const Edit: React.FC<EditProps> = ({
             { headers: { Authorization: `Bearer ${user.jwt}` } }
           )
           .then(response => {
-            console.log(response);
+            
             setIsLoading(false);
             dispatchFeedback(
               openSnackbar(
@@ -122,7 +126,8 @@ const Edit: React.FC<EditProps> = ({
     <Grid
       item
       container
-      xs={6}
+      lg={6}
+      xs={12}
       justifyContent='space-evenly'
       alignItems='center'
       classes={{ root: classes.editContainer }}

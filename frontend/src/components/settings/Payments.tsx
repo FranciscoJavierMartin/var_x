@@ -9,9 +9,16 @@ const useStyles = makeStyles(theme => ({
   paymentsContainer: {
     borderLeft: `4px solid ${theme.palette.common.white}`,
     position: 'relative',
+    [theme.breakpoints.down('md')]: {
+      height: '30rem',
+      borderLeft: 0,
+    },
   },
   icon: {
     marginBottom: '3rem',
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '1rem',
+    },
   },
   number: {
     color: theme.palette.common.white,
@@ -54,7 +61,8 @@ const Payments: React.FC<PaymentsProps> = ({ user }) => {
       item
       container
       direction='column'
-      xs={6}
+      lg={6}
+      xs={12}
       justifyContent='center'
       alignItems='center'
       classes={{ root: classes.paymentsContainer }}
@@ -64,7 +72,11 @@ const Payments: React.FC<PaymentsProps> = ({ user }) => {
       </Grid>
       <Grid item container justifyContent='center'>
         <Grid item>
-          <Typography variant='h3' classes={{ root: classes.number }}>
+          <Typography
+            align='center'
+            variant='h3'
+            classes={{ root: classes.number }}
+          >
             {card.last4
               ? `${card.brand.toUpperCase()} **** **** **** ${card.last4}`
               : 'Add a new card during checkout'}

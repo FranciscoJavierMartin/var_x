@@ -14,9 +14,16 @@ import zipAdornment from '../../images/zip-adornment.svg';
 const useStyles = makeStyles(theme => ({
   locationContainer: {
     position: 'relative',
+    [theme.breakpoints.down('md')]: {
+      borderBottom: `4px solid ${theme.palette.common.white}`,
+      height: '30rem',
+    },
   },
   icon: {
     marginBottom: '3rem',
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: '1rem',
+    },
   },
   fieldContainer: {
     '& > :not(:first-child)': {
@@ -82,7 +89,6 @@ const Location: React.FC<LocationProps> = ({
       )
       .then(response => {
         setIsLoading(false);
-        console.log(response);
         const { place_name, admin_name1 } = response.data.records[0].fields;
         setValues(prevState => ({
           ...prevState,
@@ -127,7 +133,8 @@ const Location: React.FC<LocationProps> = ({
       item
       container
       direction='column'
-      xs={6}
+      lg={6}
+      xs={12}
       justifyContent='center'
       alignItems='center'
       classes={{ root: classes.locationContainer }}
