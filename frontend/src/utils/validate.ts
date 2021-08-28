@@ -7,7 +7,7 @@ const validators: { [key: string]: (val: string) => boolean } = {
   message: (val: string): boolean => val.length > 3,
   password: (val: string): boolean =>
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
-  confimation: (val: string): boolean =>
+  confirmation: (val: string): boolean =>
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(val),
   street: (val: string): boolean =>
     /^(\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\d*)?$/.test(

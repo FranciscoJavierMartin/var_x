@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, Chip, makeStyles } from '@material-ui/core';
+import React, { useState, useEffect, useContext } from 'react';
+import { CircularProgress, Grid, Chip, makeStyles } from '@material-ui/core';
+import axios from 'axios';
 import Fields from '../shared/Fields';
 import Slots from './Slots';
-import { LocationInfo, User } from '../../interfaces/user';
+import { User } from '../../interfaces/user';
+import { FeedbackContext } from '../../contexts';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 
 import locationIcon from '../../images/location.svg';
 import streetAdornment from '../../images/street-adornment.svg';
@@ -53,6 +56,8 @@ const Location: React.FC<LocationProps> = ({
   errors,
   setErrors,
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { dispatchFeedback } = useContext(FeedbackContext);
   const classes = useStyles();
 
   const fields = {
@@ -68,17 +73,52 @@ const Location: React.FC<LocationProps> = ({
     },
   };
 
+  const getLocation = (): void => {
+    setIsLoading(true);
+
+    axios
+      .get(
+        `https://data.opendatasoft.com/api/records/1.0/search/?dataset=geonames-postal-code%40public&rows=1&facet=country_code&facet=admin_name1&facet=place_name&facet=postal_code&refine.country_code=US&refine.postal_code=${values.zip}`
+      )
+      .then(response => {
+        setIsLoading(false);
+        console.log(response);
+        const { place_name, admin_name1 } = response.data.records[0].fields;
+        setValues(prevState => ({
+          ...prevState,
+          city: place_name,
+          state: admin_name1,
+        }));
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.error(error);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            'There was a problem with your with your zip code, please try again'
+          )
+        );
+      });
+  };
+
   useEffect(() => {
     setValues({ ...user.locations[slot] });
   }, [slot]);
 
   useEffect(() => {
-    const changed = Object.keys(user.contactInfo[slot]).some(
-      field => values[field] !== (user.contactInfo[slot] as any)[field]
+    const changed = Object.keys(user.locations[slot]).some(
+      field => values[field] !== (user.locations[slot] as any)[field]
     );
 
-    if (changed) {
-      setChangesMade(true);
+    setChangesMade(changed);
+
+    if (values.zip.length === 5) {
+      if (!values.city) {
+        getLocation();
+      }
+    } else if (values.zip.length < 5 && values.city) {
+      setValues(prevState => ({ ...prevState, city: '', state: '' }));
     }
   }, [values]);
 
@@ -117,11 +157,15 @@ const Location: React.FC<LocationProps> = ({
         />
       </Grid>
       <Grid item classes={{ root: classes.chipWrapper }}>
-        <Chip
-          label={
-            values.city ? `${values.city}, ${values.state}` : 'City, State'
-          }
-        />
+        {isLoading ? (
+          <CircularProgress color='secondary' />
+        ) : (
+          <Chip
+            label={
+              values.city ? `${values.city}, ${values.state}` : 'City, State'
+            }
+          />
+        )}
       </Grid>
       <Grid item container classes={{ root: classes.slotsContainer }}>
         <Slots slot={slot} setSlot={setSlot} />
