@@ -39,6 +39,9 @@ const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
     margin: '5rem 0',
     [theme.breakpoints.down('md')]: {
       padding: '5rem 0',
+      '& > :not(:last-child)': {
+        marginBottom: ({ showComponent }) => (showComponent ? 0 : '5rem'),
+      },
     },
   },
   icon: {
@@ -96,8 +99,12 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
   const matchesLG = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
-  const buttonWidth = matchesLG ? '288px' : '352px';
-  const buttonHeight = matchesLG ? '18rem' : '22rem';
+  const buttonWidth = matchesMD
+    ? `${sizes.width || 0 - 160}px`
+    : matchesLG
+    ? '288px'
+    : '352px';
+  const buttonHeight = matchesMD ? '22rem' : matchesLG ? '18rem' : '22rem';
 
   const handleClick = (label: string): void => {
     if (selectedSetting === label) {
@@ -173,7 +180,11 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
       </Grid>
       <animated.div></animated.div>
       <Grid item>
-        <Typography variant='h4' classes={{ root: classes.name }}>
+        <Typography
+          align='center'
+          variant='h4'
+          classes={{ root: classes.name }}
+        >
           Welcome back, {user.username}
         </Typography>
       </Grid>
