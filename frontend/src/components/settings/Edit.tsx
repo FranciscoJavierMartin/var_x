@@ -59,7 +59,7 @@ const Edit: React.FC<EditProps> = ({
   isError,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { dispatchFeedback } = useContext(FeedbackContext);
 
   const classes = useStyles();
