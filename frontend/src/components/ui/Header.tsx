@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'gatsby';
 import {
   AppBar,
@@ -8,6 +8,7 @@ import {
   IconButton,
   Tabs,
   Tab,
+  Badge,
   makeStyles,
   useMediaQuery,
   Theme,
@@ -16,10 +17,13 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core';
+import { CartContext } from '../../contexts';
+
 import search from '../../images/search.svg';
-import cart from '../../images/cart.svg';
+import cartIcon from '../../images/cart.svg';
 import account from '../../images/account-header.svg';
 import menu from '../../images/menu.svg';
+import { calculateNumberOfItemsCart } from '../../utils/cart';
 
 interface HeaderProps {
   categories: {
@@ -69,10 +73,22 @@ const useStyles = makeStyles(theme => ({
   listItemText: {
     color: theme.palette.common.white,
   },
+  badge: {
+    fontSize: '1rem',
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.secondary.main,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.75rem',
+      height: '1.1rem',
+      width: '1.1rem',
+      minWidth: 0,
+    },
+  },
 }));
 
 const Header: React.FC<HeaderProps> = ({ categories }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const { cart } = useContext(CartContext);
   const classes = useStyles();
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
@@ -154,7 +170,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       onClick: () => {},
     },
     {
-      icon: cart,
+      icon: cartIcon,
       alt: 'cart',
       visible: true,
       link: '/cart',
@@ -195,7 +211,25 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
                 to={action.onClick ? undefined : action.link}
                 onClick={action.onClick}
               >
-                <img src={action.icon} alt={action.alt} />
+                {action.alt === 'cart' ? (
+                  <Badge
+                    overlap='circular'
+                    badgeContent={calculateNumberOfItemsCart(cart.cart)}
+                    classes={{ badge: classes.badge }}
+                  >
+                    <img
+                      src={action.icon}
+                      alt={action.alt}
+                      className={classes.icon}
+                    />
+                  </Badge>
+                ) : (
+                  <img
+                    src={action.icon}
+                    alt={action.alt}
+                    className={classes.icon}
+                  />
+                )}
               </IconButton>
             )
         )}
