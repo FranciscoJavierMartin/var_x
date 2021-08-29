@@ -12,6 +12,7 @@ export interface AddToCartType {
     variant: Variant;
     qty: number;
     name: string;
+    stock: number;
   };
 }
 
@@ -35,10 +36,11 @@ export type CartActionsTypes =
 export const addToCart = (
   variant: Variant,
   qty: number,
-  name: string
+  name: string,
+  stock: number
 ): AddToCartType => ({
   type: CartActionTypes.ADD_TO_CART,
-  payload: { variant, qty, name },
+  payload: { variant, qty, name, stock },
 });
 
 export const removeFromCart = (
