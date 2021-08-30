@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Grid,
   ButtonGroup,
@@ -10,6 +10,9 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { Stock } from '../../interfaces/stock';
+import { CartContext } from '../../contexts';
+import { addToCart } from '../../contexts/cart/actions';
+import { Variant } from '../../interfaces/category-products';
 
 import Cart from '../../images/Cart';
 
@@ -59,12 +62,20 @@ const useStyles = makeStyles(theme => ({
 interface QtyButtonProps {
   stock: Stock;
   selectedVariant: number;
+  name: string;
+  variants: Variant[];
 }
 
-const QtyButton: React.FC<QtyButtonProps> = ({ stock, selectedVariant }) => {
+const QtyButton: React.FC<QtyButtonProps> = ({
+  variants,
+  stock,
+  selectedVariant,
+  name,
+}) => {
+  const [qty, setQty] = useState<number>(1);
+  const { cart, dispatchCart } = useContext(CartContext);
   const classes = useStyles();
   const theme = useTheme();
-  const [qty, setQty] = useState<number>(1);
 
   const handleChange = (direction: 'increment' | 'decrement') => {
     if (
@@ -76,6 +87,17 @@ const QtyButton: React.FC<QtyButtonProps> = ({ stock, selectedVariant }) => {
         direction === 'increment' ? prevState + 1 : prevState - 1
       );
     }
+  };
+
+  const handleCart = (): void => {
+    dispatchCart(
+      addToCart(
+        variants[selectedVariant] as any,
+        qty,
+        name,
+        stock![selectedVariant].qty
+      )
+    );
   };
 
   useEffect(() => {
@@ -114,6 +136,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({ stock, selectedVariant }) => {
           </Button>
         </ButtonGroup>
         <Button
+          onClick={handleCart}
           classes={{ root: clsx(classes.endButtons, classes.cartButton) }}
         >
           <Badge

@@ -203,7 +203,12 @@ const QuickView: React.FC<QuickViewProps> = ({
                   selectedColor={selectedColor}
                 />
                 <span className={classes.qtyContainer}>
-                  <QtyButton stock={stock} selectedVariant={selectedVariant} />
+                  <QtyButton
+                    name={name}
+                    stock={stock}
+                    selectedVariant={selectedVariant}
+                    variants={product.node.variants}
+                  />
                 </span>
               </Grid>
             </Grid>

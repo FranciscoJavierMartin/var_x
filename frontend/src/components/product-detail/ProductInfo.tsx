@@ -291,7 +291,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             </Grid>
           </Grid>
           <Grid item>
-            <QtyButton stock={stock} selectedVariant={selectedVariant} />
+            <QtyButton
+              variants={variants}
+              stock={stock}
+              selectedVariant={selectedVariant}
+              name={name}
+            />
           </Grid>
         </Grid>
       </Grid>
