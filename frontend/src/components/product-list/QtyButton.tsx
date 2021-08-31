@@ -81,7 +81,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({
 }) => {
   const [qty, setQty] = useState<number>(1);
   const [success, setSuccess] = useState<boolean>(false);
-  const { cart, dispatchCart } = useContext(CartContext);
+  const { dispatchCart } = useContext(CartContext);
   const classes = useStyles();
   const theme = useTheme();
 
