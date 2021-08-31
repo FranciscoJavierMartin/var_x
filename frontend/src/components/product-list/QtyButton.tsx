@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
   cartButton: {
     marginLeft: '0 !important',
+    transition: 'background-color 1s ease',
   },
   minusButton: {
     borderTop: `2px solid ${theme.palette.common.white}`,
@@ -57,6 +58,12 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main,
     padding: 0,
   },
+  success: {
+    backgroundColor: theme.palette.success.main,
+    '&:hover': {
+      backgroundColor: theme.palette.success.main,
+    },
+  },
 }));
 
 interface QtyButtonProps {
@@ -73,6 +80,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({
   name,
 }) => {
   const [qty, setQty] = useState<number>(1);
+  const [success, setSuccess] = useState<boolean>(false);
   const { cart, dispatchCart } = useContext(CartContext);
   const classes = useStyles();
   const theme = useTheme();
@@ -90,6 +98,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({
   };
 
   const handleCart = (): void => {
+    setSuccess(true);
     dispatchCart(
       addToCart(
         variants[selectedVariant] as any,
@@ -105,6 +114,18 @@ const QtyButton: React.FC<QtyButtonProps> = ({
       setQty(stock[selectedVariant].qty);
     }
   }, [stock, selectedVariant]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (success) {
+      timer = setTimeout(() => {
+        setSuccess(false);
+      }, 1500);
+    }
+
+    return () => clearTimeout(timer);
+  }, [success]);
 
   return (
     <Grid item>
@@ -137,15 +158,25 @@ const QtyButton: React.FC<QtyButtonProps> = ({
         </ButtonGroup>
         <Button
           onClick={handleCart}
-          classes={{ root: clsx(classes.endButtons, classes.cartButton) }}
+          classes={{
+            root: clsx(classes.endButtons, classes.cartButton, {
+              [classes.success]: success,
+            }),
+          }}
         >
-          <Badge
-            overlap='circular'
-            badgeContent='+'
-            classes={{ badge: classes.badge }}
-          >
-            <Cart color={theme.palette.common.white} />
-          </Badge>
+          {success ? (
+            <Typography variant='h3' classes={{ root: classes.qtyText }}>
+              ✓
+            </Typography>
+          ) : (
+            <Badge
+              overlap='circular'
+              badgeContent='+'
+              classes={{ badge: classes.badge }}
+            >
+              <Cart color={theme.palette.common.white} />
+            </Badge>
+          )}
         </Button>
       </ButtonGroup>
     </Grid>
