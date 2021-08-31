@@ -1,3 +1,4 @@
+import { CartItem } from '../../interfaces/cart';
 import { Variant } from '../../interfaces/product-details';
 
 export enum CartActionTypes {
@@ -8,12 +9,7 @@ export enum CartActionTypes {
 
 export interface AddToCartType {
   type: CartActionTypes.ADD_TO_CART;
-  payload: {
-    variant: Variant;
-    qty: number;
-    name: string;
-    stock: number;
-  };
+  payload: CartItem;
 }
 
 export interface RemoveFromCartType {

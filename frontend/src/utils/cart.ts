@@ -1,2 +1,4 @@
-export const calculateNumberOfItemsCart = (cart: any[]): number =>
-  cart.reduce((acc: number, item: any) => item.qty + acc, 0);
+import { CartItem } from '../interfaces/cart';
+
+export const calculateNumberOfItemsCart = (cart: CartItem[]): number =>
+  cart.reduce((acc: number, item: CartItem) => item.qty + acc, 0);

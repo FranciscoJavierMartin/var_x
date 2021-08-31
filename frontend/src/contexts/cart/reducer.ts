@@ -1,8 +1,8 @@
 import { CART_STORAGED } from '../../constants/localStorage';
-import { CartState } from '../../interfaces/cart';
+import { CartItem, CartState } from '../../interfaces/cart';
 import { CartActionsTypes, CartActionTypes } from './actions';
 
-function saveCart(cart: any): void {
+function saveCart(cart: CartItem[]): void {
   localStorage.setItem(CART_STORAGED, JSON.stringify(cart));
 }
 
@@ -17,7 +17,7 @@ export default function cartReducer(
       const existingItemIndex = state.cart.findIndex(
         item => item.variant === action.payload.variant
       );
-      let newCartAddItem: any[] = [];
+      let newCartAddItem: CartItem[] = [];
 
       if (existingItemIndex === -1) {
         newCartAddItem = [...state.cart, action.payload];
@@ -43,7 +43,7 @@ export default function cartReducer(
         item => item.variant === action.payload.variant
       );
       const newQty = state.cart[existingIndex].qty - action.payload.qty;
-      let newCartRemoveItem: any[] = [];
+      let newCartRemoveItem: CartItem[] = [];
 
       if (newQty <= 0) {
         newCartRemoveItem = state.cart.filter(

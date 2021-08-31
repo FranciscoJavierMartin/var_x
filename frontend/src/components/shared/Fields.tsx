@@ -30,8 +30,8 @@ const useStyles = makeStyles<
 
 interface FieldsProps {
   fields: { [key: string]: any };
-  errors: { [key: string]: any };
-  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
+  errors: { [key: string]: boolean };
+  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
   values: { [key: string]: string };
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   isWhite?: boolean;
