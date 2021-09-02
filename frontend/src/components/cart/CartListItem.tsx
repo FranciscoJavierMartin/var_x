@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Grid,
   IconButton,
@@ -7,8 +7,10 @@ import {
   makeStyles,
   useTheme,
 } from '@material-ui/core';
-import { CartItem } from '../../interfaces/cart';
 import QtyButton from '../product-list/QtyButton';
+import { CartItem } from '../../interfaces/cart';
+import { CartContext } from '../../contexts';
+import { removeFromCart } from '../../contexts/cart/actions';
 
 import FavoriteIcon from '../../images/FavoriteIcon';
 import SubscribeIcon from '../../images/SubscriptionIcon';
@@ -44,6 +46,11 @@ const useStyles = makeStyles(theme => ({
     width: '3rem',
     marginBottom: -8,
   },
+  actionButton: {
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
 }));
 
 interface CartItemProps {
@@ -51,12 +58,23 @@ interface CartItemProps {
 }
 
 const CartListItem: React.FC<CartItemProps> = ({ item }) => {
+  const { dispatchCart } = useContext(CartContext);
   const theme = useTheme();
   const classes = useStyles();
+
+  const handleDelete = () => {
+    dispatchCart(removeFromCart(item.variant, item.qty));
+  };
+
   const actions = [
     { icon: FavoriteIcon, color: theme.palette.secondary.main },
     { icon: SubscribeIcon, color: theme.palette.secondary.main },
-    { icon: DeleteIcon, color: theme.palette.error.main, size: '2.5rem' },
+    {
+      icon: DeleteIcon,
+      color: theme.palette.error.main,
+      size: '2.5rem',
+      onClick: handleDelete,
+    },
   ];
 
   return (
@@ -108,7 +126,11 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
           <Grid item container xs justifyContent='flex-end'>
             {actions.map((Action, i) => (
               <Grid item key={i}>
-                <IconButton>
+                <IconButton
+                  disableRipple
+                  classes={{ root: classes.actionButton }}
+                  onClick={() => Action.onClick && Action.onClick()}
+                >
                   <span
                     className={classes.actionWrapper}
                     style={{ height: Action.size, width: Action.size }}
