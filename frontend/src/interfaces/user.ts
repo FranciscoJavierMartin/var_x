@@ -21,6 +21,7 @@ export interface ContactInfo {
   name: string;
   email: string;
   phone: string;
+  [key: string]: string;
 }
 
 export interface LocationInfo {

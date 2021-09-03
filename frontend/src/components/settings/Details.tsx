@@ -79,6 +79,7 @@ interface DetailsProps {
   setSlot: React.Dispatch<React.SetStateAction<number>>;
   errors: { [key: string]: boolean };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+  isCheckout?: boolean;
 }
 
 const Details: React.FC<DetailsProps> = ({
@@ -91,6 +92,7 @@ const Details: React.FC<DetailsProps> = ({
   setSlot,
   errors,
   setErrors,
+  isCheckout,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const classes = useStyles();
@@ -122,19 +124,33 @@ const Details: React.FC<DetailsProps> = ({
     },
   };
 
-  const fields = [name_phone, email_password];
+  const fields = isCheckout
+    ? [
+        {
+          name: name_phone.name,
+          email: email_password.email,
+          phone: name_phone.phone,
+        },
+      ]
+    : [name_phone, email_password];
 
   useEffect(() => {
-    setValues({ ...user.contactInfo[slot], password: '********' });
+    if (isCheckout) {
+      setValues(user.contactInfo[slot]);
+    } else {
+      setValues({ ...user.contactInfo[slot], password: '********' });
+    }
   }, [slot]);
 
   useEffect(() => {
-    const changed = Object.keys(user.contactInfo[slot]).some(
-      field => values[field] !== (user.contactInfo[slot] as any)[field]
-    );
+    if (!isCheckout) {
+      const changed = Object.keys(user.contactInfo[slot]).some(
+        field => values[field] !== (user.contactInfo[slot] as any)[field]
+      );
 
-    if (changed) {
-      setChangesMade(true);
+      if (changed) {
+        setChangesMade(true);
+      }
     }
   }, [values]);
 
@@ -172,7 +188,7 @@ const Details: React.FC<DetailsProps> = ({
             errors={errors}
             setErrors={setErrors}
             isWhite
-            disabled={!edit}
+            disabled={isCheckout ? false : !edit}
             settings
           />
         </Grid>

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import CheckoutNavigation from './CheckoutNavigation';
 import { UserContext } from '../../contexts';
+import Details from '../settings/Details';
 
 const useStyles = makeStyles(theme => ({
   stepContainer: {
@@ -15,12 +16,33 @@ interface CheckoutPortalProps {}
 
 const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   const [selectedStep, setSelectedStep] = useState<number>(0);
+  const [detailValues, setDetailValues] = useState<{ [key: string]: string }>({
+    name: '',
+    email: '',
+    phone: '',
+  });
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const [detailSlot, setDetailSlot] = useState<number>(0);
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
   const steps = [
     {
       title: 'Contact info',
+      component: (
+        <Details
+          user={user}
+          values={detailValues}
+          setValues={setDetailValues}
+          slot={detailSlot}
+          setSlot={setDetailSlot}
+          errors={errors}
+          setErrors={setErrors}
+          isCheckout
+          edit={false}
+          setChangesMade={() => {}}
+        />
+      ),
     },
     {
       title: 'Address',
@@ -46,13 +68,16 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         selectedStep={selectedStep}
         setSelectedStep={setSelectedStep}
       />
+
       <Grid
         item
         container
         direction='column'
         alignItems='center'
         classes={{ root: classes.stepContainer }}
-      ></Grid>
+      >
+        {steps[selectedStep].component}
+      </Grid>
     </Grid>
   );
 };
