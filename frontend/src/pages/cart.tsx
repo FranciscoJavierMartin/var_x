@@ -5,7 +5,11 @@ import CartList from '../components/cart/CartList';
 import CheckoutPortal from '../components/cart/CheckoutPortal';
 import { UserContext } from '../contexts';
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  cartContainer: {
+    minHeight: '70vh',
+  },
+}));
 
 interface CartProps {}
 
@@ -15,7 +19,12 @@ const Cart: React.FC<CartProps> = ({}) => {
 
   return (
     <Layout>
-      <Grid container direction='column' alignItems='center'>
+      <Grid
+        container
+        direction='column'
+        alignItems='center'
+        classes={{ root: classes.cartContainer }}
+      >
         <Grid item>
           <Typography variant='h1'>{user.username}'s cart</Typography>
         </Grid>
