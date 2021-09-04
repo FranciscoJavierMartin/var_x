@@ -45,7 +45,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   });
   const [locationSlot, setLocationSlot] = useState<number>(0);
   const [locationBilling, setLocationBilling] = useState<boolean>(false);
-  const [selectedShipping, setSelectedShipping] = useState();
+  const [selectedShipping, setSelectedShipping] = useState<string>('');
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
