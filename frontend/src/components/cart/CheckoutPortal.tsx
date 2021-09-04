@@ -4,6 +4,7 @@ import CheckoutNavigation from './CheckoutNavigation';
 import Details from '../settings/Details';
 import Location from '../settings/Location';
 import Shipping from './Shipping';
+import Payments from '../settings/Payments';
 import { UserContext } from '../../contexts';
 
 const useStyles = makeStyles(theme => ({
@@ -46,6 +47,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   const [locationSlot, setLocationSlot] = useState<number>(0);
   const [locationBilling, setLocationBilling] = useState<boolean>(false);
   const [selectedShipping, setSelectedShipping] = useState<string>('');
+  const [billingSlot, setBillingSlot] = useState<number>(0);
+  const [saveCard, setSaveCard] = useState<boolean>(false);
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
@@ -106,6 +109,16 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     },
     {
       title: 'Payment',
+      component: (
+        <Payments
+          user={user}
+          slot={billingSlot}
+          setSlot={setBillingSlot}
+          saveCard={saveCard}
+          setSaveCard={setSaveCard}
+          isCheckout
+        />
+      ),
     },
     {
       title: 'Confirmation',

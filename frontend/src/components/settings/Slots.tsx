@@ -45,13 +45,19 @@ interface SlotsProps {
   slot: number;
   setSlot: React.Dispatch<React.SetStateAction<number>>;
   isCheckout?: boolean;
+  noLabel?: boolean;
 }
 
-const Slots: React.FC<SlotsProps> = ({ slot, setSlot, isCheckout }) => {
+const Slots: React.FC<SlotsProps> = ({
+  slot,
+  setSlot,
+  isCheckout,
+  noLabel,
+}) => {
   const classes = useStyles();
 
   return (
-    <Grid item container xs={isCheckout ? 5 : undefined}>
+    <Grid item container xs={noLabel ? 3 : isCheckout ? 5 : undefined}>
       <Grid item classes={{ root: classes.slotWrapper }}>
         {[1, 2, 3].map((n: number, index: number) => (
           <Button

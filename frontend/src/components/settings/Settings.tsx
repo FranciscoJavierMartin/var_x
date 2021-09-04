@@ -48,6 +48,7 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
     [key: string]: boolean;
   }>({});
   const [locationSlot, setLocationSlot] = useState<number>(0);
+  const [billingSlot, setBillingSlot] = useState<number>(0);
 
   const classes = useStyles();
 
@@ -76,7 +77,7 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
           errors={detailErrors}
           setErrors={setDetailErrors}
         />
-        <Payments user={user} edit={edit} />
+        <Payments user={user} slot={billingSlot} setSlot={setBillingSlot} />
       </Grid>
       <Grid
         container
