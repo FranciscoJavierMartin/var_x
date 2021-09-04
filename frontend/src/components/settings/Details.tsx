@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   Grid,
+  FormControlLabel,
+  Switch,
   makeStyles,
   useTheme,
   useMediaQuery,
   Theme,
 } from '@material-ui/core';
+import clsx from 'clsx';
 import Fields from '../shared/Fields';
 import Slots from './Slots';
 import { EmailPassword } from '../../utils/fieldsData';
@@ -15,7 +18,7 @@ import fingerprint from '../../images/fingerprint.svg';
 import NameAdornment from '../../images/NameAdornment';
 import PhoneAdornment from '../../images/PhoneAdornment';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
   detailsContainer: {
     position: 'relative',
     [theme.breakpoints.down('md')]: {
@@ -36,7 +39,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10,
   },
   icon: {
-    marginBottom: '3rem',
+    marginTop: ({ isCheckout }) => (isCheckout ? '-2rem' : undefined),
+    marginBottom: ({ isCheckout }) => (isCheckout ? '1rem' : '3rem'),
     [theme.breakpoints.down('xs')]: {
       marginBottom: '1rem',
     },
@@ -54,9 +58,21 @@ const useStyles = makeStyles(theme => ({
       },
     },
   },
+  fieldContainerCart: {
+    '& > *': {
+      marginBottom: '1rem',
+    },
+  },
   slotsContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: ({ isCheckout }) => (isCheckout ? -8 : 0),
+  },
+  switchWrapper: {
+    marginRight: 4,
+  },
+  switchLabel: {
+    color: theme.palette.common.white,
+    fontWeight: 600,
   },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
@@ -75,6 +91,8 @@ interface DetailsProps {
   setChangesMade: React.Dispatch<React.SetStateAction<boolean>>;
   values: { [key: string]: string };
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  billing?: boolean;
+  setBilling?: React.Dispatch<React.SetStateAction<boolean>>;
   slot: number;
   setSlot: React.Dispatch<React.SetStateAction<number>>;
   errors: { [key: string]: boolean };
@@ -93,9 +111,11 @@ const Details: React.FC<DetailsProps> = ({
   errors,
   setErrors,
   isCheckout,
+  billing,
+  setBilling,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const classes = useStyles();
+  const classes = useStyles({ isCheckout });
   const theme = useTheme();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
@@ -159,7 +179,7 @@ const Details: React.FC<DetailsProps> = ({
       item
       container
       direction='column'
-      lg={6}
+      lg={isCheckout ? 12 : 6}
       xs={12}
       justifyContent='center'
       alignItems='center'
@@ -176,10 +196,15 @@ const Details: React.FC<DetailsProps> = ({
         <Grid
           container
           justifyContent='center'
-          alignItems={matchesXS ? 'center' : undefined}
+          alignItems={matchesXS || isCheckout ? 'center' : undefined}
           key={i}
-          classes={{ root: classes.fieldContainer }}
-          direction={matchesXS ? 'column' : 'row'}
+          classes={{
+            root: clsx({
+              [classes.fieldContainer]: !isCheckout,
+              [classes.fieldContainerCart]: isCheckout,
+            }),
+          }}
+          direction={matchesXS || isCheckout ? 'column' : 'row'}
         >
           <Fields
             fields={pair}
@@ -189,12 +214,38 @@ const Details: React.FC<DetailsProps> = ({
             setErrors={setErrors}
             isWhite
             disabled={isCheckout ? false : !edit}
-            settings
+            settings={!isCheckout}
           />
         </Grid>
       ))}
-      <Grid item container classes={{ root: classes.slotsContainer }}>
-        <Slots slot={slot} setSlot={setSlot} />
+      <Grid
+        item
+        container
+        justifyContent={isCheckout ? 'space-between' : undefined}
+        classes={{ root: classes.slotsContainer }}
+      >
+        <Slots slot={slot} setSlot={setSlot} isCheckout={isCheckout} />
+        {isCheckout && (
+          <Grid item>
+            <FormControlLabel
+              label='Billing'
+              labelPlacement='start'
+              control={
+                <Switch
+                  checked={billing}
+                  onChange={() =>
+                    setBilling && setBilling(prevState => !prevState)
+                  }
+                  color='secondary'
+                />
+              }
+              classes={{
+                root: classes.switchWrapper,
+                label: classes.switchLabel,
+              }}
+            />
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );

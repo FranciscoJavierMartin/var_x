@@ -23,6 +23,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [detailSlot, setDetailSlot] = useState<number>(0);
+  const [detailBilling, setDetailBilling] = useState<boolean>(false);
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
@@ -41,6 +42,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           isCheckout
           edit={false}
           setChangesMade={() => {}}
+          billing={detailBilling}
+          setBilling={setDetailBilling}
         />
       ),
     },
