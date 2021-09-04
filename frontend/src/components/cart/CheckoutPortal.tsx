@@ -1,14 +1,24 @@
 import React, { useState, useContext } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import CheckoutNavigation from './CheckoutNavigation';
-import { UserContext } from '../../contexts';
 import Details from '../settings/Details';
+import Location from '../settings/Location';
+import { UserContext } from '../../contexts';
 
 const useStyles = makeStyles(theme => ({
   stepContainer: {
     width: '40rem',
     height: '25rem',
     backgroundColor: theme.palette.primary.main,
+  },
+  '@global': {
+    '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
+      {
+        borderBottom: `2px solid ${theme.palette.common.white}`,
+      },
+    '.MuiInput-underline:after': {
+      borderBottom: `2px solid ${theme.palette.secondary.main}`,
+    },
   },
 }));
 
@@ -24,6 +34,16 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [detailSlot, setDetailSlot] = useState<number>(0);
   const [detailBilling, setDetailBilling] = useState<boolean>(false);
+  const [locationValues, setLocationValues] = useState<{
+    [key: string]: string;
+  }>({
+    street: '',
+    zip: '',
+    city: '',
+    state: '',
+  });
+  const [locationSlot, setLocationSlot] = useState<number>(0);
+  const [locationBilling, setLocationBilling] = useState<boolean>(false);
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
@@ -49,6 +69,22 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     },
     {
       title: 'Address',
+      component: (
+        <Location
+          user={user}
+          values={locationValues}
+          setValues={setLocationValues}
+          errors={errors}
+          setErrors={setErrors}
+          slot={locationSlot}
+          setSlot={setLocationSlot}
+          edit={false}
+          setChangesMade={() => {}}
+          billing={locationBilling}
+          setBilling={setLocationBilling}
+          isCheckout
+        />
+      ),
     },
     {
       title: 'Shipping',

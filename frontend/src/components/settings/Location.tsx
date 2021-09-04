@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { CircularProgress, Grid, Chip, makeStyles } from '@material-ui/core';
+import {
+  CircularProgress,
+  Grid,
+  Chip,
+  FormControlLabel,
+  Switch,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import axios from 'axios';
 import Fields from '../shared/Fields';
 import Slots from './Slots';
@@ -11,7 +19,7 @@ import locationIcon from '../../images/location.svg';
 import streetAdornment from '../../images/street-adornment.svg';
 import zipAdornment from '../../images/zip-adornment.svg';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
   locationContainer: {
     position: 'relative',
     [theme.breakpoints.down('md')]: {
@@ -20,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   icon: {
-    marginBottom: '3rem',
+    marginBottom: ({ isCheckout }) => (isCheckout ? '1rem' : '3rem'),
     [theme.breakpoints.down('xs')]: {
       marginBottom: '1rem',
     },
@@ -36,7 +44,14 @@ const useStyles = makeStyles(theme => ({
   },
   slotsContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: ({ isCheckout }) => (isCheckout ? -8 : 0),
+  },
+  switchWrapper: {
+    marginRight: 4,
+  },
+  switchLabel: {
+    color: theme.palette.common.white,
+    fontWeight: 600,
   },
 }));
 
@@ -50,6 +65,9 @@ interface LocationProps {
   setSlot: React.Dispatch<React.SetStateAction<number>>;
   errors: { [key: string]: boolean };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+  billing?: boolean;
+  setBilling?: React.Dispatch<React.SetStateAction<boolean>>;
+  isCheckout?: boolean;
 }
 
 const Location: React.FC<LocationProps> = ({
@@ -62,10 +80,13 @@ const Location: React.FC<LocationProps> = ({
   setSlot,
   errors,
   setErrors,
+  billing,
+  setBilling,
+  isCheckout,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { dispatchFeedback } = useContext(FeedbackContext);
-  const classes = useStyles();
+  const classes = useStyles({ isCheckout });
 
   const fields = {
     street: {
@@ -113,11 +134,13 @@ const Location: React.FC<LocationProps> = ({
   }, [slot]);
 
   useEffect(() => {
-    const changed = Object.keys(user.locations[slot]).some(
-      field => values[field] !== (user.locations[slot] as any)[field]
-    );
+    if (!isCheckout) {
+      const changed = Object.keys(user.locations[slot]).some(
+        field => values[field] !== (user.locations[slot] as any)[field]
+      );
 
-    setChangesMade(changed);
+      setChangesMade(changed);
+    }
 
     if (values.zip.length === 5) {
       if (!values.city) {
@@ -133,7 +156,7 @@ const Location: React.FC<LocationProps> = ({
       item
       container
       direction='column'
-      lg={6}
+      lg={isCheckout ? 12 : 6}
       xs={12}
       justifyContent='center'
       alignItems='center'
@@ -160,7 +183,7 @@ const Location: React.FC<LocationProps> = ({
           errors={errors}
           setErrors={setErrors}
           isWhite
-          disabled={!edit}
+          disabled={isCheckout ? false : !edit}
         />
       </Grid>
       <Grid item classes={{ root: classes.chipWrapper }}>
@@ -174,8 +197,34 @@ const Location: React.FC<LocationProps> = ({
           />
         )}
       </Grid>
-      <Grid item container classes={{ root: classes.slotsContainer }}>
-        <Slots slot={slot} setSlot={setSlot} />
+      <Grid
+        item
+        container
+        justifyContent='space-between'
+        classes={{ root: classes.slotsContainer }}
+      >
+        <Slots slot={slot} setSlot={setSlot} isCheckout={isCheckout} />
+        {isCheckout && (
+          <Grid item>
+            <FormControlLabel
+              label='Billing'
+              labelPlacement='start'
+              control={
+                <Switch
+                  checked={billing}
+                  onChange={() =>
+                    setBilling && setBilling(prevState => !prevState)
+                  }
+                  color='secondary'
+                />
+              }
+              classes={{
+                root: classes.switchWrapper,
+                label: classes.switchLabel,
+              }}
+            />
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );
