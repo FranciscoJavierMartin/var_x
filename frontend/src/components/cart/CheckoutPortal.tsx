@@ -3,6 +3,7 @@ import { Grid, makeStyles } from '@material-ui/core';
 import CheckoutNavigation from './CheckoutNavigation';
 import Details from '../settings/Details';
 import Location from '../settings/Location';
+import Shipping from './Shipping';
 import { UserContext } from '../../contexts';
 
 const useStyles = makeStyles(theme => ({
@@ -44,8 +45,15 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   });
   const [locationSlot, setLocationSlot] = useState<number>(0);
   const [locationBilling, setLocationBilling] = useState<boolean>(false);
+  const [selectedShipping, setSelectedShipping] = useState();
   const { user } = useContext(UserContext);
   const classes = useStyles();
+
+  const shippingOptions = [
+    { label: 'Free shipping', price: 0 },
+    { label: '2 day shipping', price: 9.99 },
+    { label: 'Overnight shipping', price: 29.99 },
+  ];
 
   const steps = [
     {
@@ -88,6 +96,13 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     },
     {
       title: 'Shipping',
+      component: (
+        <Shipping
+          shippingOptions={shippingOptions}
+          selectedShipping={selectedShipping}
+          setSelectedShipping={setSelectedShipping}
+        />
+      ),
     },
     {
       title: 'Payment',
