@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Grid, Typography, makeStyles, useTheme } from '@material-ui/core';
+import {
+  Button,
+  Chip,
+  Grid,
+  Typography,
+  makeStyles,
+  useTheme,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import Fields from '../shared/Fields';
 
@@ -13,6 +20,9 @@ import cardAdornment from '../../images/card.svg';
 import promoAdornment from '../../images/promo-code.svg';
 
 const useStyles = makeStyles(theme => ({
+  mainContainer: {
+    height: '100%',
+  },
   iconWrapper: {
     display: 'flex',
     justifyContent: 'center',
@@ -32,6 +42,12 @@ const useStyles = makeStyles(theme => ({
   },
   fieldWrapper: {
     marginLeft: '1.25rem',
+  },
+  buttonWrapper: {
+    marginTop: 'auto',
+  },
+  chipRoot: {
+    backgroundColor: theme.palette.common.white,
   },
   text: {
     fontSize: '1rem',
@@ -60,6 +76,18 @@ const useStyles = makeStyles(theme => ({
   adornmentWrapper: {
     display: 'flex',
     justifyContent: 'center',
+  },
+  button: {
+    width: '100%',
+    height: '7rem',
+    borderRadius: 0,
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+    },
+  },
+  chipLabel: {
+    color: theme.palette.secondary.main,
   },
 }));
 
@@ -153,7 +181,12 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
   );
 
   return (
-    <Grid item container direction='column'>
+    <Grid
+      item
+      container
+      direction='column'
+      classes={{ root: classes.mainContainer }}
+    >
       <Grid item container>
         <Grid item container direction='column' xs={7}>
           {firstFields.map((field, i) => (
@@ -220,6 +253,21 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
           </Grid>
         </Grid>
       ))}
+      <Grid item classes={{ root: classes.buttonWrapper }}>
+        <Button classes={{ root: classes.button }}>
+          <Grid container justifyContent='space-around' alignItems='center'>
+            <Grid item>
+              <Typography variant='h5'>Place order</Typography>
+            </Grid>
+            <Grid item>
+              <Chip
+                label='$149.99'
+                classes={{ root: classes.chipRoot, label: classes.chipLabel }}
+              />
+            </Grid>
+          </Grid>
+        </Button>
+      </Grid>
     </Grid>
   );
 };
