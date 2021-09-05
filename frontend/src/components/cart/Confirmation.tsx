@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, Typography, makeStyles, useTheme } from '@material-ui/core';
+import clsx from 'clsx';
 import Fields from '../shared/Fields';
 
 import confirmationIcon from '../../images/tag.svg';
@@ -12,6 +13,11 @@ import cardAdornment from '../../images/card.svg';
 import promoAdornment from '../../images/promo-code.svg';
 
 const useStyles = makeStyles(theme => ({
+  iconWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   nameWrapper: {
     height: 22,
     width: 22,
@@ -24,6 +30,9 @@ const useStyles = makeStyles(theme => ({
     height: 25.122,
     width: 25.173,
   },
+  fieldWrapper: {
+    marginLeft: '1.25rem',
+  },
   text: {
     fontSize: '1rem',
     color: theme.palette.common.white,
@@ -35,6 +44,23 @@ const useStyles = makeStyles(theme => ({
   priceLabel: {
     fontSize: '1.5rem',
   },
+  priceValue: {
+    marginRight: '1rem',
+  },
+  darkBackground: {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  fieldRow: {
+    height: '2.5rem',
+  },
+  centerText: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  adornmentWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }));
 
 interface ConfirmationProps {}
@@ -43,7 +69,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
   const [promo, setPromo] = useState<{ [key: string]: string }>({
     promo: '',
   });
-  const [promoError, setPromoError] = useState<{[key: string]:boolean}>({});
+  const [promoError, setPromoError] = useState<{ [key: string]: boolean }>({});
   const classes = useStyles();
   const theme = useTheme();
 
@@ -115,10 +141,10 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
 
   const adornmentValue = (adornment: any, value: string) => (
     <>
-      <Grid item xs={1}>
+      <Grid item xs={2} classes={{ root: classes.adornmentWrapper }}>
         {adornment}
       </Grid>
-      <Grid item xs={11}>
+      <Grid item xs={10} classes={{ root: classes.centerText }}>
         <Typography variant='body1' classes={{ root: classes.text }}>
           {value}
         </Typography>
@@ -129,41 +155,67 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
   return (
     <Grid item container direction='column'>
       <Grid item container>
-        <Grid item container direction='column' xs={8}>
-          {firstFields.map(field => (
-            <Grid item container key={field.value}>
+        <Grid item container direction='column' xs={7}>
+          {firstFields.map((field, i) => (
+            <Grid
+              item
+              container
+              alignItems='center'
+              key={field.value}
+              classes={{
+                root: clsx(classes.fieldRow, {
+                  [classes.darkBackground]: i % 2 !== 0,
+                }),
+              }}
+            >
               {adornmentValue(field.adornment, field.value)}
             </Grid>
           ))}
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={5} classes={{ root: classes.iconWrapper }}>
           <img src={confirmationIcon} alt='confirmation' />
         </Grid>
       </Grid>
       {secondFields.map((field, i) => (
-        <Grid item container key={i}>
-          <Grid item xs={6}>
+        <Grid
+          item
+          container
+          key={i}
+          alignItems='center'
+          classes={{
+            root: clsx(classes.fieldRow, {
+              [classes.darkBackground]: i % 2 !== 0,
+            }),
+          }}
+        >
+          <Grid item container xs={7}>
             {field.promo ? (
-              <Fields
-                fields={field}
-                values={promo}
-                setValues={setPromo}
-                errors={promoError}
-                setErrors={setPromoError}
-                isWhite
-              />
+              <span className={classes.fieldWrapper}>
+                <Fields
+                  fields={field}
+                  values={promo}
+                  setValues={setPromo}
+                  errors={promoError}
+                  setErrors={setPromoError}
+                  isWhite
+                />
+              </span>
             ) : (
               adornmentValue(field.adornment, field.value)
             )}
           </Grid>
-          <Grid item container xs={6}>
+          <Grid item container xs={5}>
             <Grid item xs={6}>
               <Typography variant='h5' classes={{ root: classes.priceLabel }}>
                 {prices[i].label}
               </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant='body2'>{prices[i].value}</Typography>
+              <Typography
+                align='right'
+                variant='body2'
+                classes={{ root: classes.priceValue }}
+              >{`$${prices[i].value}`}</Typography>
             </Grid>
           </Grid>
         </Grid>

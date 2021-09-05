@@ -14,6 +14,7 @@ const validators: { [key: string]: (val: string) => boolean } = {
       val
     ),
   zip: (val: string): boolean => /^\d{5}(-\d{4})?$/.test(val),
+  promo: (val: string): boolean => true,
 };
 
 export default function validate(values: { [key: string]: string }): {
