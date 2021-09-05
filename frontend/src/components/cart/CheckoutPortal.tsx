@@ -6,6 +6,7 @@ import Location from '../settings/Location';
 import Shipping from './Shipping';
 import Payments from '../settings/Payments';
 import { UserContext } from '../../contexts';
+import Confirmation from './Confirmation';
 
 const useStyles = makeStyles(theme => ({
   stepContainer: {
@@ -122,6 +123,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     },
     {
       title: 'Confirmation',
+      component: <Confirmation />,
     },
     {
       title: `Thanks, ${user.username}`,
