@@ -18,10 +18,13 @@ const useStyles = makeStyles<
     visibility: ({ selectedStep, finalStep }) =>
       selectedStep === finalStep - 1 ? 'hidden' : 'visible',
   },
+  disabled: {
+    opacity: 0.5,
+  },
 }));
 
 interface CheckoutNavigationProps {
-  steps: { title: string }[];
+  steps: { title: string; component?: any; error?: boolean }[];
   selectedStep: number;
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -52,7 +55,11 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
         </Typography>
       </Grid>
       <Grid item classes={{ root: classes.forward }}>
-        <Button onClick={() => setSelectedStep(prevState => prevState + 1)}>
+        <Button
+          disabled={steps[selectedStep].error}
+          classes={{ disabled: classes.disabled }}
+          onClick={() => setSelectedStep(prevState => prevState + 1)}
+        >
           <Typography variant='h5'>{'>'}</Typography>
         </Button>
       </Grid>

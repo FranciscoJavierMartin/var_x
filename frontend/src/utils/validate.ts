@@ -14,6 +14,8 @@ const validators: { [key: string]: (val: string) => boolean } = {
       val
     ),
   zip: (val: string): boolean => /^\d{5}(-\d{4})?$/.test(val),
+  city: (val: string): boolean => !!val,
+  state: (val: string): boolean => !!val,
   promo: (val: string): boolean => true,
 };
 

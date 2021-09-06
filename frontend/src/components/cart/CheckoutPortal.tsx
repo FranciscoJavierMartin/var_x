@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import CheckoutNavigation from './CheckoutNavigation';
 import Details from '../settings/Details';
 import Location from '../settings/Location';
 import Shipping from './Shipping';
 import Payments from '../settings/Payments';
-import { UserContext } from '../../contexts';
 import Confirmation from './Confirmation';
+import { UserContext } from '../../contexts';
+import validate from '../../utils/validate';
 
 const useStyles = makeStyles(theme => ({
   stepContainer: {
@@ -59,6 +60,11 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     { label: 'Overnight shipping', price: 29.99 },
   ];
 
+  const errorHelper = (values: { [key: string]: string }): boolean => {
+    const isValid = validate(values);
+    return Object.keys(isValid).some(value => !isValid[value]);
+  };
+
   const steps = [
     {
       title: 'Contact info',
@@ -78,6 +84,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setBilling={setDetailBilling}
         />
       ),
+      error: errorHelper(detailValues),
     },
     {
       title: 'Address',
@@ -97,6 +104,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           isCheckout
         />
       ),
+      error: errorHelper(locationValues),
     },
     {
       title: 'Shipping',
@@ -107,6 +115,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setSelectedShipping={setSelectedShipping}
         />
       ),
+      error: !selectedShipping,
     },
     {
       title: 'Payment',
@@ -120,6 +129,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           isCheckout
         />
       ),
+      error: false,
     },
     {
       title: 'Confirmation',
@@ -129,6 +139,10 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
       title: `Thanks, ${user.username}`,
     },
   ];
+
+  useEffect(() => {
+    setErrors({});
+  }, [detailSlot, locationSlot]);
 
   return (
     <Grid item container direction='column' alignItems='flex-end' xs={6}>
