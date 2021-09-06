@@ -68,6 +68,7 @@ interface LocationProps {
   billing?: boolean;
   setBilling?: React.Dispatch<React.SetStateAction<boolean>>;
   isCheckout?: boolean;
+  noSlots?: boolean;
 }
 
 const Location: React.FC<LocationProps> = ({
@@ -83,6 +84,7 @@ const Location: React.FC<LocationProps> = ({
   billing,
   setBilling,
   isCheckout,
+  noSlots,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { dispatchFeedback } = useContext(FeedbackContext);
@@ -130,7 +132,9 @@ const Location: React.FC<LocationProps> = ({
   };
 
   useEffect(() => {
-    setValues({ ...user.locations[slot] });
+    if (!noSlots) {
+      setValues({ ...user.locations[slot] });
+    }
   }, [slot]);
 
   useEffect(() => {
@@ -197,35 +201,37 @@ const Location: React.FC<LocationProps> = ({
           />
         )}
       </Grid>
-      <Grid
-        item
-        container
-        justifyContent='space-between'
-        classes={{ root: classes.slotsContainer }}
-      >
-        <Slots slot={slot} setSlot={setSlot} isCheckout={isCheckout} />
-        {isCheckout && (
-          <Grid item>
-            <FormControlLabel
-              label='Billing'
-              labelPlacement='start'
-              control={
-                <Switch
-                  checked={billing}
-                  onChange={() =>
-                    setBilling && setBilling(prevState => !prevState)
-                  }
-                  color='secondary'
-                />
-              }
-              classes={{
-                root: classes.switchWrapper,
-                label: classes.switchLabel,
-              }}
-            />
-          </Grid>
-        )}
-      </Grid>
+      {noSlots ? null : (
+        <Grid
+          item
+          container
+          justifyContent='space-between'
+          classes={{ root: classes.slotsContainer }}
+        >
+          <Slots slot={slot} setSlot={setSlot} isCheckout={isCheckout} />
+          {isCheckout && (
+            <Grid item>
+              <FormControlLabel
+                label='Billing'
+                labelPlacement='start'
+                control={
+                  <Switch
+                    checked={billing}
+                    onChange={() =>
+                      setBilling && setBilling(prevState => !prevState)
+                    }
+                    color='secondary'
+                  />
+                }
+                classes={{
+                  root: classes.switchWrapper,
+                  label: classes.switchLabel,
+                }}
+              />
+            </Grid>
+          )}
+        </Grid>
+      )}
     </Grid>
   );
 };

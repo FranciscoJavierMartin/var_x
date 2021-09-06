@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Typography, Grid, makeStyles, Theme } from '@material-ui/core';
+import { CartStep } from '../../interfaces/cart-steps';
 
 const useStyles = makeStyles<
   Theme,
@@ -24,7 +25,7 @@ const useStyles = makeStyles<
 }));
 
 interface CheckoutNavigationProps {
-  steps: { title: string; component?: any; error?: boolean }[];
+  steps: CartStep[];
   selectedStep: number;
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
 }

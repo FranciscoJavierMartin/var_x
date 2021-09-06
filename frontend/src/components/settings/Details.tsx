@@ -98,6 +98,7 @@ interface DetailsProps {
   errors: { [key: string]: boolean };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
   isCheckout?: boolean;
+  noSlots?: boolean;
 }
 
 const Details: React.FC<DetailsProps> = ({
@@ -113,6 +114,7 @@ const Details: React.FC<DetailsProps> = ({
   isCheckout,
   billing,
   setBilling,
+  noSlots,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const classes = useStyles({ isCheckout });
@@ -155,10 +157,12 @@ const Details: React.FC<DetailsProps> = ({
     : [name_phone, email_password];
 
   useEffect(() => {
-    if (isCheckout) {
-      setValues(user.contactInfo[slot]);
-    } else {
-      setValues({ ...user.contactInfo[slot], password: '********' });
+    if (!noSlots) {
+      if (isCheckout) {
+        setValues(user.contactInfo[slot]);
+      } else {
+        setValues({ ...user.contactInfo[slot], password: '********' });
+      }
     }
   }, [slot]);
 
@@ -218,35 +222,37 @@ const Details: React.FC<DetailsProps> = ({
           />
         </Grid>
       ))}
-      <Grid
-        item
-        container
-        justifyContent={isCheckout ? 'space-between' : undefined}
-        classes={{ root: classes.slotsContainer }}
-      >
-        <Slots slot={slot} setSlot={setSlot} isCheckout={isCheckout} />
-        {isCheckout && (
-          <Grid item>
-            <FormControlLabel
-              label='Billing'
-              labelPlacement='start'
-              control={
-                <Switch
-                  checked={billing}
-                  onChange={() =>
-                    setBilling && setBilling(prevState => !prevState)
-                  }
-                  color='secondary'
-                />
-              }
-              classes={{
-                root: classes.switchWrapper,
-                label: classes.switchLabel,
-              }}
-            />
-          </Grid>
-        )}
-      </Grid>
+      {noSlots ? null : (
+        <Grid
+          item
+          container
+          justifyContent={isCheckout ? 'space-between' : undefined}
+          classes={{ root: classes.slotsContainer }}
+        >
+          <Slots slot={slot} setSlot={setSlot} isCheckout={isCheckout} />
+          {isCheckout && (
+            <Grid item>
+              <FormControlLabel
+                label='Billing'
+                labelPlacement='start'
+                control={
+                  <Switch
+                    checked={billing}
+                    onChange={() =>
+                      setBilling && setBilling(prevState => !prevState)
+                    }
+                    color='secondary'
+                  />
+                }
+                classes={{
+                  root: classes.switchWrapper,
+                  label: classes.switchLabel,
+                }}
+              />
+            </Grid>
+          )}
+        </Grid>
+      )}
     </Grid>
   );
 };

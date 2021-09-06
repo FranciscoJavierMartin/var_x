@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import {
   Button,
   Chip,
@@ -9,6 +9,8 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Fields from '../shared/Fields';
+import { CartContext } from '../../contexts';
+import { calculateTotalPrice } from '../../utils/cart';
 
 import confirmationIcon from '../../images/tag.svg';
 import NameAdornment from '../../images/NameAdornment';
@@ -91,19 +93,55 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ConfirmationProps {}
+interface ConfirmationProps {
+  detailValues: {
+    [key: string]: string;
+  };
+  billingDetails: {
+    [key: string]: string;
+  };
+  detailForBilling: boolean;
+  locationValues: {
+    [key: string]: string;
+  };
+  billingLocation: {
+    [key: string]: string;
+  };
+  locationForBilling: boolean;
+  shippingOptions: { label: string; price: number }[];
+  selectedShipping: string;
+}
 
-const Confirmation: React.FC<ConfirmationProps> = ({}) => {
+const Confirmation: React.FC<ConfirmationProps> = ({
+  detailValues,
+  billingDetails,
+  detailForBilling,
+  locationValues,
+  billingLocation,
+  locationForBilling,
+  shippingOptions,
+  selectedShipping,
+}) => {
   const [promo, setPromo] = useState<{ [key: string]: string }>({
     promo: '',
   });
   const [promoError, setPromoError] = useState<{ [key: string]: boolean }>({});
+  const { cart } = useContext(CartContext);
+  const subtotal = useMemo<number>(
+    () => calculateTotalPrice(cart.cart),
+    [cart.cart]
+  );
+  const tax = subtotal * 0.21;
   const classes = useStyles();
   const theme = useTheme();
 
+  const shipping = shippingOptions.find(
+    option => option.label === selectedShipping
+  )!;
+
   const firstFields = [
     {
-      value: 'John Doe',
+      value: detailValues.name,
       adornment: (
         <div className={classes.nameWrapper}>
           <NameAdornment color={theme.palette.common.white} />
@@ -111,7 +149,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
       ),
     },
     {
-      value: 'test@test.com',
+      value: detailValues.email,
       adornment: (
         <div className={classes.emailWrapper}>
           <EmailAdornment color={theme.palette.common.white} />
@@ -119,7 +157,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
       ),
     },
     {
-      value: '(555) 555-5555',
+      value: detailValues.phone,
       adornment: (
         <div className={classes.phoneWrapper}>
           <PhoneAdornment color={theme.palette.common.white} />
@@ -127,14 +165,14 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
       ),
     },
     {
-      value: '1234 Example St',
+      value: locationValues.street,
       adornment: <img src={streetAdornment} alt='street address' />,
     },
   ];
 
   const secondFields = [
     {
-      value: 'Witchita, KS 67211',
+      value: `${locationValues.city}, ${locationValues.state} ${locationValues.zip}`,
       adornment: <img src={zipAdornment} alt='city, state, zip code' />,
     },
     {
@@ -152,20 +190,25 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
     },
   ];
 
-  const prices = [
+  const prices: { label: string; value: string }[] = [
     {
       label: 'Subtotal',
-      value: 99.99,
+      value: subtotal.toFixed(2),
     },
     {
       label: 'Shipping',
-      value: 9.99,
+      value: shipping.price.toFixed(2),
     },
     {
       label: 'Tax',
-      value: 9.67,
+      value: tax.toFixed(2),
     },
   ];
+
+  const totalPrice = prices.reduce(
+    (total, item) => total + parseFloat(item.value),
+    0
+  );
 
   const adornmentValue = (adornment: any, value: string) => (
     <>
@@ -261,7 +304,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({}) => {
             </Grid>
             <Grid item>
               <Chip
-                label='$149.99'
+                label={`$${totalPrice.toFixed(2)}`}
                 classes={{ root: classes.chipRoot, label: classes.chipLabel }}
               />
             </Grid>
