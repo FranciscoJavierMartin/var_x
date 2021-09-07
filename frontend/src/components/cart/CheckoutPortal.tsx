@@ -45,7 +45,9 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [detailSlot, setDetailSlot] = useState<number>(0);
-  const [detailForBilling, setDetailForBilling] = useState<boolean|number>(false);
+  const [detailForBilling, setDetailForBilling] = useState<boolean | number>(
+    false
+  );
   const [locationValues, setLocationValues] = useState<{
     [key: string]: string;
   }>({
@@ -63,7 +65,9 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     state: '',
   });
   const [locationSlot, setLocationSlot] = useState<number>(0);
-  const [locationForBilling, setLocationForBilling] = useState<boolean|number>(false);
+  const [locationForBilling, setLocationForBilling] = useState<
+    boolean | number
+  >(false);
   const [selectedShipping, setSelectedShipping] = useState<string>('');
   const [billingSlot, setBillingSlot] = useState<number>(0);
   const [saveCard, setSaveCard] = useState<boolean>(false);
@@ -213,11 +217,11 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     },
   ];
 
-  if (detailForBilling) {
+  if (detailForBilling !== false) {
     steps = steps.filter(step => step.title !== 'Billing Info');
   }
 
-  if (locationForBilling) {
+  if (locationForBilling !== false) {
     steps = steps.filter(step => step.title !== 'Billing Address');
   }
 
