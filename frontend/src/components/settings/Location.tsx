@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
   CircularProgress,
   Grid,
@@ -7,6 +7,7 @@ import {
   Switch,
   makeStyles,
   Theme,
+  useMediaQuery,
 } from '@material-ui/core';
 import axios from 'axios';
 import Fields from '../shared/Fields';
@@ -65,10 +66,14 @@ interface LocationProps {
   setSlot: React.Dispatch<React.SetStateAction<number>>;
   errors: { [key: string]: boolean };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
-  billing?: boolean;
-  setBilling?: React.Dispatch<React.SetStateAction<boolean>>;
+  billing?: boolean | number;
+  setBilling?: React.Dispatch<React.SetStateAction<boolean | number>>;
   isCheckout?: boolean;
   noSlots?: boolean;
+  billingValues?: { [key: string]: string };
+  setBillingValues?: React.Dispatch<
+    React.SetStateAction<{ [key: string]: string }>
+  >;
 }
 
 const Location: React.FC<LocationProps> = ({
@@ -85,10 +90,15 @@ const Location: React.FC<LocationProps> = ({
   setBilling,
   isCheckout,
   noSlots,
+  billingValues,
+  setBillingValues,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const { dispatchFeedback } = useContext(FeedbackContext);
+  const isMounted = useRef<boolean>(false);
   const classes = useStyles({ isCheckout });
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const fields = {
     street: {
@@ -155,6 +165,18 @@ const Location: React.FC<LocationProps> = ({
     }
   }, [values]);
 
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      if (billing === false) {
+        setValues(billingValues!);
+      } else {
+        setBillingValues && setBillingValues(values);
+      }
+    }
+  }, [billing]);
+
   return (
     <Grid
       item
@@ -182,8 +204,8 @@ const Location: React.FC<LocationProps> = ({
       >
         <Fields
           fields={fields}
-          values={values}
-          setValues={setValues}
+          values={billing === slot ? billingValues! : values}
+          setValues={billing === slot ? setBillingValues! : setValues}
           errors={errors}
           setErrors={setErrors}
           isWhite
@@ -216,9 +238,12 @@ const Location: React.FC<LocationProps> = ({
                 labelPlacement='start'
                 control={
                   <Switch
-                    checked={billing}
+                    checked={billing === slot}
                     onChange={() =>
-                      setBilling && setBilling(prevState => !prevState)
+                      setBilling &&
+                      setBilling(prevState =>
+                        prevState === slot ? false : slot
+                      )
                     }
                     color='secondary'
                   />

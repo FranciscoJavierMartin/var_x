@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Grid,
   FormControlLabel,
@@ -91,14 +91,18 @@ interface DetailsProps {
   setChangesMade: React.Dispatch<React.SetStateAction<boolean>>;
   values: { [key: string]: string };
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
-  billing?: boolean;
-  setBilling?: React.Dispatch<React.SetStateAction<boolean>>;
+  billing?: boolean | number;
+  setBilling?: React.Dispatch<React.SetStateAction<boolean | number>>;
   slot: number;
   setSlot: React.Dispatch<React.SetStateAction<number>>;
   errors: { [key: string]: boolean };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
   isCheckout?: boolean;
   noSlots?: boolean;
+  billingValues?: { [key: string]: string };
+  setBillingValues?: React.Dispatch<
+    React.SetStateAction<{ [key: string]: string }>
+  >;
 }
 
 const Details: React.FC<DetailsProps> = ({
@@ -115,8 +119,12 @@ const Details: React.FC<DetailsProps> = ({
   billing,
   setBilling,
   noSlots,
+  billingValues,
+  setBillingValues,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const isMounted = useRef<boolean>(false);
+
   const classes = useStyles({ isCheckout });
   const theme = useTheme();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
@@ -178,6 +186,18 @@ const Details: React.FC<DetailsProps> = ({
     }
   }, [values]);
 
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      if (billing === false) {
+        setValues(billingValues!);
+      } else {
+        setBillingValues && setBillingValues(values);
+      }
+    }
+  }, [billing]);
+
   return (
     <Grid
       item
@@ -212,8 +232,8 @@ const Details: React.FC<DetailsProps> = ({
         >
           <Fields
             fields={pair}
-            values={values}
-            setValues={setValues}
+            values={billing === slot ? billingValues! : values}
+            setValues={billing === slot ? setBillingValues! : setValues}
             errors={errors}
             setErrors={setErrors}
             isWhite
@@ -237,9 +257,12 @@ const Details: React.FC<DetailsProps> = ({
                 labelPlacement='start'
                 control={
                   <Switch
-                    checked={billing}
+                    checked={billing === slot}
                     onChange={() =>
-                      setBilling && setBilling(prevState => !prevState)
+                      setBilling &&
+                      setBilling(prevState =>
+                        prevState === slot ? false : slot
+                      )
                     }
                     color='secondary'
                   />

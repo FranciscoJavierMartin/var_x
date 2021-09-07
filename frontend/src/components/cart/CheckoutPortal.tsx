@@ -45,7 +45,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [detailSlot, setDetailSlot] = useState<number>(0);
-  const [detailForBilling, setDetailForBilling] = useState<boolean>(false);
+  const [detailForBilling, setDetailForBilling] = useState<boolean|number>(false);
   const [locationValues, setLocationValues] = useState<{
     [key: string]: string;
   }>({
@@ -63,7 +63,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     state: '',
   });
   const [locationSlot, setLocationSlot] = useState<number>(0);
-  const [locationForBilling, setLocationForBilling] = useState<boolean>(false);
+  const [locationForBilling, setLocationForBilling] = useState<boolean|number>(false);
   const [selectedShipping, setSelectedShipping] = useState<string>('');
   const [billingSlot, setBillingSlot] = useState<number>(0);
   const [saveCard, setSaveCard] = useState<boolean>(false);
@@ -93,11 +93,13 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setSlot={setDetailSlot}
           errors={errors}
           setErrors={setErrors}
+          billing={detailForBilling}
+          setBilling={setDetailForBilling}
+          billingValues={billingDetails}
+          setBillingValues={setBillingDetails}
           isCheckout
           edit={false}
           setChangesMade={() => {}}
-          billing={detailForBilling}
-          setBilling={setDetailForBilling}
         />
       ),
       error: errorHelper(detailValues),
@@ -134,11 +136,13 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setErrors={setErrors}
           slot={locationSlot}
           setSlot={setLocationSlot}
-          edit={false}
-          setChangesMade={() => {}}
           billing={locationForBilling}
           setBilling={setLocationForBilling}
+          billingValues={billingLocation}
+          setBillingValues={setBillingLocation}
           isCheckout
+          edit={false}
+          setChangesMade={() => {}}
         />
       ),
       error: errorHelper(locationValues),
