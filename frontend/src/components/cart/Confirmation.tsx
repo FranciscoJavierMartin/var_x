@@ -11,8 +11,10 @@ import {
 import clsx from 'clsx';
 import axios from 'axios';
 import Fields from '../shared/Fields';
-import { CartContext } from '../../contexts';
+import { CartContext, FeedbackContext } from '../../contexts';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import { calculateTotalPrice } from '../../utils/cart';
+import { User } from '../../interfaces/user';
 
 import confirmationIcon from '../../images/tag.svg';
 import NameAdornment from '../../images/NameAdornment';
@@ -22,7 +24,6 @@ import streetAdornment from '../../images/street-adornment.svg';
 import zipAdornment from '../../images/zip-adornment.svg';
 import cardAdornment from '../../images/card.svg';
 import promoAdornment from '../../images/promo-code.svg';
-import { User } from '../../interfaces/user';
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -94,6 +95,14 @@ const useStyles = makeStyles(theme => ({
   chipLabel: {
     color: theme.palette.secondary.main,
   },
+  disabled: {
+    backgroundColor: theme.palette.grey[500],
+  },
+  '@global': {
+    '.MuiSnackbarContent-message': {
+      whiteSpace: 'pre-wrap',
+    },
+  },
 }));
 
 interface ConfirmationProps {
@@ -133,6 +142,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   const [promoError, setPromoError] = useState<{ [key: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { cart } = useContext(CartContext);
+  const { dispatchFeedback } = useContext(FeedbackContext);
   const subtotal = useMemo<number>(
     () => calculateTotalPrice(cart.cart),
     [cart.cart]
@@ -260,6 +270,31 @@ const Confirmation: React.FC<ConfirmationProps> = ({
       })
       .catch(error => {
         setIsLoading(false);
+
+        switch (error.response.status) {
+          case 400:
+            dispatchFeedback(
+              openSnackbar(SnackbarStatus.Error, 'Invalid cart')
+            );
+            break;
+          case 409:
+            dispatchFeedback(
+              openSnackbar(
+                SnackbarStatus.Error,
+                `The following items are not available at the requested quantity. Please update your cart and try again.\n ${error.response.data.unavailable.map(
+                  (item: any) => `\nItem: ${item.id}, Available: ${item.qty}`
+                )}`
+              )
+            );
+            break;
+          default:
+            dispatchFeedback(
+              openSnackbar(
+                SnackbarStatus.Error,
+                'Something went wrong, please refresh the page and try again. you have NOT been charged'
+              )
+            );
+        }
       });
   };
 
@@ -337,7 +372,11 @@ const Confirmation: React.FC<ConfirmationProps> = ({
         </Grid>
       ))}
       <Grid item classes={{ root: classes.buttonWrapper }}>
-        <Button classes={{ root: classes.button }} onClick={handleOrder}>
+        <Button
+          classes={{ root: classes.button, disabled: classes.disabled }}
+          onClick={handleOrder}
+          disabled={cart.cart.length === 0 || isLoading}
+        >
           <Grid container justifyContent='space-around' alignItems='center'>
             <Grid item>
               <Typography variant='h5'>Place order</Typography>

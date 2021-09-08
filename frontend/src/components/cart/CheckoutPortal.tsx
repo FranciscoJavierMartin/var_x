@@ -281,6 +281,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         location={locationValues}
         setLocation={setLocationValues}
         locationSlot={locationSlot}
+        setErrors={setErrors}
       />
 
       <Grid

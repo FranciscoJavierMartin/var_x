@@ -68,6 +68,7 @@ interface CheckoutNavigationProps {
   location: { [key: string]: string };
   locationSlot: number;
   setLocation: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }
 
 const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
@@ -80,6 +81,7 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
   location,
   setLocation,
   locationSlot,
+  setErrors,
 }) => {
   const [isLoading, setIsLoading] = useState<LoadingAction>(LoadingAction.NONE);
   const { user, dispatchUser } = useContext(UserContext);
@@ -87,7 +89,7 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
   const classes = useStyles({ finalStep: steps.length - 1, selectedStep });
 
   const handleAction = (action: LoadingAction) => {
-    if (steps[selectedStep].error) {
+    if (steps[selectedStep].error && action !== LoadingAction.DELETE) {
       dispatchFeedback(
         openSnackbar(
           SnackbarStatus.Error,
@@ -136,10 +138,11 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
           );
 
           if (action === LoadingAction.DELETE) {
+            setErrors({});
             if (isDetails) {
-              setDetails({});
+              setDetails({ name: '', email: '', phone: '' });
             } else if (isLocation) {
-              setLocation({});
+              setLocation({ street: '', city: '', zip: '', state: '' });
             }
           }
         })
