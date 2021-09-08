@@ -80,9 +80,35 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     { label: 'Overnight shipping', price: 29.99 },
   ];
 
-  const errorHelper = (values: { [key: string]: string }): boolean => {
+  const errorHelper = (
+    values: { [key: string]: string },
+    forBilling?: number | boolean,
+    billingValues?: { [key: string]: string },
+    slot?: number
+  ): boolean => {
+    let res: boolean;
     const isValid = validate(values);
-    return Object.keys(isValid).some(value => !isValid[value]);
+    // If we have one slot marked as billing
+    if (forBilling !== false && forBilling !== undefined) {
+      // ... validate billing values
+      const billingValid = validate(billingValues!);
+
+      // If we are currently on the same slot as marked for billing, ie billing and shipping are the same ...
+      if (forBilling === slot) {
+        // ... then we just need to validate the one set of values because the are the same
+        res = Object.keys(isValid).some(value => !isValid[value]);
+      } else {
+        // Otherwise, if we are currently on a different slot than the slot marked for billing, ie billing and shipping are different, then we need to validate both the billing values, and the shipping values
+        res =
+          Object.values(billingValid).some(value => !value) ||
+          Object.values(isValid).some(value => !value);
+      }
+    } else {
+      // If no slots were marked for billing, just validate current slot
+      res = Object.keys(isValid).some(value => !isValid[value]);
+    }
+
+    return res;
   };
 
   let steps: CartStep[] = [
@@ -106,7 +132,12 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setChangesMade={() => {}}
         />
       ),
-      error: errorHelper(detailValues),
+      error: errorHelper(
+        detailValues,
+        detailForBilling,
+        billingDetails,
+        detailSlot
+      ),
     },
     {
       title: 'Billing Info',
@@ -149,7 +180,12 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setChangesMade={() => {}}
         />
       ),
-      error: errorHelper(locationValues),
+      error: errorHelper(
+        locationValues,
+        locationForBilling,
+        billingLocation,
+        locationSlot
+      ),
     },
     {
       title: 'Billing Address',

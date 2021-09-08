@@ -166,14 +166,18 @@ const Location: React.FC<LocationProps> = ({
   }, [values]);
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-    } else {
-      if (billing === false) {
-        setValues(billingValues!);
+    if (!noSlots) {
+      if (!isMounted.current) {
+        isMounted.current = true;
       } else {
-        setBillingValues && setBillingValues(values);
+        if (billing === false) {
+          setValues(billingValues!);
+        } else {
+          setBillingValues && setBillingValues(values);
+        }
       }
+    } else {
+      isMounted.current = false;
     }
   }, [billing]);
 
@@ -204,8 +208,10 @@ const Location: React.FC<LocationProps> = ({
       >
         <Fields
           fields={fields}
-          values={billing === slot ? billingValues! : values}
-          setValues={billing === slot ? setBillingValues! : setValues}
+          values={billing === slot && !noSlots ? billingValues! : values}
+          setValues={
+            billing === slot && !noSlots ? setBillingValues! : setValues
+          }
           errors={errors}
           setErrors={setErrors}
           isWhite

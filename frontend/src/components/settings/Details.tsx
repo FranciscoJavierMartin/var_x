@@ -187,14 +187,18 @@ const Details: React.FC<DetailsProps> = ({
   }, [values]);
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-    } else {
-      if (billing === false) {
-        setValues(billingValues!);
+    if (!noSlots) {
+      if (!isMounted.current) {
+        isMounted.current = true;
       } else {
-        setBillingValues && setBillingValues(values);
+        if (billing === false) {
+          setValues(billingValues!);
+        } else {
+          setBillingValues && setBillingValues(values);
+        }
       }
+    } else {
+      isMounted.current = false;
     }
   }, [billing]);
 
@@ -232,8 +236,10 @@ const Details: React.FC<DetailsProps> = ({
         >
           <Fields
             fields={pair}
-            values={billing === slot ? billingValues! : values}
-            setValues={billing === slot ? setBillingValues! : setValues}
+            values={billing === slot && !noSlots ? billingValues! : values}
+            setValues={
+              billing === slot && !noSlots ? setBillingValues! : setValues
+            }
             errors={errors}
             setErrors={setErrors}
             isWhite
