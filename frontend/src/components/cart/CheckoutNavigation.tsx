@@ -63,9 +63,11 @@ interface CheckoutNavigationProps {
   selectedStep: number;
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
   details: { [key: string]: string };
+  setDetails: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   detailSlot: number;
   location: { [key: string]: string };
   locationSlot: number;
+  setLocation: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
 }
 
 const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
@@ -73,8 +75,10 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
   selectedStep,
   setSelectedStep,
   details,
+  setDetails,
   detailSlot,
   location,
+  setLocation,
   locationSlot,
 }) => {
   const [isLoading, setIsLoading] = useState<LoadingAction>(LoadingAction.NONE);
@@ -100,9 +104,15 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
         .post(
           `${process.env.GATSBY_STRAPI_URL}/users-permissions/set-settings`,
           {
-            details: isDetails ? details : undefined,
+            details:
+              isDetails && action !== LoadingAction.DELETE
+                ? details
+                : undefined,
             detailSlot: isDetails ? detailSlot : undefined,
-            location: isLocation ? location : undefined,
+            location:
+              isLocation && action !== LoadingAction.DELETE
+                ? location
+                : undefined,
             locationSlot: isLocation ? locationSlot : undefined,
           },
           {
@@ -116,19 +126,31 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
           dispatchFeedback(
             openSnackbar(
               SnackbarStatus.Success,
-              'Information saved succesfully'
+              `Information ${
+                action === LoadingAction.DELETE ? 'deleted' : 'saved'
+              } succesfully`
             )
           );
           dispatchUser(
             setUser({ ...response.data, jwt: user.jwt, onboarding: true })
           );
+
+          if (action === LoadingAction.DELETE) {
+            if (isDetails) {
+              setDetails({});
+            } else if (isLocation) {
+              setLocation({});
+            }
+          }
         })
         .catch(error => {
           setIsLoading(LoadingAction.NONE);
           dispatchFeedback(
             openSnackbar(
               SnackbarStatus.Error,
-              'There was a problem saving your information, please try again.'
+              `There was a problem ${
+                action === LoadingAction.DELETE ? 'deleting' : 'saving'
+              } your information, please try again.`
             )
           );
         });
@@ -175,11 +197,15 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
               )}
             </Grid>
             <Grid item>
-              <IconButton>
-                <span className={classes.delete}>
-                  <DeleteIcon />
-                </span>
-              </IconButton>
+              {isLoading === LoadingAction.DELETE ? (
+                <CircularProgress />
+              ) : (
+                <IconButton>
+                  <span className={classes.delete}>
+                    <DeleteIcon />
+                  </span>
+                </IconButton>
+              )}
             </Grid>
           </Grid>
         </Grid>

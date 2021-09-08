@@ -275,8 +275,10 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         selectedStep={selectedStep}
         setSelectedStep={setSelectedStep}
         details={detailValues}
+        setDetails={setDetailValues}
         detailSlot={detailSlot}
         location={locationValues}
+        setLocation={setLocationValues}
         locationSlot={locationSlot}
       />
 
