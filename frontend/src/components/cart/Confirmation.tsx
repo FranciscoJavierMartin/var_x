@@ -4,10 +4,12 @@ import {
   Chip,
   Grid,
   Typography,
+  CircularProgress,
   makeStyles,
   useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import axios from 'axios';
 import Fields from '../shared/Fields';
 import { CartContext } from '../../contexts';
 import { calculateTotalPrice } from '../../utils/cart';
@@ -20,6 +22,7 @@ import streetAdornment from '../../images/street-adornment.svg';
 import zipAdornment from '../../images/zip-adornment.svg';
 import cardAdornment from '../../images/card.svg';
 import promoAdornment from '../../images/promo-code.svg';
+import { User } from '../../interfaces/user';
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -94,6 +97,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface ConfirmationProps {
+  user: User;
   detailValues: {
     [key: string]: string;
   };
@@ -113,6 +117,7 @@ interface ConfirmationProps {
 }
 
 const Confirmation: React.FC<ConfirmationProps> = ({
+  user,
   detailValues,
   billingDetails,
   detailForBilling,
@@ -126,6 +131,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
     promo: '',
   });
   const [promoError, setPromoError] = useState<{ [key: string]: boolean }>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { cart } = useContext(CartContext);
   const subtotal = useMemo<number>(
     () => calculateTotalPrice(cart.cart),
@@ -223,6 +229,40 @@ const Confirmation: React.FC<ConfirmationProps> = ({
     </>
   );
 
+  const handleOrder = () => {
+    setIsLoading(true);
+
+    axios
+      .post(
+        `${process.env.GATSBY_STRAPI_URL}/orders/place`,
+        {
+          shippingAddress: locationValues,
+          billingAddress: billingLocation,
+          shippingInfo: detailValues,
+          billingInfo: billingDetails,
+          shippingOption: shipping,
+          subtotal: subtotal.toFixed(2),
+          tax: tax.toFixed(2),
+          total: totalPrice.toFixed(2),
+          items: cart.cart,
+        },
+        {
+          headers:
+            user.username === 'Guest'
+              ? undefined
+              : {
+                  Authorization: `Bearer ${user.jwt}`,
+                },
+        }
+      )
+      .then(response => {
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <Grid
       item
@@ -297,16 +337,20 @@ const Confirmation: React.FC<ConfirmationProps> = ({
         </Grid>
       ))}
       <Grid item classes={{ root: classes.buttonWrapper }}>
-        <Button classes={{ root: classes.button }}>
+        <Button classes={{ root: classes.button }} onClick={handleOrder}>
           <Grid container justifyContent='space-around' alignItems='center'>
             <Grid item>
               <Typography variant='h5'>Place order</Typography>
             </Grid>
             <Grid item>
-              <Chip
-                label={`$${totalPrice.toFixed(2)}`}
-                classes={{ root: classes.chipRoot, label: classes.chipLabel }}
-              />
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                <Chip
+                  label={`$${totalPrice.toFixed(2)}`}
+                  classes={{ root: classes.chipRoot, label: classes.chipLabel }}
+                />
+              )}
             </Grid>
           </Grid>
         </Button>

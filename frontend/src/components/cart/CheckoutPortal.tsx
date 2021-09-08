@@ -240,6 +240,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
       title: 'Confirmation',
       component: (
         <Confirmation
+          user={user}
           detailValues={detailValues}
           billingDetails={billingDetails}
           detailForBilling={detailForBilling}

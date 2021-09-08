@@ -9,6 +9,14 @@
       }
     },
     {
+      "method": "POST",
+      "path": "/orders/place",
+      "handler": "order.place",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "GET",
       "path": "/orders/count",
       "handler": "order.count",
@@ -44,14 +52,6 @@
       "method": "DELETE",
       "path": "/orders/:id",
       "handler": "order.delete",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/orders/place",
-      "handler": "order.place",
       "config": {
         "policies": []
       }

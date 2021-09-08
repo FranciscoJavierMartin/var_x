@@ -142,7 +142,7 @@ const Location: React.FC<LocationProps> = ({
   };
 
   useEffect(() => {
-    if (!noSlots) {
+    if (!noSlots || user.username !== 'Guest') {
       setValues({ ...user.locations[slot] });
     }
   }, [slot]);
@@ -166,7 +166,7 @@ const Location: React.FC<LocationProps> = ({
   }, [values]);
 
   useEffect(() => {
-    if (!noSlots) {
+    if (!noSlots || user.username !== 'Guest') {
       if (!isMounted.current) {
         isMounted.current = true;
       } else {

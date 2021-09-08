@@ -31,7 +31,6 @@ module.exports = {
     ];
     let serverTotal = 0;
     const unavailable = [];
-    let invalid = false;
 
     await Promise.all(
       items.map(async (clientItem) => {
@@ -42,12 +41,12 @@ module.exports = {
         if (serverItem.qty < clientItem.qty) {
           unavailable.push({ id: serverItem.id, qty: serverItem.qty });
         } else {
-          serverTotal += serverItem.price * clientItem.qty;
           await strapi.services.variant.update(
             { id: clientItem.variant.id },
             { qty: serverItem.qty - clientItem.qty }
           );
         }
+        serverTotal += serverItem.price * clientItem.qty;
       })
     );
 

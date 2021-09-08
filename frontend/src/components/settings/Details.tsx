@@ -165,7 +165,7 @@ const Details: React.FC<DetailsProps> = ({
     : [name_phone, email_password];
 
   useEffect(() => {
-    if (!noSlots) {
+    if (!noSlots || user.username !== 'Guest') {
       if (isCheckout) {
         setValues(user.contactInfo[slot]);
       } else {
@@ -187,7 +187,7 @@ const Details: React.FC<DetailsProps> = ({
   }, [values]);
 
   useEffect(() => {
-    if (!noSlots) {
+    if (!noSlots || user.username !== 'Guest') {
       if (!isMounted.current) {
         isMounted.current = true;
       } else {

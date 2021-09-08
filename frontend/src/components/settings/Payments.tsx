@@ -80,7 +80,10 @@ const Payments: React.FC<PaymentsProps> = ({
 }) => {
   const classes = useStyles({ isCheckout });
 
-  const card: PaymentMethod = user.paymentMethods[slot];
+  const card: PaymentMethod =
+    user.username === 'Guest'
+      ? { last4: '', brand: '' }
+      : user.paymentMethods[slot];
 
   return (
     <Grid

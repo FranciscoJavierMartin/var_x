@@ -184,7 +184,7 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
           <Typography variant='h5'>{'>'}</Typography>
         </Button>
       </Grid>
-      {steps[selectedStep].hasActions ? (
+      {steps[selectedStep].hasActions && user.username !== 'Guest' ? (
         <Grid item classes={{ root: classes.actions }}>
           <Grid container>
             <Grid item>
