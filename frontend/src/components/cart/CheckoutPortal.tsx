@@ -114,7 +114,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
 
   let steps: CartStep[] = [
     {
-      title: 'Contact info',
+      title: 'Contact Info',
       component: (
         <Details
           user={user}
@@ -274,6 +274,10 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         steps={steps}
         selectedStep={selectedStep}
         setSelectedStep={setSelectedStep}
+        details={detailValues}
+        detailSlot={detailSlot}
+        location={locationValues}
+        locationSlot={locationSlot}
       />
 
       <Grid
