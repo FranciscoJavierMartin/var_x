@@ -100,14 +100,14 @@ interface ConfirmationProps {
   billingDetails: {
     [key: string]: string;
   };
-  detailForBilling: boolean;
+  detailForBilling: boolean | number;
   locationValues: {
     [key: string]: string;
   };
   billingLocation: {
     [key: string]: string;
   };
-  locationForBilling: boolean;
+  locationForBilling: boolean | number;
   shippingOptions: { label: string; price: number }[];
   selectedShipping: string;
 }

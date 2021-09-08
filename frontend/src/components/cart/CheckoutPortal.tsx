@@ -6,6 +6,7 @@ import Location from '../settings/Location';
 import Shipping from './Shipping';
 import Payments from '../settings/Payments';
 import Confirmation from './Confirmation';
+import BillingConfirmation from './BillingConfirmation';
 import { UserContext } from '../../contexts';
 import validate from '../../utils/validate';
 import { CartStep } from '../../interfaces/cart-steps';
@@ -282,6 +283,16 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
       >
         {steps[selectedStep].component}
       </Grid>
+      {steps[selectedStep].title === 'Confirmation' && (
+        <BillingConfirmation
+          detailForBilling={detailForBilling}
+          billingDetails={billingDetails}
+          detailSlot={detailSlot}
+          locationForBilling={locationForBilling}
+          billingLocation={billingLocation}
+          locationSlot={locationSlot}
+        />
+      )}
     </Grid>
   );
 };
