@@ -139,6 +139,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         billingDetails,
         detailSlot
       ),
+      hasActions: true,
     },
     {
       title: 'Billing Info',
@@ -187,6 +188,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         billingLocation,
         locationSlot
       ),
+      hasActions: true,
     },
     {
       title: 'Billing Address',

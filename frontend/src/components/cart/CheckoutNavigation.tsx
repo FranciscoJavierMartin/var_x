@@ -1,6 +1,16 @@
 import React from 'react';
-import { Button, Typography, Grid, makeStyles, Theme } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  Typography,
+  Grid,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import { CartStep } from '../../interfaces/cart-steps';
+
+import save from '../../images/save.svg';
+import DeleteIcon from '../../images/DeleteIcon';
 
 const useStyles = makeStyles<
   Theme,
@@ -10,6 +20,7 @@ const useStyles = makeStyles<
     backgroundColor: theme.palette.secondary.main,
     width: '40rem',
     height: '5rem',
+    position: 'relative',
   },
   back: {
     visibility: ({ selectedStep, finalStep }) =>
@@ -21,6 +32,18 @@ const useStyles = makeStyles<
   },
   disabled: {
     opacity: 0.5,
+  },
+  icon: {
+    height: '2.25rem',
+    width: '2.25rem',
+  },
+  delete: {
+    height: '2rem',
+    width: '2rem',
+  },
+  actions: {
+    position: 'absolute',
+    right: 0,
   },
 }));
 
@@ -64,6 +87,24 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
           <Typography variant='h5'>{'>'}</Typography>
         </Button>
       </Grid>
+      {steps[selectedStep].hasActions ? (
+        <Grid item classes={{ root: classes.actions }}>
+          <Grid container>
+            <Grid item>
+              <IconButton>
+                <img src={save} alt='save' className={classes.icon} />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton>
+                <span className={classes.delete}>
+                  <DeleteIcon />
+                </span>
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : null}
     </Grid>
   );
 };
