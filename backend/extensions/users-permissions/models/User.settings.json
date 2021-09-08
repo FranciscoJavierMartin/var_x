@@ -67,6 +67,10 @@
     },
     "locations": {
       "type": "json"
+    },
+    "orders": {
+      "via": "user",
+      "collection": "order"
     }
   }
 }
