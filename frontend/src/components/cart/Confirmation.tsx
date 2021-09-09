@@ -13,8 +13,10 @@ import axios from 'axios';
 import Fields from '../shared/Fields';
 import { CartContext, FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
+import { clearCart } from '../../contexts/cart/actions';
 import { calculateTotalPrice } from '../../utils/cart';
 import { User } from '../../interfaces/user';
+import { Order } from '../../interfaces/order';
 
 import confirmationIcon from '../../images/tag.svg';
 import NameAdornment from '../../images/NameAdornment';
@@ -123,6 +125,9 @@ interface ConfirmationProps {
   locationForBilling: boolean | number;
   shippingOptions: { label: string; price: number }[];
   selectedShipping: string;
+  selectedStep: number;
+  setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
+  setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
 }
 
 const Confirmation: React.FC<ConfirmationProps> = ({
@@ -135,13 +140,16 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   locationForBilling,
   shippingOptions,
   selectedShipping,
+  selectedStep,
+  setSelectedStep,
+  setOrder,
 }) => {
   const [promo, setPromo] = useState<{ [key: string]: string }>({
     promo: '',
   });
   const [promoError, setPromoError] = useState<{ [key: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { cart } = useContext(CartContext);
+  const { cart, dispatchCart } = useContext(CartContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
   const subtotal = useMemo<number>(
     () => calculateTotalPrice(cart.cart),
@@ -267,6 +275,9 @@ const Confirmation: React.FC<ConfirmationProps> = ({
       )
       .then(response => {
         setIsLoading(false);
+        dispatchCart(clearCart());
+        setOrder(response.data.order);
+        setSelectedStep(prevState => prevState + 1);
       })
       .catch(error => {
         setIsLoading(false);

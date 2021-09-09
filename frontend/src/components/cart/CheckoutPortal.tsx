@@ -6,10 +6,12 @@ import Location from '../settings/Location';
 import Shipping from './Shipping';
 import Payments from '../settings/Payments';
 import Confirmation from './Confirmation';
+import ThankYou from './ThankYou';
 import BillingConfirmation from './BillingConfirmation';
 import { UserContext } from '../../contexts';
 import validate from '../../utils/validate';
 import { CartStep } from '../../interfaces/cart-steps';
+import { Order } from '../../interfaces/order';
 
 const useStyles = makeStyles(theme => ({
   stepContainer: {
@@ -72,6 +74,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   const [selectedShipping, setSelectedShipping] = useState<string>('');
   const [billingSlot, setBillingSlot] = useState<number>(0);
   const [saveCard, setSaveCard] = useState<boolean>(false);
+  const [order, setOrder] = useState<Order | null>(null);
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
@@ -249,11 +252,15 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           locationForBilling={locationForBilling}
           shippingOptions={shippingOptions}
           selectedShipping={selectedShipping}
+          selectedStep={selectedStep}
+          setSelectedStep={setSelectedStep}
+          setOrder={setOrder}
         />
       ),
     },
     {
-      title: `Thanks, ${user.username}`,
+      title: `Thanks, ${user.username.split(' ')[0]}`,
+      component: <ThankYou order={order} selectedShipping={selectedShipping} />,
     },
   ];
 
