@@ -32,6 +32,9 @@ const useStyles = makeStyles<
     width: '40rem',
     height: '5rem',
     position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   back: {
     visibility: ({ selectedStep, finalStep }) =>
@@ -44,17 +47,38 @@ const useStyles = makeStyles<
   disabled: {
     opacity: 0.5,
   },
+  iconButton: {
+    padding: 6,
+  },
   icon: {
     height: '2.25rem',
     width: '2.25rem',
+    [theme.breakpoints.down('xs')]: {
+      height: '1.75rem',
+      width: '1.75rem',
+    },
   },
   delete: {
     height: '2rem',
     width: '2rem',
+    [theme.breakpoints.down('xs')]: {
+      height: '1.5rem',
+      width: '1.5rem',
+    },
   },
   actions: {
     position: 'absolute',
     right: 0,
+  },
+  text: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.5rem',
+    },
+  },
+  navButton: {
+    width: '1.5rem',
+    height: '1.5rem',
+    minWidth: 0,
   },
 }));
 
@@ -169,22 +193,29 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
       classes={{ root: classes.navbar }}
     >
       <Grid item classes={{ root: classes.back }}>
-        <Button onClick={() => setSelectedStep(prevState => prevState - 1)}>
-          <Typography variant='h5'>{'<'}</Typography>
+        <Button
+          classes={{ root: classes.navButtons }}
+          onClick={() => setSelectedStep(prevState => prevState - 1)}
+        >
+          <Typography variant='h5' classes={{ root: classes.text }}>
+            {'<'}
+          </Typography>
         </Button>
       </Grid>
       <Grid item>
-        <Typography variant='h5'>
+        <Typography variant='h5' classes={{ root: classes.text }}>
           {steps[selectedStep].title.toUpperCase()}
         </Typography>
       </Grid>
       <Grid item classes={{ root: classes.forward }}>
         <Button
           disabled={steps[selectedStep].error}
-          classes={{ disabled: classes.disabled }}
+          classes={{ root: classes.navButtons, disabled: classes.disabled }}
           onClick={() => setSelectedStep(prevState => prevState + 1)}
         >
-          <Typography variant='h5'>{'>'}</Typography>
+          <Typography variant='h5' classes={{ root: classes.text }}>
+            {'>'}
+          </Typography>
         </Button>
       </Grid>
       {steps[selectedStep].hasActions && user.username !== 'Guest' ? (
@@ -194,7 +225,10 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
               {isLoading === LoadingAction.SAVE ? (
                 <CircularProgress />
               ) : (
-                <IconButton onClick={() => handleAction(LoadingAction.SAVE)}>
+                <IconButton
+                  classes={{ root: classes.iconButton }}
+                  onClick={() => handleAction(LoadingAction.SAVE)}
+                >
                   <img src={save} alt='save' className={classes.icon} />
                 </IconButton>
               )}
@@ -203,7 +237,10 @@ const CheckoutNavigation: React.FC<CheckoutNavigationProps> = ({
               {isLoading === LoadingAction.DELETE ? (
                 <CircularProgress />
               ) : (
-                <IconButton>
+                <IconButton
+                  classes={{ root: classes.iconButton }}
+                  onClick={() => handleAction(LoadingAction.DELETE)}
+                >
                   <span className={classes.delete}>
                     <DeleteIcon />
                   </span>

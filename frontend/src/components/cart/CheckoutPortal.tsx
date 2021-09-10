@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
 import CheckoutNavigation from './CheckoutNavigation';
 import Details from '../settings/Details';
 import Location from '../settings/Location';
@@ -14,10 +14,18 @@ import { CartStep } from '../../interfaces/cart-steps';
 import { Order } from '../../interfaces/order';
 
 const useStyles = makeStyles(theme => ({
+  container: {
+    [theme.breakpoints.down('md')]: {
+      marginBottom: '5rem',
+    },
+  },
   stepContainer: {
     width: '40rem',
     height: '25rem',
     backgroundColor: theme.palette.primary.main,
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
@@ -77,6 +85,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   const [order, setOrder] = useState<Order | null>(null);
   const { user } = useContext(UserContext);
   const classes = useStyles();
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   const shippingOptions = [
     { label: 'Free shipping', price: 0 },
@@ -277,7 +286,14 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   }, [detailSlot, locationSlot, selectedStep]);
 
   return (
-    <Grid item container direction='column' alignItems='flex-end' lg={6}>
+    <Grid
+      item
+      container
+      direction='column'
+      alignItems={matchesMD ? 'flex-start' : 'flex-end'}
+      classes={{ root: classes.container }}
+      lg={6}
+    >
       <CheckoutNavigation
         steps={steps}
         selectedStep={selectedStep}

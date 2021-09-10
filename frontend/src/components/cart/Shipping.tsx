@@ -17,6 +17,10 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 15,
     height: '10rem',
     width: '10rem',
+    [theme.breakpoints.down('xs')]: {
+      height: '6rem',
+      width: '6rem',
+    },
     '&:hover': {
       backgroundColor: theme.palette.secondary.light,
     },
@@ -29,10 +33,16 @@ const useStyles = makeStyles(theme => ({
   },
   label: {
     fontSize: '1.5rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.9rem',
+    },
   },
 
   price: {
     color: theme.palette.common.white,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.2rem',
+    },
   },
   selectedText: {
     color: theme.palette.secondary.main,

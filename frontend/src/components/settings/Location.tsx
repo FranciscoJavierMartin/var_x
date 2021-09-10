@@ -49,6 +49,9 @@ const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
   },
   switchWrapper: {
     marginRight: 4,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
   },
   switchLabel: {
     color: theme.palette.common.white,

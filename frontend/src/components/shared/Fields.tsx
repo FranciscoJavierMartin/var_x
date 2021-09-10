@@ -10,7 +10,7 @@ import validate from '../../utils/validate';
 
 const useStyles = makeStyles<
   Theme,
-  { isWhite?: boolean; fullWidth?: boolean; settings?: boolean }
+  { isWhite?: boolean; fullWidth?: boolean; settings?: boolean; xs?: boolean }
 >(theme => ({
   textField: {
     width: ({ fullWidth, settings }) =>
@@ -18,10 +18,14 @@ const useStyles = makeStyles<
     [theme.breakpoints.down('xs')]: {
       width: ({ fullWidth }) => (fullWidth ? undefined : '15rem'),
     },
+    [theme.breakpoints.up('xs')]: {
+      width: ({ xs }) => (xs ? '10rem' : undefined),
+    },
   },
   input: {
     color: ({ isWhite }) =>
       isWhite ? theme.palette.common.white : theme.palette.secondary.main,
+    fontSize: ({ xs }) => (xs ? '1.25rem' : undefined),
   },
   visibleIcon: {
     padding: 0,
@@ -38,6 +42,7 @@ interface FieldsProps {
   disabled?: boolean;
   fullWidth?: boolean;
   settings?: boolean;
+  xs?: boolean;
 }
 
 const Fields: React.FC<FieldsProps> = ({
@@ -50,8 +55,9 @@ const Fields: React.FC<FieldsProps> = ({
   disabled,
   fullWidth,
   settings,
+  xs,
 }) => {
-  const classes = useStyles({ isWhite, fullWidth, settings });
+  const classes = useStyles({ isWhite, fullWidth, settings, xs });
 
   return (
     <>

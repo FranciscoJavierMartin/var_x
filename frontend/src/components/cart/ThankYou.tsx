@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { Button, Grid, Typography, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  Typography,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 import { Order } from '../../interfaces/order';
 
 import complete from '../../images/order-placed.svg';
@@ -17,8 +24,16 @@ const useStyles = makeStyles(theme => ({
     padding: '0.25rem 0',
     textTransform: 'none',
   },
+  detailsText: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
+  },
   order: {
     fontWeight: 600,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
   },
   shopWrapper: {
     position: 'absolute',
@@ -29,16 +44,20 @@ const useStyles = makeStyles(theme => ({
     fontSize: '2rem',
     fontWeight: 600,
     textTransform: 'none',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.5rem',
+    },
   },
 }));
 
 interface ThankYouProps {
   selectedShipping: string;
-  order: Order;
+  order: Order | null;
 }
 
 const ThankYou: React.FC<ThankYouProps> = ({ selectedShipping, order }) => {
   const classes = useStyles();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const addToDate = (days: number) => {
     const date = new Date();
@@ -82,23 +101,35 @@ const ThankYou: React.FC<ThankYouProps> = ({ selectedShipping, order }) => {
         <img src={complete} alt='order placed' className={classes.icon} />
       </Grid>
       <Grid item>
-        <Typography variant='h4'>Expected by {getExpected()}</Typography>
+        <Typography variant='h4' align='center'>
+          Expected by {getExpected()}
+        </Typography>
 
-        <Grid item container justifyContent='space-between' alignItems='center'>
+        <Grid
+          item
+          container
+          justifyContent={matchesXS ? 'space-around' : 'space-between'}
+          alignItems='center'
+        >
           <Grid item>
             <Typography variant='body2' classes={{ root: classes.order }}>
               Order #
-              {order.id
+              {order!.id
                 .toString()
                 .slice(
-                  order.id.toString().length - 10,
-                  order.id.toString().length
+                  order!.id.toString().length - 10,
+                  order!.id.toString().length
                 )}
             </Typography>
           </Grid>
           <Grid item>
             <Button classes={{ root: classes.detailsButton }}>
-              <Typography variant='body2'>Details {'>'}</Typography>
+              <Typography
+                variant='body2'
+                classes={{ root: classes.detailsText }}
+              >
+                Details {'>'}
+              </Typography>
             </Button>
           </Grid>
         </Grid>

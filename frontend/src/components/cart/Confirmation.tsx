@@ -7,6 +7,8 @@ import {
   CircularProgress,
   makeStyles,
   useTheme,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import axios from 'axios';
@@ -50,6 +52,9 @@ const useStyles = makeStyles(theme => ({
   },
   fieldWrapper: {
     marginLeft: '1.25rem',
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: '0.25rem',
+    },
   },
   buttonWrapper: {
     marginTop: 'auto',
@@ -60,6 +65,9 @@ const useStyles = makeStyles(theme => ({
   text: {
     fontSize: '1rem',
     color: theme.palette.common.white,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.85rem',
+    },
   },
   card: {
     height: 18,
@@ -67,9 +75,16 @@ const useStyles = makeStyles(theme => ({
   },
   priceLabel: {
     fontSize: '1.5rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.85rem',
+    },
   },
   priceValue: {
     marginRight: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.85rem',
+      marginRight: '0.5rem',
+    },
   },
   darkBackground: {
     backgroundColor: theme.palette.secondary.main,
@@ -158,6 +173,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   const tax = subtotal * 0.21;
   const classes = useStyles();
   const theme = useTheme();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const shipping = shippingOptions.find(
     option => option.label === selectedShipping
@@ -239,7 +255,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
       <Grid item xs={2} classes={{ root: classes.adornmentWrapper }}>
         {adornment}
       </Grid>
-      <Grid item xs={10} classes={{ root: classes.centerText }}>
+      <Grid item xs={10} classes={{ root: classes.centerText }} zeroMinWidth>
         <Typography variant='body1' classes={{ root: classes.text }}>
           {value}
         </Typography>
@@ -360,6 +376,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
                   errors={promoError}
                   setErrors={setPromoError}
                   isWhite
+                  xs={matchesXS}
                 />
               </span>
             ) : (

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button, Typography, Grid, makeStyles } from '@material-ui/core';
+import { Button, Typography, Grid, makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
   slot: {
     backgroundColor: theme.palette.common.white,
     borderRadius: 25,
@@ -12,6 +12,10 @@ const useStyles = makeStyles(theme => ({
     border: `0.15rem solid ${theme.palette.secondary.main}`,
     '&:hover': {
       backgroundColor: theme.palette.common.white,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: ({ isCheckout }) => (isCheckout ? '2rem' : '2.5rem'),
+      height: ({ isCheckout }) => (isCheckout ? '2rem' : '2.5rem'),
     },
   },
   slotWrapper: {
@@ -24,6 +28,9 @@ const useStyles = makeStyles(theme => ({
   slotText: {
     color: theme.palette.secondary.main,
     marginLeft: '-0.25rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: ({ isCheckout }) => (isCheckout ? '1.5rem' : undefined),
+    },
   },
   selected: {
     backgroundColor: theme.palette.secondary.main,
@@ -38,6 +45,10 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.common.white,
     fontWeight: 600,
     marginLeft: '0.5rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+      marginTop: '0.4rem',
+    },
   },
 }));
 
@@ -54,10 +65,10 @@ const Slots: React.FC<SlotsProps> = ({
   isCheckout,
   noLabel,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ isCheckout });
 
   return (
-    <Grid item container xs={noLabel ? 3 : isCheckout ? 5 : undefined}>
+    <Grid item container xs sm={noLabel ? 3 : isCheckout ? 5 : undefined}>
       <Grid item classes={{ root: classes.slotWrapper }}>
         {[1, 2, 3].map((n: number, index: number) => (
           <Button
