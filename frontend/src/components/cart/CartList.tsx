@@ -12,7 +12,7 @@ const CartList: React.FC<CartItemListProps> = ({}) => {
   const classes = useStyles();
 
   return (
-    <Grid item container direction='column' xs={6}>
+    <Grid item container direction='column' lg={6}>
       {cart.cart.map(item => ( 
         <CartListItem item={item} key={item.variant.id} />
       ))}

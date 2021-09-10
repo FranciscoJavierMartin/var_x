@@ -6,6 +6,8 @@ import {
   Typography,
   makeStyles,
   useTheme,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import QtyButton from '../product-list/QtyButton';
 import { CartItem } from '../../interfaces/cart';
@@ -19,6 +21,9 @@ import DeleteIcon from '../../images/DeleteIcon';
 const useStyles = makeStyles(theme => ({
   itemContainer: {
     margin: '2rem 0 2rem 2rem',
+    [theme.breakpoints.down('md')]: {
+      margin: '2rem 0',
+    },
   },
   productImage: {
     width: '10rem',
@@ -36,6 +41,9 @@ const useStyles = makeStyles(theme => ({
   id: {
     color: theme.palette.secondary.main,
     fontSize: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.75rem',
+    },
   },
   chipWrapper: {
     position: 'absolute',
@@ -45,8 +53,15 @@ const useStyles = makeStyles(theme => ({
     height: '3rem',
     width: '3rem',
     marginBottom: -8,
+    [theme.breakpoints.down('xs')]: {
+      height: '2rem',
+      width: '2rem',
+    },
   },
   actionButton: {
+    [theme.breakpoints.down('xs')]: {
+      padding: '12px 6px',
+    },
     '&:hover': {
       backgroundColor: 'transparent',
     },
@@ -61,6 +76,7 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
   const { dispatchCart } = useContext(CartContext);
   const theme = useTheme();
   const classes = useStyles();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const handleDelete = () => {
     dispatchCart(removeFromCart(item.variant, item.qty));
@@ -72,7 +88,7 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
     {
       icon: DeleteIcon,
       color: theme.palette.error.main,
-      size: '2.5rem',
+      size: matchesXS ? '1.75rem' : '2.5rem',
       onClick: handleDelete,
     },
   ];
@@ -89,7 +105,7 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
       <Grid
         item
         container
-        direction='column'
+        direction={matchesXS ? 'row' : 'column'}
         justifyContent='space-between'
         classes={{ root: classes.infoContainer }}
       >
@@ -118,12 +134,12 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
           justifyContent='space-between'
           alignItems='flex-end'
         >
-          <Grid item xs>
+          <Grid item xs={7} sm>
             <Typography variant='body1' classes={{ root: classes.id }}>
               ID: {item.variant.id}
             </Typography>
           </Grid>
-          <Grid item container xs justifyContent='flex-end'>
+          <Grid item container xs={5} sm justifyContent='flex-end'>
             {actions.map((Action, i) => (
               <Grid item key={i}>
                 <IconButton

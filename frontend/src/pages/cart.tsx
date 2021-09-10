@@ -26,7 +26,9 @@ const Cart: React.FC<CartProps> = ({}) => {
         classes={{ root: classes.cartContainer }}
       >
         <Grid item>
-          <Typography variant='h1'>{user.username}'s cart</Typography>
+          <Typography align='center' variant='h1'>
+            {user.username}'s cart
+          </Typography>
         </Grid>
         <Grid item container>
           <CartList />
