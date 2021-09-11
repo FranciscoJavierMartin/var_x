@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import CheckoutNavigation from './CheckoutNavigation';
 import Details from '../settings/Details';
 import Location from '../settings/Location';
@@ -38,6 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const stripePromise = loadStripe(process.env.GATSBY_STRIPE_PK!);
 interface CheckoutPortalProps {}
 
 const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
@@ -81,6 +84,7 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   >(false);
   const [selectedShipping, setSelectedShipping] = useState<string>('');
   const [billingSlot, setBillingSlot] = useState<number>(0);
+  const [cardError, setCardError] = useState<boolean>(true);
   const [saveCard, setSaveCard] = useState<boolean>(false);
   const [order, setOrder] = useState<Order | null>(null);
   const { user } = useContext(UserContext);
@@ -243,10 +247,11 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setSlot={setBillingSlot}
           saveCard={saveCard}
           setSaveCard={setSaveCard}
+          setCardError={setCardError}
           isCheckout
         />
       ),
-      error: false,
+      error: cardError,
     },
     {
       title: 'Confirmation',
@@ -314,7 +319,9 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         alignItems='center'
         classes={{ root: classes.stepContainer }}
       >
-        {steps[selectedStep].component}
+        <Elements stripe={stripePromise}>
+          {steps[selectedStep].component}
+        </Elements>
       </Grid>
       {steps[selectedStep].title === 'Confirmation' && (
         <BillingConfirmation

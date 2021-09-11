@@ -48,7 +48,9 @@ const useStyles = makeStyles<
     opacity: 0.5,
   },
   iconButton: {
-    padding: 6,
+    [theme.breakpoints.down('xs')]: {
+      padding: 6,
+    },
   },
   icon: {
     height: '2.25rem',
@@ -76,9 +78,11 @@ const useStyles = makeStyles<
     },
   },
   navButton: {
-    width: '1.5rem',
-    height: '1.5rem',
-    minWidth: 0,
+    [theme.breakpoints.down('xs')]: {
+      width: '1.5rem',
+      height: '1.5rem',
+      minWidth: 0,
+    },
   },
 }));
 

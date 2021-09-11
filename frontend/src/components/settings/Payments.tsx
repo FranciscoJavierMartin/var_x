@@ -7,7 +7,14 @@ import {
   Switch,
   makeStyles,
   Theme,
+  useTheme,
 } from '@material-ui/core';
+import {
+  CardElement,
+  useStripe,
+  useElements,
+  StripeCardElementChangeEvent,
+} from '@stripe/react-stripe-js';
 import Slots from './Slots';
 import { PaymentMethod, User } from '../../interfaces/user';
 
@@ -59,6 +66,12 @@ const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
     color: theme.palette.common.white,
     fontWeight: 600,
   },
+  form: {
+    width: '75%',
+    height: '2rem',
+    borderBottom: `2px solid ${theme.palette.common.white}`,
+    marginTop: '-1rem',
+  },
 }));
 
 interface PaymentsProps {
@@ -68,6 +81,7 @@ interface PaymentsProps {
   isCheckout?: boolean;
   saveCard: boolean;
   setSaveCard: React.Dispatch<React.SetStateAction<boolean>>;
+  setCardError: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Payments: React.FC<PaymentsProps> = ({
@@ -77,13 +91,52 @@ const Payments: React.FC<PaymentsProps> = ({
   isCheckout,
   saveCard,
   setSaveCard,
+  setCardError,
 }) => {
   const classes = useStyles({ isCheckout });
+  const theme = useTheme();
+  const stripe = useStripe();
+  const elements = useElements();
 
   const card: PaymentMethod =
     user.username === 'Guest'
       ? { last4: '', brand: '' }
       : user.paymentMethods[slot];
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+    }
+  };
+
+  const handleCardChange = async (event: StripeCardElementChangeEvent) => {
+    if (event.complete) {
+      setCardError(false);
+    } else{
+      setCardError(true);
+    }
+  };
+
+  const cardWrapper = (
+    <form onSubmit={handleSubmit} className={classes.form}>
+      <CardElement
+        options={{
+          style: {
+            base: {
+              fontSize: '20px',
+              color: theme.palette.common.white,
+              iconColor: theme.palette.common.white,
+              '::placeholder': {
+                color: theme.palette.common.white,
+              },
+            },
+          },
+        }}
+        onChange={handleCardChange}
+      />
+    </form>
+  );
 
   return (
     <Grid
@@ -100,6 +153,7 @@ const Payments: React.FC<PaymentsProps> = ({
         <img src={cardIcon} alt='payment settings' className={classes.icon} />
       </Grid>
       <Grid item container justifyContent='center'>
+        {isCheckout && !card.last4 ? cardWrapper : null}
         <Grid item>
           <Typography
             align='center'
@@ -108,6 +162,8 @@ const Payments: React.FC<PaymentsProps> = ({
           >
             {card.last4
               ? `${card.brand.toUpperCase()} **** **** **** ${card.last4}`
+              : isCheckout
+              ? null
               : 'Add a new card during checkout'}
           </Typography>
         </Grid>
