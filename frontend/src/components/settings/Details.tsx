@@ -18,8 +18,13 @@ import fingerprint from '../../images/fingerprint.svg';
 import NameAdornment from '../../images/NameAdornment';
 import PhoneAdornment from '../../images/PhoneAdornment';
 
-const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
+const useStyles = makeStyles<
+  Theme,
+  { isCheckout?: boolean; selectedStep: number; stepNumber: number }
+>(theme => ({
   detailsContainer: {
+    display: ({ isCheckout, selectedStep, stepNumber }) =>
+      isCheckout && selectedStep !== stepNumber ? 'none' : 'flex',
     position: 'relative',
     [theme.breakpoints.down('md')]: {
       borderBottom: `4px solid ${theme.palette.common.white}`,
@@ -106,6 +111,8 @@ interface DetailsProps {
   setBillingValues?: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
   >;
+  stepNumber: number;
+  selectedStep: number;
 }
 
 const Details: React.FC<DetailsProps> = ({
@@ -124,11 +131,13 @@ const Details: React.FC<DetailsProps> = ({
   noSlots,
   billingValues,
   setBillingValues,
+  stepNumber,
+  selectedStep,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const isMounted = useRef<boolean>(false);
 
-  const classes = useStyles({ isCheckout });
+  const classes = useStyles({ isCheckout, stepNumber, selectedStep });
   const theme = useTheme();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 

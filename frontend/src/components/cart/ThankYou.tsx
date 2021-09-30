@@ -12,10 +12,15 @@ import { Order } from '../../interfaces/order';
 
 import complete from '../../images/order-placed.svg';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<
+  Theme,
+  { selectedStep: number; stepNumber: number }
+>(theme => ({
   container: {
     height: '100%',
     position: 'relative',
+    display: ({ selectedStep, stepNumber }) =>
+      selectedStep !== stepNumber ? 'none' : 'flex',
   },
   icon: {
     marginTop: '-3rem',
@@ -53,10 +58,17 @@ const useStyles = makeStyles(theme => ({
 interface ThankYouProps {
   selectedShipping: string;
   order: Order | null;
+  selectedStep: number;
+  stepNumber: number;
 }
 
-const ThankYou: React.FC<ThankYouProps> = ({ selectedShipping, order }) => {
-  const classes = useStyles();
+const ThankYou: React.FC<ThankYouProps> = ({
+  selectedShipping,
+  order,
+  selectedStep,
+  stepNumber,
+}) => {
+  const classes = useStyles({ stepNumber, selectedStep });
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const addToDate = (days: number) => {
@@ -114,7 +126,7 @@ const ThankYou: React.FC<ThankYouProps> = ({ selectedShipping, order }) => {
           <Grid item>
             <Typography variant='body2' classes={{ root: classes.order }}>
               Order #
-              {order!.id
+              {order?.id
                 .toString()
                 .slice(
                   order!.id.toString().length - 10,

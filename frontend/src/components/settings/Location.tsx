@@ -20,8 +20,13 @@ import locationIcon from '../../images/location.svg';
 import streetAdornment from '../../images/street-adornment.svg';
 import zipAdornment from '../../images/zip-adornment.svg';
 
-const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
+const useStyles = makeStyles<
+  Theme,
+  { isCheckout?: boolean; selectedStep: number; stepNumber: number }
+>(theme => ({
   locationContainer: {
+    display: ({ isCheckout, selectedStep, stepNumber }) =>
+      isCheckout && selectedStep !== stepNumber ? 'none' : 'flex',
     position: 'relative',
     [theme.breakpoints.down('md')]: {
       borderBottom: `4px solid ${theme.palette.common.white}`,
@@ -77,6 +82,8 @@ interface LocationProps {
   setBillingValues?: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
   >;
+  stepNumber: number;
+  selectedStep: number;
 }
 
 const Location: React.FC<LocationProps> = ({
@@ -95,12 +102,14 @@ const Location: React.FC<LocationProps> = ({
   noSlots,
   billingValues,
   setBillingValues,
+  selectedStep,
+  stepNumber,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const { dispatchFeedback } = useContext(FeedbackContext);
   const isMounted = useRef<boolean>(false);
-  const classes = useStyles({ isCheckout });
+  const classes = useStyles({ isCheckout, selectedStep, stepNumber });
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const fields = {

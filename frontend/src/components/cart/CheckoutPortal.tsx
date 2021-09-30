@@ -147,6 +147,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           isCheckout
           edit={false}
           setChangesMade={() => {}}
+          selectedStep={selectedStep}
+          stepNumber={0}
         />
       ),
       error: errorHelper(
@@ -174,6 +176,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           slot={0}
           billing={false}
           setBilling={() => {}}
+          selectedStep={selectedStep}
+          stepNumber={0}
         />
       ),
       error: errorHelper(billingDetails),
@@ -196,6 +200,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           isCheckout
           edit={false}
           setChangesMade={() => {}}
+          selectedStep={selectedStep}
+          stepNumber={0}
         />
       ),
       error: errorHelper(
@@ -223,6 +229,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           slot={0}
           billing={false}
           setBilling={() => {}}
+          selectedStep={selectedStep}
+          stepNumber={0}
         />
       ),
       error: errorHelper(billingLocation),
@@ -234,6 +242,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           shippingOptions={shippingOptions}
           selectedShipping={selectedShipping}
           setSelectedShipping={setSelectedShipping}
+          selectedStep={selectedStep}
+          stepNumber={0}
         />
       ),
       error: !selectedShipping,
@@ -249,6 +259,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           setSaveCard={setSaveCard}
           setCardError={setCardError}
           isCheckout
+          selectedStep={selectedStep}
+          stepNumber={0}
         />
       ),
       error: cardError,
@@ -268,13 +280,22 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           selectedShipping={selectedShipping}
           selectedStep={selectedStep}
           setSelectedStep={setSelectedStep}
+          order={order}
           setOrder={setOrder}
+          stepNumber={0}
         />
       ),
     },
     {
       title: `Thanks, ${user.username.split(' ')[0]}`,
-      component: <ThankYou order={order} selectedShipping={selectedShipping} />,
+      component: (
+        <ThankYou
+          selectedStep={selectedStep}
+          order={order}
+          selectedShipping={selectedShipping}
+          stepNumber={0}
+        />
+      ),
     },
   ];
 
@@ -320,7 +341,12 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
         classes={{ root: classes.stepContainer }}
       >
         <Elements stripe={stripePromise}>
-          {steps[selectedStep].component}
+          {steps.map((step, index) =>
+            React.cloneElement(step.component, {
+              stepNumber: index,
+              key: index,
+            })
+          )}
         </Elements>
       </Grid>
       {steps[selectedStep].title === 'Confirmation' && (

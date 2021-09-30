@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext, useMemo, useEffect } from 'react';
 import {
   Button,
   Chip,
@@ -12,6 +12,8 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import Fields from '../shared/Fields';
 import { CartContext, FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
@@ -28,10 +30,16 @@ import streetAdornment from '../../images/street-adornment.svg';
 import zipAdornment from '../../images/zip-adornment.svg';
 import cardAdornment from '../../images/card.svg';
 import promoAdornment from '../../images/promo-code.svg';
+import { INTENT_STORAGED } from '../../constants/localStorage';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<
+  Theme,
+  { selectedStep: number; stepNumber: number }
+>(theme => ({
   mainContainer: {
     height: '100%',
+    display: ({ selectedStep, stepNumber }) =>
+      selectedStep !== stepNumber ? 'none' : 'flex',
   },
   iconWrapper: {
     display: 'flex',
@@ -142,7 +150,9 @@ interface ConfirmationProps {
   selectedShipping: string;
   selectedStep: number;
   setSelectedStep: React.Dispatch<React.SetStateAction<number>>;
+  order: Order | null;
   setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
+  stepNumber: number;
 }
 
 const Confirmation: React.FC<ConfirmationProps> = ({
@@ -157,13 +167,16 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   selectedShipping,
   selectedStep,
   setSelectedStep,
+  order,
   setOrder,
+  stepNumber,
 }) => {
   const [promo, setPromo] = useState<{ [key: string]: string }>({
     promo: '',
   });
   const [promoError, setPromoError] = useState<{ [key: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [clientSecret, setClientSecret] = useState<any>(null);
   const { cart, dispatchCart } = useContext(CartContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
   const subtotal = useMemo<number>(
@@ -171,9 +184,11 @@ const Confirmation: React.FC<ConfirmationProps> = ({
     [cart.cart]
   );
   const tax = subtotal * 0.21;
-  const classes = useStyles();
+  const classes = useStyles({ stepNumber, selectedStep });
   const theme = useTheme();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
+  const stripe = useStripe();
+  const elements = useElements();
 
   const shipping = shippingOptions.find(
     option => option.label === selectedShipping
@@ -237,7 +252,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
     },
     {
       label: 'Shipping',
-      value: shipping.price.toFixed(2),
+      value: shipping?.price.toFixed(2),
     },
     {
       label: 'Tax',
@@ -263,12 +278,43 @@ const Confirmation: React.FC<ConfirmationProps> = ({
     </>
   );
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     setIsLoading(true);
+
+    const idempotencyKey = uuidv4();
+    const cardElement = elements?.getElement(CardElement);
+
+    const result = await stripe?.confirmCardPayment(
+      clientSecret,
+      {
+        payment_method: {
+          card: cardElement!,
+          billing_details: {
+            address: {
+              city: billingLocation.city,
+              state: billingLocation.state,
+              line1: billingLocation.street,
+            },
+            email: billingDetails.email,
+            name: billingDetails.name,
+            phone: billingDetails.phone,
+          },
+        },
+      },
+      { idempotencyKey }
+    );
+
+    if (result?.error?.message) {
+      dispatchFeedback(
+        openSnackbar(SnackbarStatus.Error, result.error.message)
+      );
+      setIsLoading(false);
+    } else if (result?.paymentIntent?.status === 'succeeded') {
+    }
 
     axios
       .post(
-        `${process.env.GATSBY_STRAPI_URL}/orders/place`,
+        `${process.env.GATSBY_STRAPI_URL}/orders/finalize`,
         {
           shippingAddress: locationValues,
           billingAddress: billingLocation,
@@ -295,35 +341,67 @@ const Confirmation: React.FC<ConfirmationProps> = ({
         setOrder(response.data.order);
         setSelectedStep(prevState => prevState + 1);
       })
-      .catch(error => {
+      .catch(() => {
         setIsLoading(false);
-
-        switch (error.response.status) {
-          case 400:
-            dispatchFeedback(
-              openSnackbar(SnackbarStatus.Error, 'Invalid cart')
-            );
-            break;
-          case 409:
-            dispatchFeedback(
-              openSnackbar(
-                SnackbarStatus.Error,
-                `The following items are not available at the requested quantity. Please update your cart and try again.\n ${error.response.data.unavailable.map(
-                  (item: any) => `\nItem: ${item.id}, Available: ${item.qty}`
-                )}`
-              )
-            );
-            break;
-          default:
-            dispatchFeedback(
-              openSnackbar(
-                SnackbarStatus.Error,
-                'Something went wrong, please refresh the page and try again. you have NOT been charged'
-              )
-            );
-        }
       });
   };
+
+  useEffect(() => {
+    if (!order && cart.cart.length !== 0 && selectedStep === stepNumber) {
+      const storedIntent = localStorage.getItem(INTENT_STORAGED);
+      const idempotencyKey = uuidv4();
+      setClientSecret(null);
+      axios
+        .post(
+          `${process.env.GATSBY_STRAPI_URL}/orders/process`,
+          {
+            items: cart.cart,
+            total: totalPrice.toFixed(2),
+            shippingOption: shipping,
+            idempotencyKey,
+            storedIntent,
+            email: detailValues.email,
+          },
+          {
+            headers: user.jwt
+              ? {
+                  Authorization: `Bearer ${user.jwt}`,
+                }
+              : undefined,
+          }
+        )
+        .then(response => {
+          setClientSecret(response.data.client_secret);
+          localStorage.setItem(INTENT_STORAGED, response.data.intentID);
+        })
+        .catch(error => {
+          switch (error.response.status) {
+            case 400:
+              dispatchFeedback(
+                openSnackbar(SnackbarStatus.Error, 'Invalid cart')
+              );
+              break;
+            case 409:
+              dispatchFeedback(
+                openSnackbar(
+                  SnackbarStatus.Error,
+                  `The following items are not available at the requested quantity. Please update your cart and try again.\n ${error.response.data.unavailable.map(
+                    (item: any) => `\nItem: ${item.id}, Available: ${item.qty}`
+                  )}`
+                )
+              );
+              break;
+            default:
+              dispatchFeedback(
+                openSnackbar(
+                  SnackbarStatus.Error,
+                  'Something went wrong, please refresh the page and try again. you have NOT been charged'
+                )
+              );
+          }
+        });
+    }
+  }, [cart.cart, selectedStep, stepNumber]);
 
   return (
     <Grid
@@ -339,7 +417,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
               item
               container
               alignItems='center'
-              key={field.value}
+              key={i}
               classes={{
                 root: clsx(classes.fieldRow, {
                   [classes.darkBackground]: i % 2 !== 0,
@@ -403,7 +481,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
         <Button
           classes={{ root: classes.button, disabled: classes.disabled }}
           onClick={handleOrder}
-          disabled={cart.cart.length === 0 || isLoading}
+          disabled={cart.cart.length === 0 || isLoading || !clientSecret}
         >
           <Grid container justifyContent='space-around' alignItems='center'>
             <Grid item>

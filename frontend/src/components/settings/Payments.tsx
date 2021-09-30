@@ -20,8 +20,13 @@ import { PaymentMethod, User } from '../../interfaces/user';
 
 import cardIcon from '../../images/card.svg';
 
-const useStyles = makeStyles<Theme, { isCheckout?: boolean }>(theme => ({
+const useStyles = makeStyles<
+  Theme,
+  { isCheckout?: boolean; selectedStep: number; stepNumber: number }
+>(theme => ({
   paymentsContainer: {
+    display: ({ isCheckout, selectedStep, stepNumber }) =>
+      isCheckout && selectedStep !== stepNumber ? 'none' : 'flex',
     borderLeft: ({ isCheckout }) =>
       isCheckout ? 0 : `4px solid ${theme.palette.common.white}`,
     position: 'relative',
@@ -82,6 +87,8 @@ interface PaymentsProps {
   saveCard: boolean;
   setSaveCard: React.Dispatch<React.SetStateAction<boolean>>;
   setCardError: React.Dispatch<React.SetStateAction<boolean>>;
+  stepNumber: number;
+  selectedStep: number;
 }
 
 const Payments: React.FC<PaymentsProps> = ({
@@ -92,8 +99,10 @@ const Payments: React.FC<PaymentsProps> = ({
   saveCard,
   setSaveCard,
   setCardError,
+  stepNumber,
+  selectedStep,
 }) => {
-  const classes = useStyles({ isCheckout });
+  const classes = useStyles({ isCheckout, stepNumber, selectedStep });
   const theme = useTheme();
   const stripe = useStripe();
   const elements = useElements();
@@ -113,7 +122,7 @@ const Payments: React.FC<PaymentsProps> = ({
   const handleCardChange = async (event: StripeCardElementChangeEvent) => {
     if (event.complete) {
       setCardError(false);
-    } else{
+    } else {
       setCardError(true);
     }
   };

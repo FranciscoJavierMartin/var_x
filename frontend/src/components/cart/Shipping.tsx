@@ -1,12 +1,17 @@
 import React from 'react';
-import { Grid, Button, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Button, Typography, makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 
 import shippingIcon from '../../images/shipping.svg';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<
+  Theme,
+  { selectedStep: number; stepNumber: number }
+>(theme => ({
   container: {
     height: '100%',
+    display: ({ selectedStep, stepNumber }) =>
+      selectedStep !== stepNumber ? 'none' : 'flex',
   },
   icon: {
     marginTop: '-2rem',
@@ -53,14 +58,18 @@ interface ShippingProps {
   shippingOptions: { label: string; price: number }[];
   selectedShipping: string;
   setSelectedShipping: React.Dispatch<React.SetStateAction<string>>;
+  selectedStep: number;
+  stepNumber: number;
 }
 
 const Shipping: React.FC<ShippingProps> = ({
   shippingOptions,
   selectedShipping,
   setSelectedShipping,
+  stepNumber,
+  selectedStep,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ stepNumber, selectedStep });
 
   return (
     <Grid
