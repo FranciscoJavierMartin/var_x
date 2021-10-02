@@ -11,6 +11,7 @@ import clsx from 'clsx';
 import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
 import Settings from './Settings';
+import OrderHistory from './OrderHistory';
 import { UserContext } from '../../contexts';
 import { setUser } from '../../contexts/user/actions';
 
@@ -83,6 +84,7 @@ const buttons = [
   {
     label: 'Order history',
     icon: orderHistoryIcon,
+    component: OrderHistory,
   },
   {
     label: 'Favorites',
