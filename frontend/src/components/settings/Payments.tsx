@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Button,
   Typography,
   Grid,
   FormControlLabel,
   Switch,
+  CircularProgress,
   makeStyles,
   Theme,
   useTheme,
@@ -15,8 +16,13 @@ import {
   useElements,
   StripeCardElementChangeEvent,
 } from '@stripe/react-stripe-js';
+import axios from 'axios';
+import clsx from 'clsx';
 import Slots from './Slots';
 import { PaymentMethod, User } from '../../interfaces/user';
+import { FeedbackContext, UserContext } from '../../contexts';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
+import { setUser } from '../../contexts/user/actions';
 
 import cardIcon from '../../images/card.svg';
 
@@ -77,6 +83,9 @@ const useStyles = makeStyles<
     borderBottom: `2px solid ${theme.palette.common.white}`,
     marginTop: '-1rem',
   },
+  spinner: {
+    marginLeft: '3rem',
+  },
 }));
 
 interface PaymentsProps {
@@ -104,15 +113,54 @@ const Payments: React.FC<PaymentsProps> = ({
   selectedStep,
   setCard,
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const classes = useStyles({ isCheckout, stepNumber, selectedStep });
   const theme = useTheme();
   const stripe = useStripe();
   const elements = useElements();
 
+  const { dispatchFeedback } = useContext(FeedbackContext);
+  const { dispatchUser } = useContext(UserContext);
+
   const card: PaymentMethod =
     user.username === 'Guest'
       ? { last4: '', brand: '' }
       : user.paymentMethods[slot];
+
+  const removeCard = () => {
+    setIsLoading(true);
+
+    axios
+      .post(
+        `${process.env.GATSBY_STRAPI_URL}/orders/removeCard`,
+        {
+          card: card.last4,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.jwt}`,
+          },
+        }
+      )
+      .then(response => {
+        setIsLoading(false);
+
+        dispatchUser(
+          setUser({ ...response.data.user, jwt: user.jwt, onboarding: true })
+        );
+        setCardError(true);
+        setCard({ brand: '', last4: '' });
+      })
+      .catch(() => {
+        setIsLoading(false);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            'There was a problem removing your card. Please try again'
+          )
+        );
+      });
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -205,18 +253,23 @@ const Payments: React.FC<PaymentsProps> = ({
           </Typography>
         </Grid>
         {card.last4 && (
-          <Grid item>
-            <Button
-              variant='contained'
-              classes={{ root: classes.removeCardButton }}
-            >
-              <Typography
-                variant='h6'
-                classes={{ root: classes.removeCardButtonText }}
+          <Grid item classes={{ root: clsx({ [classes.spinner]: isLoading }) }}>
+            {isLoading ? (
+              <CircularProgress color='secondary' />
+            ) : (
+              <Button
+                onClick={removeCard}
+                variant='contained'
+                classes={{ root: classes.removeCardButton }}
               >
-                Remove card
-              </Typography>
-            </Button>
+                <Typography
+                  variant='h6'
+                  classes={{ root: classes.removeCardButtonText }}
+                >
+                  Remove card
+                </Typography>
+              </Button>
+            )}
           </Grid>
         )}
       </Grid>
@@ -234,7 +287,8 @@ const Payments: React.FC<PaymentsProps> = ({
               labelPlacement='start'
               control={
                 <Switch
-                  checked={saveCard}
+                  disabled={!!user.paymentMethods[slot].last4}
+                  checked={user.paymentMethods[slot].last4 ? true : saveCard}
                   onChange={() => setSaveCard(prevState => !prevState)}
                   color='secondary'
                 />
