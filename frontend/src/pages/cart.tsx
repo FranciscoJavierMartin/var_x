@@ -9,6 +9,11 @@ const useStyles = makeStyles(theme => ({
   cartContainer: {
     minHeight: '70vh',
   },
+  name: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '3rem',
+    },
+  },
 }));
 
 interface CartProps {}
@@ -26,7 +31,11 @@ const Cart: React.FC<CartProps> = ({}) => {
         classes={{ root: classes.cartContainer }}
       >
         <Grid item>
-          <Typography align='center' variant='h1'>
+          <Typography
+            align='center'
+            variant='h1'
+            classes={{ root: classes.name }}
+          >
             {user.username}'s cart
           </Typography>
         </Grid>

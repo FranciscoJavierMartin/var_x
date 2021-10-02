@@ -9,6 +9,7 @@ import {
   makeStyles,
   Theme,
   useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import {
   CardElement,
@@ -44,12 +45,16 @@ const useStyles = makeStyles<
   icon: {
     marginBottom: '3rem',
     [theme.breakpoints.down('xs')]: {
-      marginBottom: '1rem',
+      marginBottom: ({ isCheckout }) => (isCheckout ? '3rem' : '1rem'),
     },
   },
   number: {
     color: theme.palette.common.white,
     marginBottom: '5rem',
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: ({ isCheckout }) => (isCheckout ? '1rem' : undefined),
+      fontSize: ({ isCheckout }) => (isCheckout ? '1.5rem' : undefined),
+    },
   },
   removeCardButton: {
     backgroundColor: theme.palette.common.white,
@@ -58,6 +63,9 @@ const useStyles = makeStyles<
     marginLeft: '2rem',
     '&:hover': {
       backgroundColor: theme.palette.common.white,
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: ({ isCheckout }) => (isCheckout ? 0 : undefined),
     },
   },
   removeCardButtonText: {
@@ -76,12 +84,24 @@ const useStyles = makeStyles<
   switchLabel: {
     color: theme.palette.common.white,
     fontWeight: 600,
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.25rem',
+    },
+  },
+  switchItem: {
+    width: '100%',
+  },
+  numberWrapper: {
+    marginBottom: '6rem',
   },
   form: {
     width: '75%',
     height: '2rem',
     borderBottom: `2px solid ${theme.palette.common.white}`,
     marginTop: '-1rem',
+    [theme.breakpoints.down('xs')]: {
+      width: '85%',
+    },
   },
   spinner: {
     marginLeft: '3rem',
@@ -115,6 +135,7 @@ const Payments: React.FC<PaymentsProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const classes = useStyles({ isCheckout, stepNumber, selectedStep });
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const theme = useTheme();
   const stripe = useStripe();
   const elements = useElements();
@@ -237,7 +258,16 @@ const Payments: React.FC<PaymentsProps> = ({
       <Grid item>
         <img src={cardIcon} alt='payment settings' className={classes.icon} />
       </Grid>
-      <Grid item container justifyContent='center'>
+      <Grid
+        item
+        container
+        justifyContent='center'
+        classes={{
+          root: clsx({
+            [classes.numberWrapper]: isCheckout && matchesXS,
+          }),
+        }}
+      >
         {isCheckout && !card.last4 ? cardWrapper : null}
         <Grid item>
           <Typography
@@ -281,7 +311,14 @@ const Payments: React.FC<PaymentsProps> = ({
       >
         <Slots slot={slot} setSlot={setSlot} noLabel />
         {isCheckout && user.username !== 'Guest' && (
-          <Grid item>
+          <Grid
+            item
+            classes={{
+              root: clsx({
+                [classes.switchItem]: matchesXS,
+              }),
+            }}
+          >
             <FormControlLabel
               label='Save card for future use'
               labelPlacement='start'
