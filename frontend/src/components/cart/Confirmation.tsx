@@ -15,9 +15,10 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import Fields from '../shared/Fields';
-import { CartContext, FeedbackContext } from '../../contexts';
+import { CartContext, FeedbackContext, UserContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import { clearCart } from '../../contexts/cart/actions';
+import { setUser } from '../../contexts/user/actions';
 import { calculateTotalPrice } from '../../utils/cart';
 import { User } from '../../interfaces/user';
 import { Order } from '../../interfaces/order';
@@ -153,6 +154,9 @@ interface ConfirmationProps {
   order: Order | null;
   setOrder: React.Dispatch<React.SetStateAction<Order | null>>;
   stepNumber: number;
+  saveCard: boolean;
+  card: { [key: string]: string };
+  cardSlot: number;
 }
 
 const Confirmation: React.FC<ConfirmationProps> = ({
@@ -170,6 +174,9 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   order,
   setOrder,
   stepNumber,
+  saveCard,
+  card,
+  cardSlot,
 }) => {
   const [promo, setPromo] = useState<{ [key: string]: string }>({
     promo: '',
@@ -179,6 +186,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   const [clientSecret, setClientSecret] = useState<any>(null);
   const { cart, dispatchCart } = useContext(CartContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
+  const { dispatchUser } = useContext(UserContext);
   const subtotal = useMemo<number>(
     () => calculateTotalPrice(cart.cart),
     [cart.cart]
@@ -231,7 +239,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
       adornment: <img src={zipAdornment} alt='city, state, zip code' />,
     },
     {
-      value: '**** **** **** 1234',
+      value: `${card.brand.toUpperCase()} ${card.last4}`,
       adornment: (
         <img src={cardAdornment} alt='credit card' className={classes.card} />
       ),
@@ -281,25 +289,29 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   const handleOrder = async () => {
     setIsLoading(true);
 
+    const savedCard = user.jwt && user.paymentMethods[cardSlot].last4;
     const idempotencyKey = uuidv4();
     const cardElement = elements?.getElement(CardElement);
 
     const result = await stripe?.confirmCardPayment(
       clientSecret,
       {
-        payment_method: {
-          card: cardElement!,
-          billing_details: {
-            address: {
-              city: billingLocation.city,
-              state: billingLocation.state,
-              line1: billingLocation.street,
+        payment_method: savedCard
+          ? undefined
+          : {
+              card: cardElement!,
+              billing_details: {
+                address: {
+                  city: billingLocation.city,
+                  state: billingLocation.state,
+                  line1: billingLocation.street,
+                },
+                email: billingDetails.email,
+                name: billingDetails.name,
+                phone: billingDetails.phone,
+              },
             },
-            email: billingDetails.email,
-            name: billingDetails.name,
-            phone: billingDetails.phone,
-          },
-        },
+        setup_future_usage: saveCard ? 'off_session' : undefined,
       },
       { idempotencyKey }
     );
@@ -325,6 +337,10 @@ const Confirmation: React.FC<ConfirmationProps> = ({
           tax: tax.toFixed(2),
           total: totalPrice.toFixed(2),
           items: cart.cart,
+          transaction: result?.paymentIntent?.id,
+          paymentMethod: card,
+          saveCard,
+          cardSlot,
         },
         {
           headers:
@@ -336,13 +352,29 @@ const Confirmation: React.FC<ConfirmationProps> = ({
         }
       )
       .then(response => {
+        if (saveCard) {
+          const newUser = { ...user };
+          newUser.paymentMethods[cardSlot] = card as any;
+          dispatchUser(setUser(newUser));
+        }
         setIsLoading(false);
         dispatchCart(clearCart());
+        setOrder(response.data.order);
+        localStorage.removeItem(INTENT_STORAGED);
+        setClientSecret(null);
         setOrder(response.data.order);
         setSelectedStep(prevState => prevState + 1);
       })
       .catch(() => {
         setIsLoading(false);
+        localStorage.removeItem(INTENT_STORAGED);
+        setClientSecret(null);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            'There was a problem saving your order. Please keep this screen open and contact support'
+          )
+        );
       });
   };
 
@@ -361,6 +393,10 @@ const Confirmation: React.FC<ConfirmationProps> = ({
             idempotencyKey,
             storedIntent,
             email: detailValues.email,
+            savedCard:
+              user.jwt && user.paymentMethods[cardSlot].last4
+                ? card.last4
+                : undefined,
           },
           {
             headers: user.jwt

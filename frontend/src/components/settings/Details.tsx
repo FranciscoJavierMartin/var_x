@@ -20,7 +20,7 @@ import PhoneAdornment from '../../images/PhoneAdornment';
 
 const useStyles = makeStyles<
   Theme,
-  { isCheckout?: boolean; selectedStep: number; stepNumber: number }
+  { isCheckout?: boolean; selectedStep?: number; stepNumber?: number }
 >(theme => ({
   detailsContainer: {
     display: ({ isCheckout, selectedStep, stepNumber }) =>
@@ -111,8 +111,8 @@ interface DetailsProps {
   setBillingValues?: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
   >;
-  stepNumber: number;
-  selectedStep: number;
+  stepNumber?: number;
+  selectedStep?: number;
 }
 
 const Details: React.FC<DetailsProps> = ({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Typography,
@@ -22,7 +22,7 @@ import cardIcon from '../../images/card.svg';
 
 const useStyles = makeStyles<
   Theme,
-  { isCheckout?: boolean; selectedStep: number; stepNumber: number }
+  { isCheckout?: boolean; selectedStep?: number; stepNumber?: number }
 >(theme => ({
   paymentsContainer: {
     display: ({ isCheckout, selectedStep, stepNumber }) =>
@@ -87,8 +87,9 @@ interface PaymentsProps {
   saveCard: boolean;
   setSaveCard: React.Dispatch<React.SetStateAction<boolean>>;
   setCardError: React.Dispatch<React.SetStateAction<boolean>>;
-  stepNumber: number;
-  selectedStep: number;
+  stepNumber?: number;
+  selectedStep?: number;
+  setCard: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
 }
 
 const Payments: React.FC<PaymentsProps> = ({
@@ -101,6 +102,7 @@ const Payments: React.FC<PaymentsProps> = ({
   setCardError,
   stepNumber,
   selectedStep,
+  setCard,
 }) => {
   const classes = useStyles({ isCheckout, stepNumber, selectedStep });
   const theme = useTheme();
@@ -121,7 +123,21 @@ const Payments: React.FC<PaymentsProps> = ({
 
   const handleCardChange = async (event: StripeCardElementChangeEvent) => {
     if (event.complete) {
-      setCardError(false);
+      const cardElement = elements?.getElement(CardElement);
+      if (cardElement) {
+        const result = await stripe?.createPaymentMethod({
+          type: 'card',
+          card: cardElement,
+        });
+        if (result) {
+          const { paymentMethod, error } = result;
+          setCardError(false);
+          setCard({
+            brand: paymentMethod!.card!.brand,
+            last4: paymentMethod!.card!.last4,
+          });
+        }
+      }
     } else {
       setCardError(true);
     }
@@ -146,6 +162,18 @@ const Payments: React.FC<PaymentsProps> = ({
       />
     </form>
   );
+
+  useEffect(() => {
+    if (isCheckout || user.jwt) {
+      if (user.paymentMethods[slot].last4) {
+        setCard(user.paymentMethods[slot] as any);
+        setCardError(false);
+      } else {
+        setCard({ brand: '', last4: '' });
+        setCardError(true);
+      }
+    }
+  }, [slot]);
 
   return (
     <Grid
@@ -199,7 +227,7 @@ const Payments: React.FC<PaymentsProps> = ({
         classes={{ root: classes.slotsContainer }}
       >
         <Slots slot={slot} setSlot={setSlot} noLabel />
-        {isCheckout && (
+        {isCheckout && user.username !== 'Guest' && (
           <Grid item>
             <FormControlLabel
               label='Save card for future use'

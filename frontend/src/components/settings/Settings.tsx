@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import Details from './Details';
 import Payments from './Payments';
 import Location from './Location';
@@ -15,6 +17,8 @@ const useStyles = makeStyles(theme => ({
     borderTop: `4px solid ${theme.palette.common.white}`,
   },
 }));
+
+const stripePromise = loadStripe(process.env.GATSBY_STRIPE_PK!);
 
 interface SettingsProps {
   setSelectedSetting: React.Dispatch<React.SetStateAction<string>>;
@@ -77,7 +81,9 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
           errors={detailErrors}
           setErrors={setDetailErrors}
         />
-        <Payments user={user} slot={billingSlot} setSlot={setBillingSlot} />
+        <Elements stripe={stripePromise}>
+          <Payments user={user} slot={billingSlot} setSlot={setBillingSlot} />
+        </Elements>
       </Grid>
       <Grid
         container

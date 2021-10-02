@@ -22,7 +22,7 @@ import zipAdornment from '../../images/zip-adornment.svg';
 
 const useStyles = makeStyles<
   Theme,
-  { isCheckout?: boolean; selectedStep: number; stepNumber: number }
+  { isCheckout?: boolean; selectedStep?: number; stepNumber?: number }
 >(theme => ({
   locationContainer: {
     display: ({ isCheckout, selectedStep, stepNumber }) =>
@@ -82,8 +82,8 @@ interface LocationProps {
   setBillingValues?: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
   >;
-  stepNumber: number;
-  selectedStep: number;
+  stepNumber?: number;
+  selectedStep?: number;
 }
 
 const Location: React.FC<LocationProps> = ({

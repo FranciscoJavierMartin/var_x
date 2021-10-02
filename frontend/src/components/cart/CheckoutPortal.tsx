@@ -83,9 +83,13 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
     boolean | number
   >(false);
   const [selectedShipping, setSelectedShipping] = useState<string>('');
-  const [billingSlot, setBillingSlot] = useState<number>(0);
+  const [cardSlot, setCardSlot] = useState<number>(0);
   const [cardError, setCardError] = useState<boolean>(true);
   const [saveCard, setSaveCard] = useState<boolean>(false);
+  const [card, setCard] = useState<{ [key: string]: string }>({
+    brand: '',
+    last4: '',
+  });
   const [order, setOrder] = useState<Order | null>(null);
   const { user } = useContext(UserContext);
   const classes = useStyles();
@@ -253,14 +257,15 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
       component: (
         <Payments
           user={user}
-          slot={billingSlot}
-          setSlot={setBillingSlot}
+          slot={cardSlot}
+          setSlot={setCardSlot}
           saveCard={saveCard}
           setSaveCard={setSaveCard}
           setCardError={setCardError}
           isCheckout
           selectedStep={selectedStep}
           stepNumber={0}
+          setCard={setCard}
         />
       ),
       error: cardError,
@@ -283,6 +288,9 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           order={order}
           setOrder={setOrder}
           stepNumber={0}
+          saveCard={saveCard}
+          card={card}
+          cardSlot={cardSlot}
         />
       ),
     },
