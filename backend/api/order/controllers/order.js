@@ -137,16 +137,14 @@ module.exports = {
       let newMethods = [...ctx.state.user.paymentMethods];
       newMethods[cardSlot] = paymentMethod;
 
-      await strapi.plugins[
-        "user-permissions".services.user.edit(
-          {
-            orderCustomer,
-          },
-          {
-            paymentMethods: newMethods,
-          }
-        )
-      ];
+      await strapi.plugins["users-permissions"].services.user.edit(
+        {
+          id: orderCustomer,
+        },
+        {
+          paymentMethods: newMethods,
+        }
+      );
     }
 
     let order = await strapi.services.order.create({

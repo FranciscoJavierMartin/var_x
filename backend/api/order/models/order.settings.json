@@ -12,7 +12,8 @@
   "pluginOptions": {},
   "attributes": {
     "status": {
-      "type": "string"
+      "type": "string",
+      "default": "placed"
     },
     "items": {
       "type": "json",
