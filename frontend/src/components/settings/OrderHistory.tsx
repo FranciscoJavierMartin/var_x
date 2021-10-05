@@ -11,8 +11,10 @@ import {
   GridColumns,
   GridRowsProp,
   GridRowParams,
+  GridRowId,
 } from '@material-ui/data-grid';
 import axios from 'axios';
+import OrderDetails from './OrderDetails';
 import { UserContext } from '../../contexts';
 import { Order } from '../../interfaces/order';
 
@@ -89,7 +91,7 @@ interface OrderHistoryProps {
 
 const OrderHistory: React.FC<OrderHistoryProps> = ({ setSelectedSetting }) => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [open, setOpen] = useState<any>(null);
+  const [open, setOpen] = useState<GridRowId | null>(null);
   const { user } = useContext(UserContext);
   const classes = useStyles();
   const theme = useTheme();
@@ -167,6 +169,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setSelectedSetting }) => {
         pageSize={5}
         hideFooterSelectedRowCount
       />
+      <OrderDetails open={open} setOpen={setOpen} />
     </Grid>
   );
 };
