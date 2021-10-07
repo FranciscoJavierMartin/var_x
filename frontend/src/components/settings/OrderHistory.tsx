@@ -169,7 +169,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setSelectedSetting }) => {
         pageSize={5}
         hideFooterSelectedRowCount
       />
-      <OrderDetails open={open} setOpen={setOpen} />
+      <OrderDetails orders={orders} open={open} setOpen={setOpen} />
     </Grid>
   );
 };

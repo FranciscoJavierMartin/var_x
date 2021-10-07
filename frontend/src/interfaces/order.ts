@@ -99,4 +99,6 @@ export interface Order {
   published_at: Date;
   created_at: Date;
   updated_at: Date;
+  paymentMethod: { brand: string; last4: string };
+  transaction: string;
 }
