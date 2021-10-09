@@ -1,10 +1,13 @@
 import React from 'react';
 import {
+  Button,
   Grid,
   SwipeableDrawer,
   Chip,
   Typography,
   makeStyles,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { GridRowId } from '@material-ui/data-grid';
@@ -15,7 +18,10 @@ const useStyles = makeStyles(theme => ({
   drawer: {
     height: '100%',
     width: '30rem',
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: 'transparent',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
   id: {
     fontSize: '2.5rem',
@@ -46,6 +52,17 @@ const useStyles = makeStyles(theme => ({
   dark: {
     backgroundColor: theme.palette.secondary.main,
   },
+  light: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  text: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.25rem',
+    },
+  },
+  spacer: {
+    minHeight: '10rem',
+  },
 }));
 
 interface OrderDetailsProps {
@@ -60,6 +77,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
   setOpen,
 }) => {
   const classes = useStyles();
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const iOS =
     typeof navigator !== 'undefined' &&
@@ -81,12 +99,18 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
       open={!!open}
       onOpen={() => null}
       onClose={() => setOpen(null)}
-      anchor='right'
+      anchor={matchesXS ? 'bottom' : 'right'}
       classes={{ paper: classes.drawer }}
       disableBackdropTransition={!iOS}
       disableDiscovery={!!iOS}
     >
-      <Grid container direction='column'>
+      <Grid
+        item
+        component={Button}
+        onClick={() => setOpen(null)}
+        classes={{ root: classes.spacer }}
+      />
+      <Grid container direction='column' classes={{ root: classes.light }}>
         <Grid item classes={{ root: classes.dark }}>
           <Typography variant='h2' classes={{ root: classes.id }}>
             Order #
@@ -103,7 +127,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
           <Grid item classes={{ root: classes.status }}>
             <Chip
               label={order?.status}
-              classes={{ label: classes.bold, root: classes.chipRoot }}
+              classes={{ label: classes.bold, root: classes.light }}
             />
           </Grid>
 
@@ -119,7 +143,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
           <Typography variant='body2' classes={{ root: classes.bold }}>
             Billing
           </Typography>
-          <Typography variant='body2'>
+          <Typography variant='body2' classes={{ root: classes.text }}>
             {order?.billingInfo.name}
             <br />
             {order?.billingInfo.email}
@@ -137,7 +161,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
           <Typography variant='body2' classes={{ root: classes.bold }}>
             Shipping
           </Typography>
-          <Typography variant='body2'>
+          <Typography variant='body2' classes={{ root: classes.text }}>
             {order?.shippingInfo.name}
             <br />
             {order?.shippingInfo.email}
@@ -166,7 +190,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
             </Grid>
             <Grid item>
               {price.string ? (
-                <Typography variant='body2'>{price.string}</Typography>
+                <Typography variant='body2' classes={{ root: classes.text }}>
+                  {price.string}
+                </Typography>
               ) : (
                 <Chip
                   label={`$${price.value?.toFixed(2)}`}
