@@ -61,6 +61,7 @@ const useStyles = makeStyles<Theme, { showComponent: boolean }>(theme => ({
   },
   button: {
     backgroundColor: theme.palette.primary.main,
+    display: 'flex',
   },
   addHover: {
     '&:hover': {
@@ -80,6 +81,7 @@ const buttons = [
     label: 'Settings',
     icon: settingsIcon,
     component: Settings,
+    large: true,
   },
   {
     label: 'Order history',
@@ -144,7 +146,7 @@ const SettingsPortal: React.FC<SettingsPortalProps> = ({}) => {
         const size = {
           height:
             selectedSetting === button.label
-              ? matchesMD
+              ? matchesMD && button.large
                 ? '120rem'
                 : '60rem'
               : buttonHeight,
