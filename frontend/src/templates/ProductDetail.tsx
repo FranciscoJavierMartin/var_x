@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Grid, Theme, useMediaQuery } from '@material-ui/core';
 import ProductImages from '../components/product-detail/ProductImages';
 import Layout from '../components/ui/Layout';
 import ProductInfo from '../components/product-detail/ProductInfo';
 import RecentlyViewed from '../components/product-detail/RecentlyViewed';
+import ProductReviews from '../components/product-detail/ProductReviews';
 import {
   Product,
   QueryProductQty,
@@ -109,6 +110,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           />
         </Grid>
         <RecentlyViewed products={recentlyView} />
+        <ProductReviews />
       </Grid>
     </Layout>
   );

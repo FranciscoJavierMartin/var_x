@@ -1,23 +1,24 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 
 import fullStar from '../../images/full-star.svg';
 import halfStar from '../../images/half-star.svg';
 import emptyStar from '../../images/empty-star.svg';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   size: {
-    height: '2rem',
-    width: '2rem',
+    height: ({ size }) => `${size}rem`,
+    width: ({ size }) => `${size}rem`,
   },
 }));
 
 interface RatingProps {
   rate: number;
+  size?: number;
 }
 
-const Rating: React.FC<RatingProps> = ({ rate }) => {
-  const classes = useStyles();
+const Rating: React.FC<RatingProps> = ({ rate, size = 2 }) => {
+  const classes = useStyles({ size });
   const diff = 5 - Math.ceil(rate);
 
   return (

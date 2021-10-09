@@ -37,6 +37,13 @@
     "promo": {
       "type": "boolean",
       "default": false
+    },
+    "reviews": {
+      "via": "product",
+      "collection": "review"
+    },
+    "rating": {
+      "type": "decimal"
     }
   }
 }

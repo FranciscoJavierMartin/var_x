@@ -34,8 +34,8 @@ const useStyles = makeStyles<
 
 interface FieldsProps {
   fields: { [key: string]: any };
-  errors: { [key: string]: boolean };
-  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+  errors?: { [key: string]: boolean };
+  setErrors?: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
   values: { [key: string]: string };
   setValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   isWhite?: boolean;
@@ -43,6 +43,7 @@ interface FieldsProps {
   fullWidth?: boolean;
   settings?: boolean;
   xs?: boolean;
+  noError?: boolean;
 }
 
 const Fields: React.FC<FieldsProps> = ({
@@ -56,6 +57,7 @@ const Fields: React.FC<FieldsProps> = ({
   fullWidth,
   settings,
   xs,
+  noError,
 }) => {
   const classes = useStyles({ isWhite, fullWidth, settings, xs });
 
@@ -73,8 +75,8 @@ const Fields: React.FC<FieldsProps> = ({
               value={values[field]}
               onChange={e => {
                 const valid = validateHelper(e);
-                if (errors[field] || valid[field]) {
-                  setErrors(prevState => ({
+                if (errors && (errors[field] || valid[field])) {
+                  setErrors!(prevState => ({
                     ...prevState,
                     [field]: !valid[field],
                   }));
@@ -86,24 +88,25 @@ const Fields: React.FC<FieldsProps> = ({
               }}
               onBlur={e => {
                 const valid = validateHelper(e);
-                setErrors(prevState => ({
-                  ...prevState,
-                  [field]: !valid[field],
-                }));
+                setErrors &&
+                  setErrors(prevState => ({
+                    ...prevState,
+                    [field]: !valid[field],
+                  }));
               }}
               classes={{ root: classes.textField }}
               type={fieldValues.type}
               disabled={disabled}
               fullWidth={fullWidth}
               placeholder={fieldValues.placeholder}
-              error={errors[field]}
-              helperText={errors[field] && fieldValues.helperText}
+              error={!noError && errors![field]}
+              helperText={errors && errors[field] && fieldValues.helperText}
               InputProps={{
-                startAdornment: (
+                startAdornment: fieldValues.startAdornment ? (
                   <InputAdornment position='start'>
                     {fieldValues.startAdornment}
                   </InputAdornment>
-                ),
+                ) : undefined,
                 endAdornment: fieldValues.hasOwnProperty('endAdornment') ? (
                   <InputAdornment position='end'>
                     {fieldValues.endAdornment}
