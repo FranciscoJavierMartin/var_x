@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import Rating from '../shared/Rating';
@@ -11,6 +11,9 @@ const useStyles = makeStyles(theme => ({
   },
   date: {
     marginTop: '-0.5rem',
+  },
+  rating: {
+    cursor: 'pointer',
   },
   buttonContainer: {
     marginTop: '2rem',
@@ -42,8 +45,10 @@ const PoductReview: React.FC<PoductReviewProps> = ({}) => {
   const [values, setValues] = useState<{ [key: string]: string }>({
     message: '',
   });
-  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const [tempRating, setTempRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(0);
   const { user } = useContext(UserContext);
+  const ratingRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
 
   const fields = {
@@ -61,8 +66,25 @@ const PoductReview: React.FC<PoductReviewProps> = ({}) => {
             {user.username}
           </Typography>
         </Grid>
-        <Grid item>
-          <Rating rate={1} size={2.5} />
+        <Grid
+          item
+          classes={{ root: classes.rating }}
+          ref={ratingRef}
+          onClick={() => setRating(tempRating)}
+          onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            const hoverRating =
+              (-5 *
+                (ratingRef.current!.getBoundingClientRect().left - e.clientX)) /
+              ratingRef.current!.getBoundingClientRect().width;
+            setTempRating(Math.round(hoverRating * 2) / 2);
+          }}
+          onMouseLeave={() => {
+            if (tempRating > rating) {
+              setTempRating(rating);
+            }
+          }}
+        >
+          <Rating rate={rating > tempRating ? rating : tempRating} size={2.5} />
         </Grid>
       </Grid>
       <Grid item>
@@ -77,8 +99,6 @@ const PoductReview: React.FC<PoductReviewProps> = ({}) => {
         <Fields
           values={values}
           setValues={setValues}
-          errors={errors}
-          setErrors={setErrors}
           fields={fields}
           fullWidth
           noError
