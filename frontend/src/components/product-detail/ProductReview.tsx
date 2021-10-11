@@ -12,8 +12,12 @@ import Rating from '../shared/Rating';
 import Fields from '../shared/Fields';
 import { UserContext, FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
+import { Review } from '../../interfaces/reviews';
 
 const useStyles = makeStyles(theme => ({
+  review: {
+    marginBottom: '3rem',
+  },
   light: {
     color: theme.palette.primary.main,
   },
@@ -54,14 +58,20 @@ enum LoadingState {
 
 interface PoductReviewProps {
   product: string;
+  review?: Review;
+  setIsEdit?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PoductReview: React.FC<PoductReviewProps> = ({ product }) => {
+const PoductReview: React.FC<PoductReviewProps> = ({
+  product,
+  review,
+  setIsEdit,
+}) => {
   const [values, setValues] = useState<{ [key: string]: string }>({
     message: '',
   });
   const [tempRating, setTempRating] = useState<number>(0);
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(review?.rating ?? 0);
   const [loading, setLoading] = useState<LoadingState>(LoadingState.Nothing);
   const { user } = useContext(UserContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
@@ -110,24 +120,27 @@ const PoductReview: React.FC<PoductReviewProps> = ({ product }) => {
   };
 
   return (
-    <Grid item container direction='column'>
+    <Grid item container direction='column' classes={{ root: classes.review }}>
       <Grid item container justifyContent='space-between'>
         <Grid item>
           <Typography variant='h4' classes={{ root: classes.light }}>
-            {user.username}
+            {review?.user.username || user.username}
           </Typography>
         </Grid>
         <Grid
           item
-          classes={{ root: classes.rating }}
+          classes={{ root: clsx({ [classes.rating]: !review }) }}
           ref={ratingRef}
-          onClick={() => setRating(tempRating)}
+          onClick={() => !review && setRating(tempRating)}
           onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            const hoverRating =
-              (-5 *
-                (ratingRef.current!.getBoundingClientRect().left - e.clientX)) /
-              ratingRef.current!.getBoundingClientRect().width;
-            setTempRating(Math.round(hoverRating * 2) / 2);
+            if (!review) {
+              const hoverRating =
+                (-5 *
+                  (ratingRef.current!.getBoundingClientRect().left -
+                    e.clientX)) /
+                ratingRef.current!.getBoundingClientRect().width;
+              setTempRating(Math.round(hoverRating * 2) / 2);
+            }
           }}
           onMouseLeave={() => {
             if (tempRating > rating) {
@@ -143,39 +156,51 @@ const PoductReview: React.FC<PoductReviewProps> = ({ product }) => {
           variant='h5'
           classes={{ root: clsx(classes.date, classes.light) }}
         >
-          {new Date().toLocaleDateString()}
+          {review
+            ? new Date(review.created_at).toLocaleString([], {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+              })
+            : new Date().toLocaleDateString()}
         </Typography>
       </Grid>
       <Grid item>
-        <Fields
-          values={values}
-          setValues={setValues}
-          fields={fields}
-          fullWidth
-          noError
-        />
+        {review ? (
+          <Typography variant='body1'>{review.text}</Typography>
+        ) : (
+          <Fields
+            values={values}
+            setValues={setValues}
+            fields={fields}
+            fullWidth
+            noError
+          />
+        )}
       </Grid>
-      <Grid item container classes={{ root: classes.buttonContainer }}>
-        <Grid item>
-          {loading === LoadingState.LeaveReview ? (
-            <CircularProgress />
-          ) : (
-            <Button
-              onClick={handleReview}
-              disabled={!rating}
-              variant='contained'
-              color='primary'
-            >
-              <span className={classes.reviewButtonText}>Leave a review</span>
+      {!review && (
+        <Grid item container classes={{ root: classes.buttonContainer }}>
+          <Grid item>
+            {loading === LoadingState.LeaveReview ? (
+              <CircularProgress />
+            ) : (
+              <Button
+                onClick={handleReview}
+                disabled={!rating}
+                variant='contained'
+                color='primary'
+              >
+                <span className={classes.reviewButtonText}>Leave a review</span>
+              </Button>
+            )}
+          </Grid>
+          <Grid item>
+            <Button onClick={() => setIsEdit && setIsEdit(false)}>
+              <span className={classes.cancelButtonText}>Cancel</span>
             </Button>
-          )}
+          </Grid>
         </Grid>
-        <Grid item>
-          <Button>
-            <span className={classes.cancelButtonText}>Cancel</span>
-          </Button>
-        </Grid>
-      </Grid>
+      )}
     </Grid>
   );
 };

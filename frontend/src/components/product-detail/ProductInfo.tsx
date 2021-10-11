@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Grid,
   Button,
@@ -13,6 +13,8 @@ import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
 import QtyButton from '../product-list/QtyButton';
+import { UserContext, FeedbackContext } from '../../contexts';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import { Variant } from '../../interfaces/product-details';
 import { getColorIndex } from '../../utils/imageByColor';
 
@@ -109,6 +111,7 @@ interface ProductInfoProps {
   selectedVariant: number;
   setSelectedVariant: React.Dispatch<React.SetStateAction<number>>;
   stock: Stock;
+  setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -118,15 +121,17 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   selectedVariant,
   setSelectedVariant,
   stock,
+  setIsEdit,
 }) => {
-  const classes = useStyles();
   const [selectedSize, setSelectedSize] = useState<string>(
     variants[selectedVariant].size
   );
   const [selectedColor, setSelectedColor] = useState<string>(
     variants[selectedVariant].color
   );
-
+  const { user } = useContext(UserContext);
+  const { dispatchFeedback } = useContext(FeedbackContext);
+  const classes = useStyles();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const imageIndex = getColorIndex(
     { node: { variants } },
@@ -155,6 +160,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     );
 
   const stockDisplay: string = getStockDisplay(stock, selectedVariant);
+
+  const handleEdit = () => {
+    if (user.username === 'Guest') {
+      dispatchFeedback(
+        openSnackbar(
+          SnackbarStatus.Error,
+          'You must be logged in to leave a review'
+        )
+      );
+    } else {
+      setIsEdit(true);
+      const reviewRef = document.getElementById('reviews');
+      reviewRef?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     if (imageIndex !== -1) {
@@ -229,7 +249,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                 <Rating rate={4.5} />
               </Grid>
               <Grid item>
-                <Button>
+                <Button onClick={handleEdit}>
                   <Typography
                     variant='body2'
                     classes={{ root: classes.reviewButton }}

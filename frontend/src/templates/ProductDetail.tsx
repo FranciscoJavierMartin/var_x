@@ -33,6 +33,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [stock, setStock] = useState<Stock>(undefined);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
   const paramStyle = params.get('style');
@@ -107,10 +108,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             selectedVariant={selectedVariant}
             setSelectedVariant={setSelectedVariant}
             stock={stock}
+            setIsEdit={setIsEdit}
           />
         </Grid>
         <RecentlyViewed products={recentlyView} />
-        <ProductReviews product={id} />
+        <ProductReviews product={id} isEdit={isEdit} setIsEdit={setIsEdit} />
       </Grid>
     </Layout>
   );
