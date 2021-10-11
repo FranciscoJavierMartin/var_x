@@ -110,7 +110,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           />
         </Grid>
         <RecentlyViewed products={recentlyView} />
-        <ProductReviews />
+        <ProductReviews product={id} />
       </Grid>
     </Layout>
   );

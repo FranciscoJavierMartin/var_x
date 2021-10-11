@@ -1,9 +1,17 @@
 import React, { useState, useContext, useRef } from 'react';
-import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  Typography,
+  CircularProgress,
+  makeStyles,
+} from '@material-ui/core';
 import clsx from 'clsx';
+import axios from 'axios';
 import Rating from '../shared/Rating';
 import Fields from '../shared/Fields';
-import { UserContext } from '../../contexts';
+import { UserContext, FeedbackContext } from '../../contexts';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 
 const useStyles = makeStyles(theme => ({
   light: {
@@ -39,15 +47,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface PoductReviewProps {}
+enum LoadingState {
+  Nothing,
+  LeaveReview,
+}
 
-const PoductReview: React.FC<PoductReviewProps> = ({}) => {
+interface PoductReviewProps {
+  product: string;
+}
+
+const PoductReview: React.FC<PoductReviewProps> = ({ product }) => {
   const [values, setValues] = useState<{ [key: string]: string }>({
     message: '',
   });
   const [tempRating, setTempRating] = useState<number>(0);
   const [rating, setRating] = useState<number>(0);
+  const [loading, setLoading] = useState<LoadingState>(LoadingState.Nothing);
   const { user } = useContext(UserContext);
+  const { dispatchFeedback } = useContext(FeedbackContext);
   const ratingRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
 
@@ -56,6 +73,40 @@ const PoductReview: React.FC<PoductReviewProps> = ({}) => {
       helperText: '',
       placeholder: 'Write your review',
     },
+  };
+
+  const handleReview = () => {
+    setLoading(LoadingState.LeaveReview);
+
+    axios
+      .post(
+        `${process.env.GATSBY_STRAPI_URL}/reviews`,
+        {
+          text: values.message,
+          product,
+          rating,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.jwt}`,
+          },
+        }
+      )
+      .then(() => {
+        setLoading(LoadingState.Nothing);
+        dispatchFeedback(
+          openSnackbar(SnackbarStatus.Success, 'Product review added')
+        );
+      })
+      .catch(() => {
+        setLoading(LoadingState.Nothing);
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            'There was a problem leaving your review, please try again.'
+          )
+        );
+      });
   };
 
   return (
@@ -106,9 +157,18 @@ const PoductReview: React.FC<PoductReviewProps> = ({}) => {
       </Grid>
       <Grid item container classes={{ root: classes.buttonContainer }}>
         <Grid item>
-          <Button variant='contained' color='primary'>
-            <span className={classes.reviewButtonText}>Leave a review</span>
-          </Button>
+          {loading === LoadingState.LeaveReview ? (
+            <CircularProgress />
+          ) : (
+            <Button
+              onClick={handleReview}
+              disabled={!rating}
+              variant='contained'
+              color='primary'
+            >
+              <span className={classes.reviewButtonText}>Leave a review</span>
+            </Button>
+          )}
         </Grid>
         <Grid item>
           <Button>

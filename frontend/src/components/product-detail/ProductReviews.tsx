@@ -8,14 +8,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ProductReviewsProps {}
+interface ProductReviewsProps {
+  product: string;
+}
 
-const ProductReviews: React.FC<ProductReviewsProps> = ({}) => {
+const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
   const classes = useStyles();
 
   return (
     <Grid item container direction='column' classes={{ root: classes.reviews }}>
-      <ProductReview />
+      <ProductReview product={product} />
     </Grid>
   );
 };
