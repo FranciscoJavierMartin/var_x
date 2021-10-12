@@ -61,6 +61,7 @@ const useStyles = makeStyles(theme => ({
 enum LoadingState {
   Nothing,
   LeaveReview,
+  DeleteReview,
 }
 
 interface PoductReviewProps {
@@ -107,38 +108,55 @@ const PoductReview: React.FC<PoductReviewProps> = ({
     ? found.text === values.message && found.rating === rating
     : !rating;
 
-  const handleReview = () => {
-    setLoading(LoadingState.LeaveReview);
+  const handleReview = (option?: LoadingState) => {
+    const isDeleting: boolean = option === LoadingState.DeleteReview;
+    setLoading(
+      isDeleting ? LoadingState.DeleteReview : LoadingState.LeaveReview
+    );
 
-    const axiosFunction = found ? axios.put : axios.post;
+    const axiosFunction = isDeleting
+      ? axios.delete
+      : found
+      ? axios.put
+      : axios.post;
     const route = found
       ? `${process.env.GATSBY_STRAPI_URL}/reviews/${found.id}`
       : `${process.env.GATSBY_STRAPI_URL}/reviews`;
 
+    const auth = {
+      Authorization: `Bearer ${user?.jwt}`,
+    };
     axiosFunction(
       route,
       {
         text: values.message,
         product,
         rating,
+        headers: isDeleting ? auth : undefined,
       },
       {
-        headers: {
-          Authorization: `Bearer ${user?.jwt}`,
-        },
+        headers: auth,
       }
     )
       .then(response => {
         setLoading(LoadingState.Nothing);
         dispatchFeedback(
-          openSnackbar(SnackbarStatus.Success, 'Product review added')
+          openSnackbar(
+            SnackbarStatus.Success,
+            `Product review ${isDeleting ? 'deleted' : 'added'}`
+          )
         );
 
         if (found) {
           setReviews &&
             setReviews(prevState => {
-              prevState[prevState.findIndex(review => review.id === found.id)] =
-                response.data;
+              if (isDeleting) {
+                prevState = prevState.filter(review => review.id !== found.id);
+              } else {
+                prevState[
+                  prevState.findIndex(review => review.id === found.id)
+                ] = response.data;
+              }
               return prevState;
             });
           setIsEdit && setIsEdit(false);
@@ -149,7 +167,9 @@ const PoductReview: React.FC<PoductReviewProps> = ({
         dispatchFeedback(
           openSnackbar(
             SnackbarStatus.Error,
-            'There was a problem leaving your review, please try again.'
+            `There was a problem ${
+              isDeleting ? 'deleting' : 'leaving'
+            } your review, please try again.`
           )
         );
       });
@@ -221,7 +241,7 @@ const PoductReview: React.FC<PoductReviewProps> = ({
               <CircularProgress />
             ) : (
               <Button
-                onClick={handleReview}
+                onClick={() => handleReview()}
                 disabled={buttonDisabled}
                 variant='contained'
                 color='primary'
@@ -234,12 +254,17 @@ const PoductReview: React.FC<PoductReviewProps> = ({
           </Grid>
           {found && (
             <Grid item>
-              <Button
-                variant='contained'
-                classes={{ root: classes.deleteButton }}
-              >
-                <span className={classes.reviewButtonText}>Delete</span>
-              </Button>
+              {loading === LoadingState.DeleteReview ? (
+                <CircularProgress />
+              ) : (
+                <Button
+                  variant='contained'
+                  classes={{ root: classes.deleteButton }}
+                  onClick={() => handleReview(LoadingState.DeleteReview)}
+                >
+                  <span className={classes.reviewButtonText}>Delete</span>
+                </Button>
+              )}
             </Grid>
           )}
           <Grid item>
