@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { graphql } from 'gatsby';
 import { Grid, Fab, makeStyles } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 import Layout from '../components/ui/Layout';
 import DynamicToolbar from '../components/product-list/DynamicToolbar';
 import ListOfProducts from '../components/product-list/ListOfProducts';
+import StyledPagination from '../components/shared/StyledPagination';
 import { Filters, Option } from '../interfaces/filters';
 import {
   Edge,
@@ -31,16 +31,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '4rem',
     [theme.breakpoints.only('md')]: {
       marginTop: '1rem',
-    },
-  },
-  '@global': {
-    '.MuiPaginationItem-root': {
-      fontFamily: 'Montserrat',
-      fontSize: '2rem',
-      color: theme.palette.primary.main,
-      '&.Mui-selected': {
-        color: theme.palette.common.white,
-      },
     },
   },
 }));
@@ -217,7 +207,7 @@ const ProductList: React.FC<ProductListProps> = ({
           setLayout={setLayout}
           content={content}
         />
-        <Pagination
+        <StyledPagination
           color='primary'
           count={numPages}
           page={currentPage}

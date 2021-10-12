@@ -13,11 +13,11 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
 }));
 
 interface RatingProps {
-  rate: number;
+  rate?: number;
   size?: number;
 }
 
-const Rating: React.FC<RatingProps> = ({ rate, size = 2 }) => {
+const Rating: React.FC<RatingProps> = ({ rate = 0, size = 2 }) => {
   const classes = useStyles({ size });
   const diff = 5 - Math.ceil(rate);
 

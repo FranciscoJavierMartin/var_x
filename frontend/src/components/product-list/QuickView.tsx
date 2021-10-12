@@ -100,6 +100,7 @@ interface QuickViewProps {
   colors: string[];
   hasStyles: boolean;
   stock: Stock;
+  rating: number;
 }
 
 const QuickView: React.FC<QuickViewProps> = ({
@@ -118,6 +119,7 @@ const QuickView: React.FC<QuickViewProps> = ({
   colors,
   hasStyles,
   stock,
+  rating,
 }) => {
   const classes = useStyles();
   const imageIndex = getColorIndex(product, variant, selectedColor);
@@ -165,7 +167,7 @@ const QuickView: React.FC<QuickViewProps> = ({
               >
                 <Grid item>
                   <Typography variant='h4'>{name}</Typography>
-                  <Rating rate={4} />
+                  <Rating rate={rating} />
                 </Grid>
                 <Grid item>
                   <Typography variant='h3' classes={{ root: classes.stock }}>

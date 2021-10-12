@@ -112,6 +112,7 @@ interface ProductInfoProps {
   setSelectedVariant: React.Dispatch<React.SetStateAction<number>>;
   stock: Stock;
   setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  rating: number;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -122,6 +123,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   setSelectedVariant,
   stock,
   setIsEdit,
+  rating,
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>(
     variants[selectedVariant].size
@@ -246,7 +248,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                 </Typography>
               </Grid>
               <Grid item>
-                <Rating rate={4.5} />
+                <Rating rate={rating} />
               </Grid>
               <Grid item>
                 <Button onClick={handleEdit}>

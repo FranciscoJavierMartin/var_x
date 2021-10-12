@@ -61,6 +61,7 @@ interface ProductFrameListProps {
   colors: string[];
   hasStyles: boolean;
   stock: Stock;
+  rating: number;
 }
 
 const ProductFrameList: React.FC<ProductFrameListProps> = ({
@@ -74,6 +75,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
   colors,
   hasStyles,
   stock,
+  rating,
 }) => {
   const classes = useStyles();
 
@@ -139,7 +141,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
             </Typography>
           </Grid>
           <Grid item>
-            <Rating rate={3.5} />
+            <Rating rate={rating} />
           </Grid>
           <Grid item>
             <Chip

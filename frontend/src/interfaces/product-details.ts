@@ -34,6 +34,7 @@ export interface VariantQty {
 
 export interface ProductQty {
   variants: VariantQty[];
+  rating: number;
 }
 
 export interface QueryProductQty {

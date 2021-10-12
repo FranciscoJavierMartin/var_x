@@ -85,6 +85,7 @@ interface ProductFrameGridProps {
   disableQuickView?: boolean;
   small?: boolean;
   stock: Stock;
+  rating: number;
 }
 
 const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
@@ -100,6 +101,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
   disableQuickView,
   small,
   stock,
+  rating,
 }) => {
   const classes = useStyles({ small: !!small });
   const [open, setOpen] = useState<boolean>(false);
@@ -163,6 +165,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
           colors={colors || []}
           hasStyles={hasStyles}
           stock={stock}
+          rating={rating}
         />
       )}
     </Grid>

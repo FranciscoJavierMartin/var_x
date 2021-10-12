@@ -33,6 +33,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [stock, setStock] = useState<Stock>(undefined);
+  const [rating, setRating] = useState<number>(0);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const params = new URLSearchParams(window.location.search);
@@ -51,6 +52,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
       setStock(null);
     } else if (data) {
       setStock(data.product.variants);
+      setRating(data.product.rating);
     }
   }, [error, data]);
 
@@ -108,6 +110,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             selectedVariant={selectedVariant}
             setSelectedVariant={setSelectedVariant}
             stock={stock}
+            rating={rating}
             setIsEdit={setIsEdit}
           />
         </Grid>
