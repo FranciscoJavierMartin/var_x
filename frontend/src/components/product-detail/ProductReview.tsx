@@ -10,9 +10,10 @@ import clsx from 'clsx';
 import axios from 'axios';
 import Rating from '../shared/Rating';
 import Fields from '../shared/Fields';
-import { UserContext, FeedbackContext } from '../../contexts';
+import { FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import { Review } from '../../interfaces/reviews';
+import { User } from '../../interfaces/user';
 
 const useStyles = makeStyles(theme => ({
   review: {
@@ -40,6 +41,12 @@ const useStyles = makeStyles(theme => ({
     fontFamily: 'Montserrat',
     fontWeight: 600,
   },
+  deleteButton: {
+    backgroundColor: theme.palette.error.main,
+    '&:hover': {
+      backgroundColor: theme.palette.error.dark,
+    },
+  },
   '@global': {
     '.MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before':
       {
@@ -60,20 +67,31 @@ interface PoductReviewProps {
   product: string;
   review?: Review;
   setIsEdit?: React.Dispatch<React.SetStateAction<boolean>>;
+  reviews: Review[];
+  user?: User;
+  setReviews?: React.Dispatch<React.SetStateAction<Review[]>>;
 }
 
 const PoductReview: React.FC<PoductReviewProps> = ({
   product,
   review,
   setIsEdit,
+  reviews,
+  user,
+  setReviews,
 }) => {
+  const found = !review
+    ? reviews.find(review => review.user.username === user?.username)
+    : null;
   const [values, setValues] = useState<{ [key: string]: string }>({
-    message: '',
+    message: found ? found.text : '',
   });
   const [tempRating, setTempRating] = useState<number>(0);
-  const [rating, setRating] = useState<number>(review?.rating ?? 0);
+  const [rating, setRating] = useState<number>(
+    review ? review.rating : found ? found.rating : 0
+  );
   const [loading, setLoading] = useState<LoadingState>(LoadingState.Nothing);
-  const { user } = useContext(UserContext);
+
   const { dispatchFeedback } = useContext(FeedbackContext);
   const ratingRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
@@ -85,28 +103,46 @@ const PoductReview: React.FC<PoductReviewProps> = ({
     },
   };
 
+  const buttonDisabled = found
+    ? found.text === values.message && found.rating === rating
+    : !rating;
+
   const handleReview = () => {
     setLoading(LoadingState.LeaveReview);
 
-    axios
-      .post(
-        `${process.env.GATSBY_STRAPI_URL}/reviews`,
-        {
-          text: values.message,
-          product,
-          rating,
+    const axiosFunction = found ? axios.put : axios.post;
+    const route = found
+      ? `${process.env.GATSBY_STRAPI_URL}/reviews/${found.id}`
+      : `${process.env.GATSBY_STRAPI_URL}/reviews`;
+
+    axiosFunction(
+      route,
+      {
+        text: values.message,
+        product,
+        rating,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${user?.jwt}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${user.jwt}`,
-          },
-        }
-      )
-      .then(() => {
+      }
+    )
+      .then(response => {
         setLoading(LoadingState.Nothing);
         dispatchFeedback(
           openSnackbar(SnackbarStatus.Success, 'Product review added')
         );
+
+        if (found) {
+          setReviews &&
+            setReviews(prevState => {
+              prevState[prevState.findIndex(review => review.id === found.id)] =
+                response.data;
+              return prevState;
+            });
+          setIsEdit && setIsEdit(false);
+        }
       })
       .catch(() => {
         setLoading(LoadingState.Nothing);
@@ -124,7 +160,7 @@ const PoductReview: React.FC<PoductReviewProps> = ({
       <Grid item container justifyContent='space-between'>
         <Grid item>
           <Typography variant='h4' classes={{ root: classes.light }}>
-            {review?.user.username || user.username}
+            {review?.user.username || user?.username}
           </Typography>
         </Grid>
         <Grid
@@ -178,7 +214,7 @@ const PoductReview: React.FC<PoductReviewProps> = ({
           />
         )}
       </Grid>
-      {!review && (
+      {review ? null : (
         <Grid item container classes={{ root: classes.buttonContainer }}>
           <Grid item>
             {loading === LoadingState.LeaveReview ? (
@@ -186,14 +222,26 @@ const PoductReview: React.FC<PoductReviewProps> = ({
             ) : (
               <Button
                 onClick={handleReview}
-                disabled={!rating}
+                disabled={buttonDisabled}
                 variant='contained'
                 color='primary'
               >
-                <span className={classes.reviewButtonText}>Leave a review</span>
+                <span className={classes.reviewButtonText}>
+                  {found ? 'Edit' : 'Leave'} review
+                </span>
               </Button>
             )}
           </Grid>
+          {found && (
+            <Grid item>
+              <Button
+                variant='contained'
+                classes={{ root: classes.deleteButton }}
+              >
+                <span className={classes.reviewButtonText}>Delete</span>
+              </Button>
+            </Grid>
+          )}
           <Grid item>
             <Button onClick={() => setIsEdit && setIsEdit(false)}>
               <span className={classes.cancelButtonText}>Cancel</span>
