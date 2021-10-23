@@ -66,7 +66,7 @@ module.exports = {
         user: ctx.state.user.id,
       });
       newUser.favorites = favorites.map((favorite) => ({
-        product: favorite.product.id,
+        variant: favorite.variant.id,
         id: favorite.id,
       }));
       ctx.body = newUser;

@@ -108,7 +108,6 @@ const useStyles = makeStyles(theme => ({
 
 interface ProductInfoProps {
   name: string;
-  product: string;
   description: string;
   variants: Variant[];
   selectedVariant: number;
@@ -127,7 +126,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   stock,
   setIsEdit,
   rating,
-  product,
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>(
     variants[selectedVariant].size
@@ -216,7 +214,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         classes={{ root: classes.background }}
       >
         <Grid item classes={{ root: classes.iconWrapper }}>
-          <Favorite product={product} size={4} />
+          <Favorite variant={variants[selectedVariant].id} size={4} />
         </Grid>
         <Grid item classes={{ root: classes.iconWrapper }}>
           <img

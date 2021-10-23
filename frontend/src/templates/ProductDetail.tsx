@@ -28,7 +28,7 @@ interface ProductDetailProps {
 }
 
 const ProductDetail: React.FC<ProductDetailProps> = ({
-  pageContext: { name, id, category, description, variants, product },
+  pageContext: { name, id, description, variants, product },
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<number>(0);
@@ -112,7 +112,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             stock={stock}
             rating={rating}
             setIsEdit={setIsEdit}
-            product={id}
           />
         </Grid>
         <RecentlyViewed products={recentlyView} />

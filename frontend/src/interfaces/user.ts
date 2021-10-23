@@ -32,7 +32,7 @@ export interface LocationInfo {
 }
 
 export interface Favorite {
-  product: number;
+  variant: number;
   id: number;
 }
 
