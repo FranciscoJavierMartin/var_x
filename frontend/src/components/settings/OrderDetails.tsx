@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  Hidden,
   Grid,
   SwipeableDrawer,
   Chip,
@@ -104,12 +105,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
       disableBackdropTransition={!iOS}
       disableDiscovery={!!iOS}
     >
-      <Grid
-        item
-        component={Button}
-        onClick={() => setOpen(null)}
-        classes={{ root: classes.spacer }}
-      />
+      <Hidden smUp>
+        <Grid
+          item
+          component={Button}
+          onClick={() => setOpen(null)}
+          classes={{ root: classes.spacer }}
+        />
+      </Hidden>
       <Grid container direction='column' classes={{ root: classes.light }}>
         <Grid item classes={{ root: classes.dark }}>
           <Typography variant='h2' classes={{ root: classes.id }}>
