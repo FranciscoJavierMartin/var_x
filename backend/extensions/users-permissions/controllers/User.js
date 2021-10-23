@@ -61,10 +61,10 @@ module.exports = {
         { messages: [{ id: "No authorization header was found" }] },
       ]);
     } else {
-      console.log(user);
       let newUser = { ...sanitizeUser(user) };
-      console.log("Hello");
-      const favorites = await strapi.services.favorite.find({ user });
+      const favorites = await strapi.services.favorite.find({
+        user: ctx.state.user.id,
+      });
       newUser.favorites = favorites.map((favorite) => ({
         product: favorite.product.id,
         id: favorite.id,

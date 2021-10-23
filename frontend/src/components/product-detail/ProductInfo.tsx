@@ -18,13 +18,15 @@ import Swatches from '../shared/Swatches';
 import QtyButton from '../product-list/QtyButton';
 import { UserContext, FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
-import { Variant } from '../../interfaces/product-details';
+import { setUser } from '../../contexts/user/actions';
 import { getColorIndex } from '../../utils/imageByColor';
-
-import favorite from '../../images/favorite.svg';
-import subscription from '../../images/subscription.svg';
 import { getStockDisplay } from '../../utils/getInfo';
 import { Stock } from '../../interfaces/stock';
+import { Variant } from '../../interfaces/product-details';
+import { Favorite } from '../../interfaces/user';
+
+import FavoriteIcon from '../../images/FavoriteIcon';
+import subscription from '../../images/subscription.svg';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -143,7 +145,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     variants[selectedVariant].color
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { user } = useContext(UserContext);
+  const { user, dispatchUser } = useContext(UserContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
   const classes = useStyles();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
@@ -175,6 +177,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
   const stockDisplay: string = getStockDisplay(stock, selectedVariant);
 
+  const existingFavorite: Favorite | undefined = user.favorites?.find(
+    (favorite: Favorite) => favorite.product === +product
+  );
+
   const handleEdit = () => {
     if (user.username === 'Guest') {
       dispatchFeedback(
@@ -201,30 +207,55 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     } else {
       setIsLoading(true);
 
-      axios
-        .post(
-          `${process.env.GATSBY_STRAPI_URL}/favorites`,
-          {
-            product,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${user.jwt}`,
-            },
-          }
-        )
-        .then(() => {
+      const axiosFunction = existingFavorite ? axios.delete : axios.post;
+      const route = existingFavorite
+        ? `/favorites/${existingFavorite.id}`
+        : '/favorites';
+      const auth = {
+        Authorization: `Bearer ${user.jwt}`,
+      };
+
+      axiosFunction(
+        `${process.env.GATSBY_STRAPI_URL}${route}`,
+        {
+          product,
+          headers: existingFavorite ? auth : undefined,
+        },
+        {
+          headers: auth,
+        }
+      )
+        .then(response => {
           setIsLoading(false);
           dispatchFeedback(
-            openSnackbar(SnackbarStatus.Success, 'Added product to favorites')
+            openSnackbar(
+              SnackbarStatus.Success,
+              existingFavorite
+                ? 'Removed product from favorites'
+                : 'Added product to favorites'
+            )
           );
+
+          const newFavorites: Favorite[] =
+            (existingFavorite
+              ? user.favorites?.filter(
+                  favorite => favorite.id !== existingFavorite.id
+                )
+              : user.favorites?.concat({
+                  id: response.data.id,
+                  product: response.data.product.id,
+                })) || [];
+
+          dispatchUser(setUser({ ...user, favorites: newFavorites }));
         })
         .catch(() => {
           setIsLoading(false);
           dispatchFeedback(
             openSnackbar(
               SnackbarStatus.Error,
-              'There was a problem adding this item to favorites. Please try again'
+              existingFavorite
+                ? 'There was a problem removing this item from favorites. Please try again'
+                : 'There was a problem adding this item to favorites. Please try again'
             )
           );
         });
@@ -271,11 +302,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
               onClick={handleFavorite}
               classes={{ root: classes.iconButton }}
             >
-              <img
-                src={favorite}
-                alt='add item to favorite'
-                className={classes.icon}
-              />
+              <span className={classes.icon}>
+                <FavoriteIcon filled={existingFavorite} />
+              </span>
             </IconButton>
           )}
         </Grid>

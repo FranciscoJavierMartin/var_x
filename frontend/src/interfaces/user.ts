@@ -31,6 +31,11 @@ export interface LocationInfo {
   state: string;
 }
 
+export interface Favorite {
+  product: number;
+  id: number;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -46,6 +51,7 @@ export interface User {
   role: Role;
   created_at: Date;
   updated_at: Date;
+  favorites?: Favorite[];
 }
 
 export interface UserContextState {

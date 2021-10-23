@@ -2,12 +2,13 @@ import React from 'react';
 
 interface FavoriteIconProps {
   color?: string;
+  filled?: boolean;
 }
 
-const FavoriteIcon: React.FC<FavoriteIconProps> = ({ color }) => (
+const FavoriteIcon: React.FC<FavoriteIconProps> = ({ color, filled }) => (
   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 209.13 195.048'>
     <path
-      fill='none'
+      fill={filled ? color || '#fff' : 'none'}
       stroke={color || '#fff'}
       strokeLinejoin='round'
       strokeWidth='12'
