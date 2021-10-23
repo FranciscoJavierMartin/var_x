@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
 import {
   Grid,
   Button,
   Typography,
+  IconButton,
+  CircularProgress,
   Chip,
   makeStyles,
   useMediaQuery,
@@ -55,6 +58,12 @@ const useStyles = makeStyles(theme => ({
     width: '4rem',
     margin: '0.5rem 1rem',
   },
+  iconButton: {
+    padding: 0,
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
   sectionContainer: {
     height: 'calc(100% / 3)',
   },
@@ -106,6 +115,7 @@ const useStyles = makeStyles(theme => ({
 
 interface ProductInfoProps {
   name: string;
+  product: string;
   description: string;
   variants: Variant[];
   selectedVariant: number;
@@ -124,6 +134,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   stock,
   setIsEdit,
   rating,
+  product,
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>(
     variants[selectedVariant].size
@@ -131,6 +142,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const [selectedColor, setSelectedColor] = useState<string>(
     variants[selectedVariant].color
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useContext(UserContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
   const classes = useStyles();
@@ -178,6 +190,47 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     }
   };
 
+  const handleFavorite = () => {
+    if (user.username === 'Guest') {
+      dispatchFeedback(
+        openSnackbar(
+          SnackbarStatus.Error,
+          'You must be logged in to add an item to favorites'
+        )
+      );
+    } else {
+      setIsLoading(true);
+
+      axios
+        .post(
+          `${process.env.GATSBY_STRAPI_URL}/favorites`,
+          {
+            product,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.jwt}`,
+            },
+          }
+        )
+        .then(() => {
+          setIsLoading(false);
+          dispatchFeedback(
+            openSnackbar(SnackbarStatus.Success, 'Added product to favorites')
+          );
+        })
+        .catch(() => {
+          setIsLoading(false);
+          dispatchFeedback(
+            openSnackbar(
+              SnackbarStatus.Error,
+              'There was a problem adding this item to favorites. Please try again'
+            )
+          );
+        });
+    }
+  };
+
   useEffect(() => {
     if (imageIndex !== -1) {
       setSelectedVariant(imageIndex);
@@ -211,11 +264,20 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         classes={{ root: classes.background }}
       >
         <Grid item>
-          <img
-            src={favorite}
-            alt='add item to favorite'
-            className={classes.icon}
-          />
+          {isLoading ? (
+            <CircularProgress size='4rem' />
+          ) : (
+            <IconButton
+              onClick={handleFavorite}
+              classes={{ root: classes.iconButton }}
+            >
+              <img
+                src={favorite}
+                alt='add item to favorite'
+                className={classes.icon}
+              />
+            </IconButton>
+          )}
         </Grid>
         <Grid item>
           <img

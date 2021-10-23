@@ -112,6 +112,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             stock={stock}
             rating={rating}
             setIsEdit={setIsEdit}
+            product={id}
           />
         </Grid>
         <RecentlyViewed products={recentlyView} />
