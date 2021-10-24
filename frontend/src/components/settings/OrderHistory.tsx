@@ -1,90 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {
-  Grid,
-  Chip,
-  IconButton,
-  makeStyles,
-  useTheme,
-} from '@material-ui/core';
-import {
-  DataGrid,
-  GridColumns,
-  GridRowsProp,
-  GridRowParams,
-  GridRowId,
-} from '@material-ui/data-grid';
+import { Grid, Chip, IconButton, makeStyles } from '@material-ui/core';
+import { GridColumns, GridRowsProp, GridRowId } from '@material-ui/data-grid';
 import axios from 'axios';
 import OrderDetails from './OrderDetails';
+import SettingsGrid from './SettingsGrid';
 import { UserContext } from '../../contexts';
 import { Order } from '../../interfaces/order';
 
-import BackwardsIcon from '../../images/BackwardsOutline';
 import DetailsIcon from '../../images/details.svg';
 
 const useStyles = makeStyles(theme => ({
-  header: {
-    height: '8rem',
-    width: '100%',
-    backgroundColor: theme.palette.secondary.main,
-  },
   item: {
     height: '100%',
     width: '100%',
   },
   chipLabel: {
     fontWeight: 600,
-  },
-  icon: {
-    height: '4rem',
-    width: '4rem',
-  },
-  '@global': {
-    '.MuiDataGrid-root .MuiDataGrid-colCellTitle': {
-      fontWeight: 600,
-    },
-    '.MuiDataGrid-root .MuiDataGrid-columnSeparator': {
-      display: 'none',
-    },
-    '.MuiDataGrid-root .MuiDataGrid-colCellTitleContainer': {
-      'justify-content': 'center',
-    },
-    '.MuiDataGrid-root .MuiDataGrid-colCellMoving': {
-      'background-color': 'transparent',
-    },
-    '.MuiDataGrid-root .MuiDataGrid-cell': {
-      'white-space': 'pre-wrap',
-      'max-height': '100% !important',
-      'line-height': 'initial !important',
-      padding: '1rem',
-      'padding-right': 'calc(1rem + 26px)',
-      display: 'flex',
-      'justify-content': 'center',
-      'align-items': 'center',
-      'font-weight': 600,
-      'border-bottom': `2px solid ${theme.palette.common.white}`,
-    },
-    '.MuiDataGrid-root .MuiDataGrid-row': {
-      'max-height': '100% !important',
-    },
-    '.MuiDataGrid-root .MuiDataGrid-footer': {
-      'margin-top': '-11rem',
-    },
-    '.MuiTablePagination-caption': {
-      color: theme.palette.common.white,
-    },
-    '.MuiSvgIcon-root': {
-      fill: theme.palette.common.white,
-    },
-    '.MuiDataGrid-root .MuiDataGrid-columnsContainer': {
-      'background-color': theme.palette.secondary.main,
-      border: 'none',
-    },
-    '.MuiDataGrid-root': {
-      border: 'none',
-    },
-    '.MuiDataGrid-root .MuiDataGrid-overlay': {
-      bottom: '8rem',
-    },
   },
 }));
 
@@ -97,7 +28,6 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setSelectedSetting }) => {
   const [open, setOpen] = useState<GridRowId | null>(null);
   const { user } = useContext(UserContext);
   const classes = useStyles();
-  const theme = useTheme();
 
   useEffect(() => {
     axios
@@ -134,6 +64,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setSelectedSetting }) => {
       field: '',
       width: 350,
       sortable: false,
+      disableColumnMenu: true,
       renderCell: () => (
         <IconButton>
           <img src={DetailsIcon} alt='order details' />
@@ -158,19 +89,11 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ setSelectedSetting }) => {
 
   return (
     <Grid item container classes={{ root: classes.item }}>
-      <Grid item classes={{ root: classes.header }}>
-        <IconButton onClick={() => setSelectedSetting('')}>
-          <div className={classes.icon}>
-            <BackwardsIcon color={theme.palette.common.white} />
-          </div>
-        </IconButton>
-      </Grid>
-      <DataGrid
-        onRowClick={(event: GridRowParams) => setOpen(event.row.id)}
+      <SettingsGrid
+        setOpen={setOpen}
+        setSelectedSetting={setSelectedSetting}
         rows={rows}
         columns={columns}
-        pageSize={5}
-        hideFooterSelectedRowCount
       />
       <OrderDetails orders={orders} open={open} setOpen={setOpen} />
     </Grid>

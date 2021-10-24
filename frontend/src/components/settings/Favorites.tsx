@@ -6,14 +6,9 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import {
-  DataGrid,
-  GridCellParams,
-  GridColumns,
-  GridRowId,
-  GridRowsProp,
-} from '@material-ui/data-grid';
+import { GridColumns, GridRowId, GridRowsProp } from '@material-ui/data-grid';
 import axios from 'axios';
+import SettingsGrid from './SettingsGrid';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
 import QtyButton from '../shared/QtyButton';
@@ -46,9 +41,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface FavoritesProps {}
+interface FavoritesProps {
+  setSelectedSetting: any;
+}
 
-const Favorites: React.FC<FavoritesProps> = ({}) => {
+const Favorites: React.FC<FavoritesProps> = ({ setSelectedSetting }) => {
   const [products, setProducts] = useState<UserFavorite[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<any>({});
   const [selectedSizes, setSelectedSizes] = useState<{ [key: number]: string }>(
@@ -278,11 +275,11 @@ const Favorites: React.FC<FavoritesProps> = ({}) => {
 
   return (
     <Grid item container classes={{ root: classes.container }}>
-      <DataGrid
-        hideFooterSelectedRowCount
+      <SettingsGrid
+        setSelectedSetting={setSelectedSetting}
         rows={rows}
         columns={columns}
-        pageSize={5}
+        rowsPerPage={3}
       />
     </Grid>
   );
