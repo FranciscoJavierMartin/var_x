@@ -4,7 +4,7 @@ import { Grid, Typography, Chip, makeStyles } from '@material-ui/core';
 import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
-import QtyButton from './QtyButton';
+import QtyButton from '../shared/QtyButton';
 import { Edge, Image, Variant } from '../../interfaces/category-products';
 
 import frame from '../../images/product-frame-list.svg';

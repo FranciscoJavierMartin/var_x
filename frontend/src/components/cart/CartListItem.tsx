@@ -9,7 +9,7 @@ import {
   useMediaQuery,
   Theme,
 } from '@material-ui/core';
-import QtyButton from '../product-list/QtyButton';
+import QtyButton from '../shared/QtyButton';
 import Favorite from '../shared/Favorite';
 import { CartItem } from '../../interfaces/cart';
 import { CartContext } from '../../contexts';

@@ -12,6 +12,7 @@ import { useSpring, useSprings, animated } from 'react-spring';
 import useResizeAware from 'react-resize-aware';
 import Settings from './Settings';
 import OrderHistory from './OrderHistory';
+import Favorites from './Favorites';
 import { UserContext } from '../../contexts';
 import { setUser } from '../../contexts/user/actions';
 
@@ -91,6 +92,7 @@ const buttons = [
   {
     label: 'Favorites',
     icon: favoritesIcon,
+    component: Favorites,
   },
   {
     label: 'Subscriptions',

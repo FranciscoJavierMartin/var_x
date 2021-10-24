@@ -13,7 +13,7 @@ import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
 import Favorite from '../shared/Favorite';
-import QtyButton from '../product-list/QtyButton';
+import QtyButton from '../shared/QtyButton';
 import { UserContext, FeedbackContext } from '../../contexts';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import { getColorIndex } from '../../utils/imageByColor';
@@ -214,7 +214,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         classes={{ root: classes.background }}
       >
         <Grid item classes={{ root: classes.iconWrapper }}>
-          <Favorite variant={variants[selectedVariant].id} size={4} />
+          <Favorite variant={variants[selectedVariant].id} size={4} noPadding />
         </Grid>
         <Grid item classes={{ root: classes.iconWrapper }}>
           <img

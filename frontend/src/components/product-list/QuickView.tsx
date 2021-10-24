@@ -12,7 +12,7 @@ import {
 import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
-import QtyButton from './QtyButton';
+import QtyButton from '../shared/QtyButton';
 
 import frame from '../../images/selected-frame.svg';
 import explore from '../../images/explore.svg';
