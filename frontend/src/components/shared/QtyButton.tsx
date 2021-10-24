@@ -145,7 +145,9 @@ const QtyButton: React.FC<QtyButtonProps> = ({
   };
 
   useEffect(() => {
-    if (stock && qty > stock[selectedVariant].qty) {
+    if (qty === 0 && stock && stock[selectedVariant].qty !== 0) {
+      setQty(1);
+    } else if (stock && qty > stock[selectedVariant].qty) {
       setQty(stock[selectedVariant].qty);
     }
   }, [stock, selectedVariant]);
@@ -194,6 +196,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({
         {isCart ? null : (
           <Button
             onClick={handleCart}
+            disabled={stock ? stock[selectedVariant].qty === 0 : true}
             classes={{
               root: clsx(classes.endButtons, classes.cartButton, {
                 [classes.success]: success,
