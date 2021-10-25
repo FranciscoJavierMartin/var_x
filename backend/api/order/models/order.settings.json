@@ -60,6 +60,10 @@
     "paymentMethod": {
       "type": "json",
       "required": true
+    },
+    "subscription": {
+      "via": "orders",
+      "model": "subscription"
     }
   }
 }
