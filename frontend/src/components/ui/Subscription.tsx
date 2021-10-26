@@ -14,6 +14,7 @@ import QtyButton from '../shared/QtyButton';
 import { CartContext } from '../../contexts';
 
 import SubscriptionIcon from '../../images/SubscriptionIcon';
+import { Stock } from '../../interfaces/stock';
 
 const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   iconButton: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   },
   row: {
     height: '4rem',
+    padding: '0 0.5rem',
   },
   dark: {
     backgroundColor: theme.palette.primary.main,
@@ -48,9 +50,15 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
 
 interface SubscriptionProps {
   size?: number;
+  stock: Stock;
+  selectedVariant: number;
 }
 
-const Subscription: React.FC<SubscriptionProps> = ({ size }) => {
+const Subscription: React.FC<SubscriptionProps> = ({
+  size,
+  stock,
+  selectedVariant,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const classes = useStyles({ size });
 
@@ -76,10 +84,20 @@ const Subscription: React.FC<SubscriptionProps> = ({ size }) => {
             item
             container
             justify='space-between'
+            alignItems='center'
             classes={{ root: clsx(classes.row, classes.dark) }}
           >
             <Grid item>
               <Typography variant='h4'>Quantity</Typography>
+            </Grid>
+            <Grid item>
+              <QtyButton
+                stock={stock}
+                selectedVariant={selectedVariant}
+                white
+                hideCartButton
+                round
+              />
             </Grid>
           </Grid>
         </Grid>

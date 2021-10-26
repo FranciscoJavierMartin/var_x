@@ -130,6 +130,8 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
               variants={[item.variant]}
               stock={[{ qty: item.stock }]}
               isCart
+              white
+              hideCartButton
             />
           </Grid>
         </Grid>

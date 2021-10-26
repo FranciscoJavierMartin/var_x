@@ -17,65 +17,72 @@ import { Variant } from '../../interfaces/category-products';
 
 import Cart from '../../images/Cart';
 
-const useStyles = makeStyles<Theme, { isCart?: boolean }>(theme => ({
-  mainGroup: {
-    height: '3rem',
-  },
-  qtyText: {
-    color: ({ isCart }) =>
-      isCart ? theme.palette.secondary.main : theme.palette.common.white,
-  },
-  editButtons: {
-    height: '1.525rem',
-    borderRadius: 0,
-    backgroundColor: ({ isCart }) =>
-      isCart ? theme.palette.common.white : theme.palette.secondary.main,
-    borderLeft: ({ isCart }) =>
-      `2px solid ${
-        isCart ? theme.palette.secondary.main : theme.palette.common.white
-      }`,
-    borderRight: `2px solid ${theme.palette.common.white}`,
-    borderBottom: 'none',
-    borderTop: 'none',
-  },
-  endButtons: {
-    borderRadius: 50,
-    backgroundColor: ({ isCart }) =>
-      isCart ? theme.palette.common.white : theme.palette.secondary.main,
-    border: 'none',
-  },
-  cartButton: {
-    marginLeft: '0 !important',
-    transition: 'background-color 1s ease',
-  },
-  minusButton: {
-    borderTop: ({ isCart }) =>
-      `2px solid ${
-        isCart ? theme.palette.secondary.main : theme.palette.common.white
-      }`,
-  },
-  minus: {
-    marginTop: '-0.25rem',
-  },
-  qtyButton: {
-    '&:hover': {
-      backgroundColor: ({ isCart }) =>
-        isCart ? theme.palette.common.white : theme.palette.secondary.main,
+const useStyles = makeStyles<Theme, { white?: boolean; round?: boolean }>(
+  theme => ({
+    mainGroup: {
+      height: '3rem',
     },
-  },
-  badge: {
-    color: theme.palette.common.white,
-    fontSize: '1.5rem',
-    backgroundColor: theme.palette.secondary.main,
-    padding: 0,
-  },
-  success: {
-    backgroundColor: theme.palette.success.main,
-    '&:hover': {
+    qtyText: {
+      color: ({ white }) =>
+        white ? theme.palette.secondary.main : theme.palette.common.white,
+    },
+    editButtons: {
+      height: '1.525rem',
+      backgroundColor: ({ white }) =>
+        white ? theme.palette.common.white : theme.palette.secondary.main,
+      borderLeft: ({ white }) =>
+        `2px solid ${
+          white ? theme.palette.secondary.main : theme.palette.common.white
+        }`,
+      borderRight: ({ round }) =>
+        round ? 0 : `2px solid ${theme.palette.common.white}`,
+      borderBottom: 'none',
+      borderTop: 'none',
+      borderRadius: ({ round }) => (round ? '0px 50px 50px 0px' : 0),
+      '&:hover': {
+        backgroundColor: ({ white }) =>
+          white ? theme.palette.common.white : theme.palette.secondary.light,
+      },
+    },
+    endButtons: {
+      borderRadius: 50,
+      backgroundColor: ({ white }) =>
+        white ? theme.palette.common.white : theme.palette.secondary.main,
+      border: 'none',
+    },
+    cartButton: {
+      marginLeft: '0 !important',
+      transition: 'background-color 1s ease',
+    },
+    minusButton: {
+      borderTop: ({ white }) =>
+        `2px solid ${
+          white ? theme.palette.secondary.main : theme.palette.common.white
+        }`,
+    },
+    minus: {
+      marginTop: '-0.25rem',
+    },
+    qtyButton: {
+      '&:hover': {
+        backgroundColor: ({ white }) =>
+          white ? theme.palette.common.white : theme.palette.secondary.main,
+      },
+    },
+    badge: {
+      color: theme.palette.common.white,
+      fontSize: '1.5rem',
+      backgroundColor: theme.palette.secondary.main,
+      padding: 0,
+    },
+    success: {
       backgroundColor: theme.palette.success.main,
+      '&:hover': {
+        backgroundColor: theme.palette.success.main,
+      },
     },
-  },
-}));
+  })
+);
 
 interface QtyButtonProps {
   stock: Stock;
@@ -83,6 +90,9 @@ interface QtyButtonProps {
   name: string;
   variants: Variant[];
   isCart?: boolean;
+  white?: boolean;
+  hideCartButton?: boolean;
+  round?: boolean;
 }
 
 const QtyButton: React.FC<QtyButtonProps> = ({
@@ -91,6 +101,9 @@ const QtyButton: React.FC<QtyButtonProps> = ({
   selectedVariant,
   name,
   isCart,
+  white,
+  hideCartButton,
+  round,
 }) => {
   const { cart, dispatchCart } = useContext(CartContext);
   const [qty, setQty] = useState<number>(() =>
@@ -100,7 +113,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({
       : 1
   );
   const [success, setSuccess] = useState<boolean>(false);
-  const classes = useStyles({ isCart });
+  const classes = useStyles({ white, round });
   const theme = useTheme();
 
   const handleChange = (direction: 'increment' | 'decrement') => {
@@ -193,7 +206,7 @@ const QtyButton: React.FC<QtyButtonProps> = ({
             </Typography>
           </Button>
         </ButtonGroup>
-        {isCart ? null : (
+        {hideCartButton ? null : (
           <Button
             onClick={handleCart}
             disabled={stock ? stock[selectedVariant].qty === 0 : true}

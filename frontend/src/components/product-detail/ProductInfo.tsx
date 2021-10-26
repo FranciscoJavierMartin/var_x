@@ -216,7 +216,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           <Favorite variant={variants[selectedVariant].id} size={4} noPadding />
         </Grid>
         <Grid item classes={{ root: classes.iconWrapper }}>
-          <Subscription size={4} />
+          <Subscription
+            size={4}
+            stock={stock}
+            selectedVariant={selectedVariant}
+          />
         </Grid>
       </Grid>
       <Grid
