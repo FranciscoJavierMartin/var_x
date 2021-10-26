@@ -9,6 +9,7 @@ import {
   Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import Subscription from '../ui/Subscription';
 import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
 import Swatches from '../shared/Swatches';
@@ -20,8 +21,6 @@ import { getColorIndex } from '../../utils/imageByColor';
 import { getStockDisplay } from '../../utils/getInfo';
 import { Stock } from '../../interfaces/stock';
 import { Variant } from '../../interfaces/product-details';
-
-import subscription from '../../images/subscription.svg';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -217,11 +216,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
           <Favorite variant={variants[selectedVariant].id} size={4} noPadding />
         </Grid>
         <Grid item classes={{ root: classes.iconWrapper }}>
-          <img
-            src={subscription}
-            alt='add item to subscription'
-            className={classes.icon}
-          />
+          <Subscription size={4} />
         </Grid>
       </Grid>
       <Grid
