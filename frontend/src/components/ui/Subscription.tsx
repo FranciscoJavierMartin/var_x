@@ -4,6 +4,8 @@ import {
   Dialog,
   Chip,
   Button,
+  MenuItem,
+  Select,
   IconButton,
   makeStyles,
   Theme,
@@ -46,7 +48,38 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   dialog: {
     borderRadius: 0,
   },
+  chiptRoot: {
+    backgroundColor: theme.palette.common.white,
+    height: '3rem',
+    borderRadius: 50,
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+  chipLabel: {
+    color: theme.palette.common.white,
+  },
+  select: {
+    '&.MuiSelect-select': {
+      paddingRight: 0,
+    },
+  },
+  menu: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  menuItem: {
+    color: theme.palette.common.white,
+  },
 }));
+
+const frequencies = [
+  'Week',
+  'Two Weeks',
+  'Month',
+  'Three Monts',
+  'Six Months',
+  'Year',
+];
 
 interface SubscriptionProps {
   size?: number;
@@ -61,6 +94,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const classes = useStyles({ size });
+  const [frequency, setFrequency] = useState<string>('Month');
 
   return (
     <>
@@ -105,11 +139,44 @@ const Subscription: React.FC<SubscriptionProps> = ({
           <Grid
             item
             container
+            alignItems='center'
             justify='space-between'
             classes={{ root: clsx(classes.row, classes.light) }}
           >
             <Grid item>
               <Typography variant='h4'>Delivery every</Typography>
+            </Grid>
+            <Grid item>
+              <Select
+                classes={{ select: classes.select }}
+                value={frequency}
+                disableUnderline
+                IconComponent={() => null}
+                MenuProps={{ classes: { paper: classes.menu } }}
+                onChange={event => {
+                  console.log(event.target.value);
+                  setFrequency(event.target.value as string);
+                }}
+                renderValue={(selected: any) => (
+                  <Chip
+                    label={selected}
+                    classes={{
+                      root: classes.chipRoot,
+                      label: classes.chipLabel,
+                    }}
+                  />
+                )}
+              >
+                {frequencies.map(frequency => (
+                  <MenuItem
+                    key={frequency}
+                    value={frequency}
+                    classes={{ root: classes.menuItem }}
+                  >
+                    {frequency}
+                  </MenuItem>
+                ))}
+              </Select>
             </Grid>
           </Grid>
           <Grid item>
