@@ -14,63 +14,6 @@ const sanitizeUser = (user) =>
     model: strapi.query("user", "users-permissions").model,
   });
 
-const frequencies = [
-  {
-    label: "Week",
-    value: "one_week",
-    delivery: () => {
-      const now = new Date();
-      now.setDate(now.getDate() + 7);
-      return now;
-    },
-  },
-  {
-    label: "Two Weeks",
-    value: "two_weeks",
-    delivery: () => {
-      const now = new Date();
-      now.setDate(now.getDate() + 14);
-      return now;
-    },
-  },
-  {
-    label: "Month",
-    value: "one_month",
-    delivery: () => {
-      const now = new Date();
-      now.setDate(now.getMonth() + 1);
-      return now;
-    },
-  },
-  {
-    label: "Three Monts",
-    value: "three_months",
-    delivery: () => {
-      const now = new Date();
-      now.setDate(now.getMonth() + 3);
-      return now;
-    },
-  },
-  {
-    label: "Six Months",
-    value: "six_months",
-    delivery: () => {
-      const now = new Date();
-      now.setDate(now.getMonth() + 6);
-      return now;
-    },
-  },
-  {
-    label: "Year",
-    value: "annually",
-    delivery: () => {
-      const now = new Date();
-      now.setDate(now.getMonth() + 12);
-      return now;
-    },
-  },
-];
-
 module.exports = {
   async process(ctx) {
     const {
@@ -95,6 +38,8 @@ module.exports = {
         option.label === shippingOption.label &&
         option.price === shippingOption.price
     );
+
+    const frequencies = await strapi.services.order.frequency();
 
     await Promise.all(
       items.map(async (clientItem) => {
