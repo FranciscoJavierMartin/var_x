@@ -23,12 +23,13 @@ const useStyles = makeStyles<
   { isCheckout?: boolean; selectedStep?: number; stepNumber?: number }
 >(theme => ({
   detailsContainer: {
+    height: '100%',
     display: ({ isCheckout, selectedStep, stepNumber }) =>
       isCheckout && selectedStep !== stepNumber ? 'none' : 'flex',
     position: 'relative',
     [theme.breakpoints.down('md')]: {
       borderBottom: `4px solid ${theme.palette.common.white}`,
-      height: '30rem',
+      height: ({ isCheckout }) => (isCheckout ? '100%' : '30rem'),
     },
   },
   phoneAdornment: {

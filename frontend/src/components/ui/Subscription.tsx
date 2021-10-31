@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Grid,
   Dialog,
@@ -7,16 +7,20 @@ import {
   MenuItem,
   Select,
   IconButton,
+  Typography,
   makeStyles,
   Theme,
-  Typography,
+  useMediaQuery,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import QtyButton from '../shared/QtyButton';
-import { CartContext } from '../../contexts';
+import { CartContext, FeedbackContext } from '../../contexts';
+import { addToCart } from '../../contexts/cart/actions';
+import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 
 import SubscriptionIcon from '../../images/SubscriptionIcon';
 import { Stock } from '../../interfaces/stock';
+import { Variant } from '../../interfaces/product-details';
 
 const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   iconButton: {
@@ -29,6 +33,9 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   row: {
     height: '4rem',
     padding: '0 0.5rem',
+    [theme.breakpoints.down('xs')]: {
+      height: 'auto',
+    },
   },
   dark: {
     backgroundColor: theme.palette.primary.main,
@@ -40,13 +47,23 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
     height: '8rem',
     borderRadius: 0,
     width: '100%',
+    [theme.breakpoints.down('xs')]: {
+      height: 'auto',
+    },
   },
   cartText: {
     color: theme.palette.common.white,
     fontSize: '4rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '3.25rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '2rem',
+    },
   },
   dialog: {
     borderRadius: 0,
+    backgroundColor: theme.palette.secondary.main,
   },
   chiptRoot: {
     backgroundColor: theme.palette.common.white,
@@ -83,19 +100,36 @@ const frequencies = [
 
 interface SubscriptionProps {
   size?: number;
-  stock: Stock;
+  name: string;
   selectedVariant: number;
+  stock: Stock;
+  variant: Variant;
 }
 
 const Subscription: React.FC<SubscriptionProps> = ({
   size,
   stock,
   selectedVariant,
+  variant,
+  name,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const classes = useStyles({ size });
+  const [qty, setQty] = useState<number>(1);
   const [frequency, setFrequency] = useState<string>('Month');
+  const { dispatchCart } = useContext(CartContext);
+  const { dispatchFeedback } = useContext(FeedbackContext);
+  const classes = useStyles({ size });
+  const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
+  const handleCart = () => {
+    dispatchCart(
+      addToCart(variant, qty, name, stock![selectedVariant].qty, frequency)
+    );
+    setIsOpen(false);
+    dispatchFeedback(
+      openSnackbar(SnackbarStatus.Success, 'Subscription added to cart')
+    );
+  };
   return (
     <>
       <IconButton
@@ -108,12 +142,13 @@ const Subscription: React.FC<SubscriptionProps> = ({
       </IconButton>
       <Dialog
         fullWidth
+        fullScreen={matchesXS}
         maxWidth='md'
         open={isOpen}
         onClose={() => setIsOpen(false)}
         classes={{ paper: classes.dialog }}
       >
-        <Grid container direction='column'>
+        <Grid container direction='column' alignItems='center'>
           <Grid
             item
             container
@@ -131,6 +166,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
                 white
                 hideCartButton
                 round
+                override={{ value: qty, setValue: setQty }}
               />
             </Grid>
           </Grid>
@@ -139,8 +175,9 @@ const Subscription: React.FC<SubscriptionProps> = ({
           <Grid
             item
             container
-            alignItems='center'
+            alignItems={matchesXS ? 'flex-start' : 'center'}
             justify='space-between'
+            direction={matchesXS ? 'column' : 'row'}
             classes={{ root: clsx(classes.row, classes.light) }}
           >
             <Grid item>
@@ -184,12 +221,20 @@ const Subscription: React.FC<SubscriptionProps> = ({
               variant='contained'
               color='secondary'
               classes={{ root: classes.cartButton }}
+              onClick={handleCart}
             >
               <Typography variant='h1' classes={{ root: classes.cartText }}>
                 Add subscription to cart
               </Typography>
             </Button>
           </Grid>
+          {matchesXS && (
+            <Grid item>
+              <Button onClick={() => setIsOpen(false)}>
+                <Typography variant='body2'>Cancel</Typography>
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Dialog>
     </>

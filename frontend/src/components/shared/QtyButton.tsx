@@ -93,6 +93,10 @@ interface QtyButtonProps {
   white?: boolean;
   hideCartButton?: boolean;
   round?: boolean;
+  override?: {
+    value: number;
+    setValue: React.Dispatch<React.SetStateAction<number>>;
+  };
 }
 
 const QtyButton: React.FC<QtyButtonProps> = ({
@@ -104,9 +108,10 @@ const QtyButton: React.FC<QtyButtonProps> = ({
   white,
   hideCartButton,
   round,
+  override,
 }) => {
   const { cart, dispatchCart } = useContext(CartContext);
-  const [qty, setQty] = useState<number>(() =>
+  const [qty, setQtyState] = useState<number>(() =>
     isCart
       ? cart.cart.find(item => item.variant === variants[selectedVariant])
           ?.qty || 1
@@ -116,13 +121,20 @@ const QtyButton: React.FC<QtyButtonProps> = ({
   const classes = useStyles({ white, round });
   const theme = useTheme();
 
+  const setQty = override
+    ? (val: any) => {
+        override.setValue(val);
+        setQtyState(val);
+      }
+    : setQtyState;
+
   const handleChange = (direction: 'increment' | 'decrement') => {
     if (
       stock &&
       !(qty === stock[selectedVariant].qty && direction === 'increment') &&
       !(qty === 1 && direction === 'decrement')
     ) {
-      setQty(prevState =>
+      setQty((prevState: number) =>
         direction === 'increment' ? prevState + 1 : prevState - 1
       );
 

@@ -25,6 +25,7 @@ const useStyles = makeStyles<
   { isCheckout?: boolean; selectedStep?: number; stepNumber?: number }
 >(theme => ({
   locationContainer: {
+    height: '100%',
     display: ({ isCheckout, selectedStep, stepNumber }) =>
       isCheckout && selectedStep !== stepNumber ? 'none' : 'flex',
     position: 'relative',

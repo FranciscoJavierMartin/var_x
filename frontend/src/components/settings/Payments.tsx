@@ -32,13 +32,14 @@ const useStyles = makeStyles<
   { isCheckout?: boolean; selectedStep?: number; stepNumber?: number }
 >(theme => ({
   paymentsContainer: {
+    height: '100%',
     display: ({ isCheckout, selectedStep, stepNumber }) =>
       isCheckout && selectedStep !== stepNumber ? 'none' : 'flex',
     borderLeft: ({ isCheckout }) =>
       isCheckout ? 0 : `4px solid ${theme.palette.common.white}`,
     position: 'relative',
     [theme.breakpoints.down('md')]: {
-      height: '30rem',
+      height: ({ isCheckout }) => (isCheckout ? '100%' : '30rem'),
       borderLeft: 0,
     },
   },

@@ -6,6 +6,7 @@ export interface CartItem {
   qty: number;
   stock: number;
   variant: Variant;
+  subscription?: string;
 }
 
 export interface CartState {

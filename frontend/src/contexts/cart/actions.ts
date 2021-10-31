@@ -33,10 +33,11 @@ export const addToCart = (
   variant: Variant,
   qty: number,
   name: string,
-  stock: number
+  stock: number,
+  subscription: string
 ): AddToCartType => ({
   type: CartActionTypes.ADD_TO_CART,
-  payload: { variant, qty, name, stock },
+  payload: { variant, qty, name, stock, subscription },
 });
 
 export const removeFromCart = (
