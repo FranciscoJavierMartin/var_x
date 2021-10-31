@@ -9,16 +9,15 @@ const { sanitizeEntity } = require("strapi-utils");
 
 module.exports = {
   async userSubscriptions(ctx) {
-    const subscriptions = await strapi.services.subscription
-      .find({
-        user: ctx.state.user.id,
-      })
-      .map((subscription) => {
-        delete subscription.user;
-        return sanitizeEntity(subscription, {
-          model: strapi.models.subscription,
-        });
+    const subscriptionsFromServer = await strapi.services.subscription.find({
+      user: ctx.state.user.id,
+    });
+    const subscriptions = subscriptionsFromServer.map((subscription) => {
+      delete subscription.user;
+      return sanitizeEntity(subscription, {
+        model: strapi.models.subscription,
       });
+    });
 
     ctx.send(subscriptions, 200);
   },

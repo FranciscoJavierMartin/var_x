@@ -39,8 +39,6 @@ module.exports = {
         option.price === shippingOption.price
     );
 
-    const frequencies = await strapi.services.order.frequency();
-
     await Promise.all(
       items.map(async (clientItem) => {
         const serverItem = await strapi.services.variant.findOne({
@@ -121,6 +119,7 @@ module.exports = {
     } = ctx.request.body;
 
     const orderCustomer = ctx.state.user ? ctx.state.user.id : GUEST_ID;
+    const frequencies = await strapi.services.order.frequency();
 
     await Promise.all(
       items.map(async (clientItem) => {

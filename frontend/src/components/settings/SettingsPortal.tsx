@@ -13,6 +13,7 @@ import useResizeAware from 'react-resize-aware';
 import Settings from './Settings';
 import OrderHistory from './OrderHistory';
 import Favorites from './Favorites';
+import Subscriptions from './Subscriptions';
 import { UserContext } from '../../contexts';
 import { setUser } from '../../contexts/user/actions';
 
@@ -97,6 +98,7 @@ const buttons = [
   {
     label: 'Subscriptions',
     icon: subscriptionIcon,
+    component: Subscriptions,
   },
 ];
 
