@@ -10,14 +10,18 @@ import {
   Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import Subscription from '../ui/Subscription';
 import QtyButton from '../shared/QtyButton';
 import Favorite from '../shared/Favorite';
 import SelectFrequency from '../shared/SelectFrequency';
 import { CartItem } from '../../interfaces/cart';
 import { CartContext } from '../../contexts';
-import { removeFromCart, changeFrequency } from '../../contexts/cart/actions';
+import {
+  removeFromCart,
+  changeFrequency,
+  toggleSubcription,
+} from '../../contexts/cart/actions';
 
-import SubscribeIcon from '../../images/SubscriptionIcon';
 import DeleteIcon from '../../images/DeleteIcon';
 
 const useStyles = makeStyles<Theme, { subscription?: string }>(theme => ({
@@ -92,8 +96,8 @@ interface CartItemProps {
 }
 
 const CartListItem: React.FC<CartItemProps> = ({ item }) => {
-  const [frequency, setFrequency] = useState<string | undefined>(
-    item.subscription
+  const [frequency, setFrequency] = useState<string>(
+    item.subscription || 'Month'
   );
   const { dispatchCart } = useContext(CartContext);
   const theme = useTheme();
@@ -117,9 +121,17 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
         size: matchesXS ? 2 : 3,
         buttonClasses: clsx(classes.actionButton, classes.favoriteIcon),
         variant: item.variant.id,
-      },
+      } as any,
     },
-    { icon: SubscribeIcon, color: theme.palette.secondary.main },
+    {
+      component: Subscription,
+      props: {
+        color: theme.palette.secondary.main,
+        isCart: item,
+        size: matchesXS ? 2 : 3,
+        cartFrequency: frequency,
+      } as any,
+    },
     {
       icon: DeleteIcon,
       color: theme.palette.error.main,
@@ -184,9 +196,7 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
                   />
                 }
                 value={frequency!}
-                setValue={
-                  setFrequency as React.Dispatch<React.SetStateAction<string>>
-                }
+                setValue={handleChangeFrequency as any}
               />
             </Grid>
           ) : null}

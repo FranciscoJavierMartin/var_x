@@ -222,6 +222,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             selectedVariant={selectedVariant}
             variant={variants[selectedVariant]}
             name={name.split(' ')[0]}
+            noPadding
           />
         </Grid>
       </Grid>

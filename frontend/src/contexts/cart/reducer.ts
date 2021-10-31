@@ -73,6 +73,23 @@ export default function cartReducer(
       saveCart(newCart);
       newState = { ...state, cart: newCart };
       break;
+    case CartActionTypes.TOGGLE_SUBSCRIPTION:
+      const newCartForToggle = [...state.cart];
+      const existingIndexForToggle = state.cart.findIndex(
+        item => item.variant === action.payload.variant
+      );
+      const existingSubscription =
+        !!newCartForToggle[existingIndexForToggle].subscription;
+
+      if (existingSubscription) {
+        delete newCartForToggle[existingIndexForToggle].subscription;
+      } else {
+        newCartForToggle[existingIndexForToggle].subscription =
+          action.payload.frequency;
+      }
+      newState = { ...state, cart: newCartForToggle };
+      saveCart(newCartForToggle);
+      break;
     default:
       newState = state;
   }

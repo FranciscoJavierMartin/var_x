@@ -6,6 +6,7 @@ export enum CartActionTypes {
   REMOVE_FROM_CART = 'REMOVE_FROM_CART',
   CLEAR_CART = 'CLEAR_CART',
   CHANGE_FREQUENCY = 'CHANGE_FREQUENCY',
+  TOGGLE_SUBSCRIPTION = 'TOGGLE_SUBSCRIPTION',
 }
 
 export interface AddToCartType {
@@ -33,11 +34,20 @@ export interface ChangeFrequencyType {
   };
 }
 
+export interface ToggleSubcriptionType {
+  type: CartActionTypes.TOGGLE_SUBSCRIPTION;
+  payload: {
+    variant: Variant;
+    frequency: string;
+  };
+}
+
 export type CartActionsTypes =
   | AddToCartType
   | RemoveFromCartType
   | ClearCartType
-  | ChangeFrequencyType;
+  | ChangeFrequencyType
+  | ToggleSubcriptionType;
 
 export const addToCart = (
   variant: Variant,
@@ -68,4 +78,15 @@ export const changeFrequency = (
 ): ChangeFrequencyType => ({
   type: CartActionTypes.CHANGE_FREQUENCY,
   payload: { variant, frequency },
+});
+
+export const toggleSubcription = (
+  variant: Variant,
+  frequency: string
+): ToggleSubcriptionType => ({
+  type: CartActionTypes.TOGGLE_SUBSCRIPTION,
+  payload: {
+    variant,
+    frequency,
+  },
 });

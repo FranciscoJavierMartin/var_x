@@ -12,61 +12,64 @@ import {
 import clsx from 'clsx';
 import QtyButton from '../shared/QtyButton';
 import { CartContext, FeedbackContext, UserContext } from '../../contexts';
-import { addToCart } from '../../contexts/cart/actions';
+import { addToCart, toggleSubcription } from '../../contexts/cart/actions';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 
 import SubscriptionIcon from '../../images/SubscriptionIcon';
 import { Stock } from '../../interfaces/stock';
 import { Variant } from '../../interfaces/product-details';
 import SelectFrequency from '../shared/SelectFrequency';
+import { CartItem } from '../../interfaces/cart';
 
-const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
-  iconButton: {
-    padding: 0,
-  },
-  iconWrapper: {
-    height: ({ size }) => `${size || 2}rem`,
-    width: ({ size }) => `${size || 2}rem`,
-  },
-  row: {
-    height: '4rem',
-    padding: '0 0.5rem',
-    [theme.breakpoints.down('xs')]: {
-      height: 'auto',
+const useStyles = makeStyles<Theme, { size?: number; noPadding?: boolean }>(
+  theme => ({
+    iconButton: {
+      padding: ({ noPadding }) => (noPadding ? 0 : undefined),
     },
-  },
-  dark: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  light: {
-    backgroundColor: theme.palette.secondary.main,
-  },
-  cartButton: {
-    height: '8rem',
-    borderRadius: 0,
-    width: '100%',
-    [theme.breakpoints.down('xs')]: {
-      height: 'auto',
+    iconWrapper: {
+      height: ({ size }) => `${size || 2}rem`,
+      width: ({ size }) => `${size || 2}rem`,
     },
-  },
-  cartText: {
-    color: theme.palette.common.white,
-    fontSize: '4rem',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '3.25rem',
+    row: {
+      height: '4rem',
+      padding: '0 0.5rem',
+      [theme.breakpoints.down('xs')]: {
+        height: 'auto',
+      },
     },
-    [theme.breakpoints.down('xs')]: {
-      fontSize: '2rem',
+    dark: {
+      backgroundColor: theme.palette.primary.main,
     },
-  },
-  buttonWrapper: {
-    width: '100%',
-  },
-  dialog: {
-    borderRadius: 0,
-    backgroundColor: theme.palette.secondary.main,
-  },
-}));
+    light: {
+      backgroundColor: theme.palette.secondary.main,
+    },
+    cartButton: {
+      height: '8rem',
+      borderRadius: 0,
+      width: '100%',
+      [theme.breakpoints.down('xs')]: {
+        height: 'auto',
+      },
+    },
+    cartText: {
+      color: theme.palette.common.white,
+      fontSize: '4rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '3.25rem',
+      },
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '2rem',
+      },
+    },
+    buttonWrapper: {
+      width: '100%',
+    },
+    dialog: {
+      borderRadius: 0,
+      backgroundColor: theme.palette.secondary.main,
+    },
+  })
+);
 
 interface SubscriptionProps {
   size?: number;
@@ -74,6 +77,10 @@ interface SubscriptionProps {
   selectedVariant: number;
   stock: Stock;
   variant: Variant;
+  noPadding?: boolean;
+  color: string;
+  isCart?: CartItem;
+  cartFrequency?: string;
 }
 
 const Subscription: React.FC<SubscriptionProps> = ({
@@ -82,6 +89,10 @@ const Subscription: React.FC<SubscriptionProps> = ({
   selectedVariant,
   variant,
   name,
+  noPadding,
+  color,
+  isCart,
+  cartFrequency,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [qty, setQty] = useState<number>(1);
@@ -89,7 +100,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
   const { dispatchCart } = useContext(CartContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
   const { user } = useContext(UserContext);
-  const classes = useStyles({ size });
+  const classes = useStyles({ size, noPadding });
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const handleCart = () => {
@@ -103,7 +114,9 @@ const Subscription: React.FC<SubscriptionProps> = ({
   };
 
   const handleOpen = () => {
-    if (user.username === 'Guest') {
+    if (isCart) {
+      dispatchCart(toggleSubcription(isCart.variant, cartFrequency!));
+    } else if (user.username === 'Guest') {
       dispatchFeedback(
         openSnackbar(
           SnackbarStatus.Error,
@@ -119,7 +132,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
     <>
       <IconButton onClick={handleOpen} classes={{ root: classes.iconButton }}>
         <span className={classes.iconWrapper}>
-          <SubscriptionIcon />
+          <SubscriptionIcon color={color} />
         </span>
       </IconButton>
       <Dialog
