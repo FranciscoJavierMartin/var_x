@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   Theme,
 } from '@material-ui/core';
+import clsx from 'clsx';
 import QtyButton from '../shared/QtyButton';
 import Favorite from '../shared/Favorite';
 import { CartItem } from '../../interfaces/cart';
@@ -18,7 +19,7 @@ import { removeFromCart } from '../../contexts/cart/actions';
 import SubscribeIcon from '../../images/SubscriptionIcon';
 import DeleteIcon from '../../images/DeleteIcon';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<Theme, { subscription?: string }>(theme => ({
   itemContainer: {
     margin: '2rem 0 2rem 2rem',
     [theme.breakpoints.down('md')]: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
   infoContainer: {
     width: '35rem',
-    height: '8rem',
+    height: ({ subscription }) => (subscription ? '10rem' : '8rem'),
     position: 'relative',
     marginLeft: '1rem',
   },
@@ -47,12 +48,26 @@ const useStyles = makeStyles(theme => ({
   },
   chipWrapper: {
     position: 'absolute',
-    top: '3.5rem',
+    top: ({ subscription }) => (subscription ? '4.25rem' : '3.5rem'),
+  },
+  chipRoot: {
+    marginLeft: '1rem',
+  },
+  actionContainer: {
+    marginBottom: '-0.5rem',
+  },
+  favoriteIcon: {
+    marginTop: 2,
+  },
+  chipLabel: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.25rem',
+    },
   },
   actionWrapper: {
     height: '3rem',
     width: '3rem',
-    marginBottom: -8,
+
     [theme.breakpoints.down('xs')]: {
       height: '2rem',
       width: '2rem',
@@ -75,7 +90,7 @@ interface CartItemProps {
 const CartListItem: React.FC<CartItemProps> = ({ item }) => {
   const { dispatchCart } = useContext(CartContext);
   const theme = useTheme();
-  const classes = useStyles();
+  const classes = useStyles({ subscription: item.subscription });
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
   const handleDelete = () => {
@@ -88,7 +103,7 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
       props: {
         color: theme.palette.secondary.main,
         size: matchesXS ? 2 : 3,
-        buttonClasses: classes.actionButton,
+        buttonClasses: clsx(classes.actionButton, classes.favoriteIcon),
         variant: item.variant.id,
       },
     },
@@ -137,6 +152,12 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
         </Grid>
         <Grid item classes={{ root: classes.chipWrapper }}>
           <Chip label={`$${item.variant.price}`} />
+          {item.subscription ? (
+            <Chip
+              classes={{ root: classes.chipRoot, label: classes.chipLabel }}
+              label={`Every ${item.subscription}`}
+            />
+          ) : null}
         </Grid>
         <Grid
           item
@@ -149,7 +170,14 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
               ID: {item.variant.id}
             </Typography>
           </Grid>
-          <Grid item container xs={5} sm justifyContent='flex-end'>
+          <Grid
+            item
+            container
+            xs={5}
+            sm
+            justifyContent='flex-end'
+            classes={{ root: classes.actionContainer }}
+          >
             {actions.map((Action, i) => (
               <Grid item key={i}>
                 {Action.component ? (

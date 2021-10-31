@@ -61,6 +61,9 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
       fontSize: '2rem',
     },
   },
+  buttonWrapper: {
+    width: '100%',
+  },
   dialog: {
     borderRadius: 0,
     backgroundColor: theme.palette.secondary.main,
@@ -216,7 +219,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
               </Select>
             </Grid>
           </Grid>
-          <Grid item>
+          <Grid item classes={{ root: classes.buttonWrapper }}>
             <Button
               variant='contained'
               color='secondary'
