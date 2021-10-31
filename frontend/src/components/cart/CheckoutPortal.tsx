@@ -10,7 +10,7 @@ import Payments from '../settings/Payments';
 import Confirmation from './Confirmation';
 import ThankYou from './ThankYou';
 import BillingConfirmation from './BillingConfirmation';
-import { UserContext } from '../../contexts';
+import { CartContext, UserContext } from '../../contexts';
 import validate from '../../utils/validate';
 import { CartStep } from '../../interfaces/cart-steps';
 import { Order } from '../../interfaces/order';
@@ -44,6 +44,11 @@ const stripePromise = loadStripe(process.env.GATSBY_STRIPE_PK!);
 interface CheckoutPortalProps {}
 
 const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
+  const { cart } = useContext(CartContext);
+  const { user } = useContext(UserContext);
+  const hasSubcriptionCart: boolean = cart.cart.some(item => item.subscription);
+  const hasSubcriptionActive: boolean =
+    !!user.subscriptions && user.subscriptions?.length > 0;
   const [selectedStep, setSelectedStep] = useState<number>(0);
   const [detailValues, setDetailValues] = useState<{ [key: string]: string }>({
     name: '',
@@ -85,13 +90,13 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
   const [selectedShipping, setSelectedShipping] = useState<string>('');
   const [cardSlot, setCardSlot] = useState<number>(0);
   const [cardError, setCardError] = useState<boolean>(true);
-  const [saveCard, setSaveCard] = useState<boolean>(false);
+  const [saveCard, setSaveCard] = useState<boolean>(hasSubcriptionActive);
   const [card, setCard] = useState<{ [key: string]: string }>({
     brand: '',
     last4: '',
   });
   const [order, setOrder] = useState<Order | null>(null);
-  const { user } = useContext(UserContext);
+
   const classes = useStyles();
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
@@ -266,6 +271,8 @@ const CheckoutPortal: React.FC<CheckoutPortalProps> = ({}) => {
           selectedStep={selectedStep}
           stepNumber={0}
           setCard={setCard}
+          hasSubcriptionCart={hasSubcriptionCart}
+          hasSubcriptionActive={hasSubcriptionActive}
         />
       ),
       error: cardError,

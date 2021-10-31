@@ -1,4 +1,6 @@
 import { UserActionsTypes } from '../contexts/user/actions';
+import { Order } from './order';
+import { Variant } from './product-details';
 
 export enum Roles {
   authenticated = 'authenticated',
@@ -36,6 +38,20 @@ export interface Favorite {
   id: number;
 }
 
+export interface Subscription {
+  name: string;
+  variant: Variant;
+  orders: Order[];
+  frequency: string;
+  last_delivery: Date;
+  next_delivery: Date;
+  quantity: number;
+  paymentMethod: PaymentMethod;
+  shippingAddress: LocationInfo;
+  shippingInfo: LocationInfo;
+  billingInfo: any;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -52,6 +68,7 @@ export interface User {
   created_at: Date;
   updated_at: Date;
   favorites?: Favorite[];
+  subscriptions?: Subscription[];
 }
 
 export interface UserContextState {

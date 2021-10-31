@@ -7,7 +7,7 @@ import Details from './Details';
 import Payments from './Payments';
 import Location from './Location';
 import Edit from './Edit';
-import { UserContext } from '../../contexts';
+import { CartContext, UserContext } from '../../contexts';
 
 const useStyles = makeStyles(theme => ({
   sectionContainer: {
@@ -26,6 +26,7 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
   const { user, dispatchUser } = useContext(UserContext);
+  const { cart } = useContext(CartContext);
   const [edit, setEdit] = useState<boolean>(false);
   const [changesMade, setChangesMade] = useState<boolean>(false);
 
@@ -58,6 +59,9 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
 
   const allErrors = { ...detailErrors, ...locationErrors };
   const isError = Object.values(allErrors).some(error => error);
+  const hasSubcriptionCart: boolean = cart.cart.some(item => item.subscription);
+  const hasSubcriptionActive: boolean =
+    !!user.subscriptions && user.subscriptions?.length > 0;
 
   useEffect(() => {
     setDetailErrors({});
@@ -82,7 +86,13 @@ const Settings: React.FC<SettingsProps> = ({ setSelectedSetting }) => {
           setErrors={setDetailErrors}
         />
         <Elements stripe={stripePromise}>
-          <Payments user={user} slot={billingSlot} setSlot={setBillingSlot} />
+          <Payments
+            user={user}
+            slot={billingSlot}
+            setSlot={setBillingSlot}
+            hasSubcriptionActive={hasSubcriptionActive}
+            hasSubcriptionCart={hasSubcriptionCart}
+          />
         </Elements>
       </Grid>
       <Grid

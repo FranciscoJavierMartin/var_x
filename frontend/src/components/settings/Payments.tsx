@@ -120,6 +120,8 @@ interface PaymentsProps {
   stepNumber?: number;
   selectedStep?: number;
   setCard: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  hasSubcriptionCart: boolean;
+  hasSubcriptionActive: boolean;
 }
 
 const Payments: React.FC<PaymentsProps> = ({
@@ -133,6 +135,8 @@ const Payments: React.FC<PaymentsProps> = ({
   stepNumber,
   selectedStep,
   setCard,
+  hasSubcriptionActive,
+  hasSubcriptionCart,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const classes = useStyles({ isCheckout, stepNumber, selectedStep });
@@ -151,6 +155,17 @@ const Payments: React.FC<PaymentsProps> = ({
 
   const removeCard = () => {
     setIsLoading(true);
+
+    const remaining = user.paymentMethods.some(method => method.last4);
+
+    if (hasSubcriptionActive && remaining) {
+      dispatchFeedback(
+        openSnackbar(
+          SnackbarStatus.Success,
+          'You cannot remove your last card with an active subscription. Please add another card first'
+        )
+      );
+    }
 
     axios
       .post(
@@ -325,8 +340,14 @@ const Payments: React.FC<PaymentsProps> = ({
               labelPlacement='start'
               control={
                 <Switch
-                  disabled={!!user.paymentMethods[slot].last4}
-                  checked={user.paymentMethods[slot].last4 ? true : saveCard}
+                  disabled={
+                    !!user.paymentMethods[slot].last4 || hasSubcriptionCart
+                  }
+                  checked={
+                    user.paymentMethods[slot].last4 || hasSubcriptionCart
+                      ? true
+                      : saveCard
+                  }
                   onChange={() => setSaveCard(prevState => !prevState)}
                   color='secondary'
                 />

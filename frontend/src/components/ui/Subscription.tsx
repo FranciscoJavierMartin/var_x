@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import QtyButton from '../shared/QtyButton';
-import { CartContext, FeedbackContext } from '../../contexts';
+import { CartContext, FeedbackContext, UserContext } from '../../contexts';
 import { addToCart } from '../../contexts/cart/actions';
 import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 
@@ -121,6 +121,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
   const [frequency, setFrequency] = useState<string>('Month');
   const { dispatchCart } = useContext(CartContext);
   const { dispatchFeedback } = useContext(FeedbackContext);
+  const { user } = useContext(UserContext);
   const classes = useStyles({ size });
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
@@ -133,12 +134,23 @@ const Subscription: React.FC<SubscriptionProps> = ({
       openSnackbar(SnackbarStatus.Success, 'Subscription added to cart')
     );
   };
+
+  const handleOpen = () => {
+    if (user.username === 'Guest') {
+      dispatchFeedback(
+        openSnackbar(
+          SnackbarStatus.Error,
+          'You must be logged in to create a subscription'
+        )
+      );
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <>
-      <IconButton
-        onClick={() => setIsOpen(true)}
-        classes={{ root: classes.iconButton }}
-      >
+      <IconButton onClick={handleOpen} classes={{ root: classes.iconButton }}>
         <span className={classes.iconWrapper}>
           <SubscriptionIcon />
         </span>
@@ -225,6 +237,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
               color='secondary'
               classes={{ root: classes.cartButton }}
               onClick={handleCart}
+              disabled={qty === 0}
             >
               <Typography variant='h1' classes={{ root: classes.cartText }}>
                 Add subscription to cart
