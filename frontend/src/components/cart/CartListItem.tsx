@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Grid,
   IconButton,
@@ -12,9 +12,10 @@ import {
 import clsx from 'clsx';
 import QtyButton from '../shared/QtyButton';
 import Favorite from '../shared/Favorite';
+import SelectFrequency from '../shared/SelectFrequency';
 import { CartItem } from '../../interfaces/cart';
 import { CartContext } from '../../contexts';
-import { removeFromCart } from '../../contexts/cart/actions';
+import { removeFromCart, changeFrequency } from '../../contexts/cart/actions';
 
 import SubscribeIcon from '../../images/SubscriptionIcon';
 import DeleteIcon from '../../images/DeleteIcon';
@@ -52,6 +53,9 @@ const useStyles = makeStyles<Theme, { subscription?: string }>(theme => ({
   },
   chipRoot: {
     marginLeft: '1rem',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   actionContainer: {
     marginBottom: '-0.5rem',
@@ -88,6 +92,9 @@ interface CartItemProps {
 }
 
 const CartListItem: React.FC<CartItemProps> = ({ item }) => {
+  const [frequency, setFrequency] = useState<string | undefined>(
+    item.subscription
+  );
   const { dispatchCart } = useContext(CartContext);
   const theme = useTheme();
   const classes = useStyles({ subscription: item.subscription });
@@ -95,6 +102,11 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
 
   const handleDelete = () => {
     dispatchCart(removeFromCart(item.variant, item.qty));
+  };
+
+  const handleChangeFrequency = (newFrequency: string) => {
+    dispatchCart(changeFrequency(item.variant, newFrequency));
+    setFrequency(newFrequency);
   };
 
   const actions = [
@@ -150,13 +162,33 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
             />
           </Grid>
         </Grid>
-        <Grid item classes={{ root: classes.chipWrapper }}>
-          <Chip label={`$${item.variant.price}`} />
+        <Grid
+          item
+          container
+          alignItems='center'
+          classes={{ root: classes.chipWrapper }}
+        >
+          <Grid item>
+            <Chip label={`$${item.variant.price}`} />
+          </Grid>
           {item.subscription ? (
-            <Chip
-              classes={{ root: classes.chipRoot, label: classes.chipLabel }}
-              label={`Every ${item.subscription}`}
-            />
+            <Grid item>
+              <SelectFrequency
+                chip={
+                  <Chip
+                    classes={{
+                      root: classes.chipRoot,
+                      label: classes.chipLabel,
+                    }}
+                    label={`Every ${item.subscription}`}
+                  />
+                }
+                value={frequency!}
+                setValue={
+                  setFrequency as React.Dispatch<React.SetStateAction<string>>
+                }
+              />
+            </Grid>
           ) : null}
         </Grid>
         <Grid

@@ -5,6 +5,7 @@ export enum CartActionTypes {
   ADD_TO_CART = 'ADD_TO_CART',
   REMOVE_FROM_CART = 'REMOVE_FROM_CART',
   CLEAR_CART = 'CLEAR_CART',
+  CHANGE_FREQUENCY = 'CHANGE_FREQUENCY',
 }
 
 export interface AddToCartType {
@@ -24,10 +25,19 @@ export interface ClearCartType {
   type: CartActionTypes.CLEAR_CART;
 }
 
+export interface ChangeFrequencyType {
+  type: CartActionTypes.CHANGE_FREQUENCY;
+  payload: {
+    variant: Variant;
+    frequency: string;
+  };
+}
+
 export type CartActionsTypes =
   | AddToCartType
   | RemoveFromCartType
-  | ClearCartType;
+  | ClearCartType
+  | ChangeFrequencyType;
 
 export const addToCart = (
   variant: Variant,
@@ -50,4 +60,12 @@ export const removeFromCart = (
 
 export const clearCart = (): ClearCartType => ({
   type: CartActionTypes.CLEAR_CART,
+});
+
+export const changeFrequency = (
+  variant: Variant,
+  frequency: string
+): ChangeFrequencyType => ({
+  type: CartActionTypes.CHANGE_FREQUENCY,
+  payload: { variant, frequency },
 });

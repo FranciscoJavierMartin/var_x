@@ -2,10 +2,7 @@ import React, { useState, useContext } from 'react';
 import {
   Grid,
   Dialog,
-  Chip,
   Button,
-  MenuItem,
-  Select,
   IconButton,
   Typography,
   makeStyles,
@@ -21,6 +18,7 @@ import { openSnackbar, SnackbarStatus } from '../../contexts/feedback/actions';
 import SubscriptionIcon from '../../images/SubscriptionIcon';
 import { Stock } from '../../interfaces/stock';
 import { Variant } from '../../interfaces/product-details';
+import SelectFrequency from '../shared/SelectFrequency';
 
 const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
   iconButton: {
@@ -68,38 +66,7 @@ const useStyles = makeStyles<Theme, { size?: number }>(theme => ({
     borderRadius: 0,
     backgroundColor: theme.palette.secondary.main,
   },
-  chiptRoot: {
-    backgroundColor: theme.palette.common.white,
-    height: '3rem',
-    borderRadius: 50,
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-  chipLabel: {
-    color: theme.palette.common.white,
-  },
-  select: {
-    '&.MuiSelect-select': {
-      paddingRight: 0,
-    },
-  },
-  menu: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  menuItem: {
-    color: theme.palette.common.white,
-  },
 }));
-
-const frequencies = [
-  'Week',
-  'Two Weeks',
-  'Month',
-  'Three Monts',
-  'Six Months',
-  'Year',
-];
 
 interface SubscriptionProps {
   size?: number;
@@ -199,36 +166,7 @@ const Subscription: React.FC<SubscriptionProps> = ({
               <Typography variant='h4'>Delivery every</Typography>
             </Grid>
             <Grid item>
-              <Select
-                classes={{ select: classes.select }}
-                value={frequency}
-                disableUnderline
-                IconComponent={() => null}
-                MenuProps={{ classes: { paper: classes.menu } }}
-                onChange={event => {
-                  console.log(event.target.value);
-                  setFrequency(event.target.value as string);
-                }}
-                renderValue={(selected: any) => (
-                  <Chip
-                    label={selected}
-                    classes={{
-                      root: classes.chipRoot,
-                      label: classes.chipLabel,
-                    }}
-                  />
-                )}
-              >
-                {frequencies.map(frequency => (
-                  <MenuItem
-                    key={frequency}
-                    value={frequency}
-                    classes={{ root: classes.menuItem }}
-                  >
-                    {frequency}
-                  </MenuItem>
-                ))}
-              </Select>
+              <SelectFrequency value={frequency} setValue={setFrequency} />
             </Grid>
           </Grid>
           <Grid item classes={{ root: classes.buttonWrapper }}>

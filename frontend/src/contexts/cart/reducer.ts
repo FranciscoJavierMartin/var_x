@@ -64,6 +64,15 @@ export default function cartReducer(
       localStorage.removeItem(CART_STORAGED);
       newState = { ...state, cart: [] };
       break;
+    case CartActionTypes.CHANGE_FREQUENCY:
+      const existingIndexForChange = state.cart.findIndex(
+        item => item.variant === action.payload.variant
+      );
+      const newCart = [...state.cart];
+      newCart[existingIndexForChange].subscription = action.payload.frequency;
+      saveCart(newCart);
+      newState = { ...state, cart: newCart };
+      break;
     default:
       newState = state;
   }
