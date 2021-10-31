@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme => ({
   itemInfo: {
     textAlign: 'right',
   },
+  subcriptionChip: {
+    marginTop: '0.5rem',
+  },
 }));
 
 interface OrderDetailProps {
@@ -50,10 +53,23 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ item }) => {
         {item.variant.size ? (
           <Typography variant='body2'>Size: {item.variant.size}</Typography>
         ) : null}
-        <Chip
-          label={`$${item.variant.price}`}
-          classes={{ root: classes.chipRoot }}
-        />
+        <Grid container direction='column'>
+          <Grid item>
+            <Chip
+              label={`$${item.variant.price}`}
+              classes={{ root: classes.chipRoot }}
+            />
+          </Grid>
+          {item.subscription ? (
+            <Grid item classes={{ root: classes.subcriptionChip }}>
+              <Chip
+                label={`Every ${item.subscription}`}
+                classes={{ root: classes.chipRoot }}
+              />
+              ∆
+            </Grid>
+          ) : null}
+        </Grid>
       </Grid>
     </Grid>
   );

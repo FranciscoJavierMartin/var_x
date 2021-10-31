@@ -17,6 +17,7 @@ export interface Item {
   qty: number;
   name: string;
   stock: number;
+  subscription?: string;
 }
 
 export interface ShippingAddress {
