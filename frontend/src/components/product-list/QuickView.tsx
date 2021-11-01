@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import {
   Grid,
   Dialog,
@@ -87,7 +88,7 @@ const useStyles = makeStyles(theme => ({
 interface QuickViewProps {
   open: boolean;
   setOpen: React.Dispatch<boolean>;
-  url: string;
+  image: any;
   name: string;
   price: number;
   product: Edge;
@@ -106,7 +107,7 @@ interface QuickViewProps {
 const QuickView: React.FC<QuickViewProps> = ({
   open,
   setOpen,
-  url,
+  image,
   name,
   price,
   product,
@@ -142,8 +143,8 @@ const QuickView: React.FC<QuickViewProps> = ({
               .split(' ')[0]
               .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
           >
-            <img
-              src={url}
+            <GatsbyImage
+              image={image}
               alt='product image'
               className={classes.productImage}
             />

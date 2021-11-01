@@ -3,7 +3,7 @@ export interface Category {
 }
 
 export interface Image {
-  url: string;
+  localFile: any;
 }
 
 export interface Variant {

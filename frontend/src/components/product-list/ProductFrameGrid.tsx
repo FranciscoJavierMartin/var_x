@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { navigate } from 'gatsby';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import {
   Grid,
   Typography,
@@ -115,8 +116,9 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
     product,
     variant,
     selectedColor || '',
-    variant.images[0].url
+    variant.images[0].localFile
   );
+  const image = getImage(imgURL);
   const name = product.node.name.split(' ')[0];
 
   return (
@@ -142,7 +144,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         }
       >
         <Grid item classes={{ root: classes.frame }}>
-          <img src={imgURL} alt={name} className={classes.product} />
+          <GatsbyImage image={image!} alt={name} className={classes.product} />
         </Grid>
         <Grid item classes={{ root: classes.title }}>
           <Typography variant='h5'>{name}</Typography>
@@ -152,7 +154,7 @@ const ProductFrameGrid: React.FC<ProductFrameGridProps> = ({
         <QuickView
           open={open}
           setOpen={setOpen}
-          url={imgURL}
+          image={image}
           name={name}
           price={variant.price}
           product={product}

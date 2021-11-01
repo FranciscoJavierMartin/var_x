@@ -41,7 +41,11 @@ const FeaturedProducts: React.FC = () => {
               price
               style
               images {
-                url
+                localFile {
+                  childImageSharp {
+                    gatsbyImageData
+                  }
+                }
               }
             }
           }

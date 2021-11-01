@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import {
   Grid,
   IconButton,
@@ -109,6 +110,8 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
     setFrequency(newFrequency);
   };
 
+  const image = getImage(item.variant.images[0].localFile);
+
   const actions = [
     {
       component: Favorite,
@@ -139,9 +142,9 @@ const CartListItem: React.FC<CartItemProps> = ({ item }) => {
   return (
     <Grid item container classes={{ root: classes.itemContainer }}>
       <Grid item>
-        <img
+        <GatsbyImage
           className={classes.productImage}
-          src={item.variant.images[0].url}
+          image={image!}
           alt={item.variant.id.toString()}
         />
       </Grid>

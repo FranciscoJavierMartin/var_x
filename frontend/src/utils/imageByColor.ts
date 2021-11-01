@@ -18,10 +18,10 @@ export function getImageByColor(
   variant: Variant,
   color: string,
   defaultImage: string
-): string {
+): any {
   const colorIndex = getColorIndex(product, variant, color);
   return colorIndex > -1
-    ? product.node.variants[colorIndex].images[0].url
+    ? product.node.variants[colorIndex].images[0].localFile
     : defaultImage;
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'gatsby';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import { useQuery } from '@apollo/client';
 import {
   Grid,
@@ -114,6 +115,7 @@ const FeaturedProduct: React.FC<FeaturedProductProps> = ({
   const { data } = useQuery<QueryProductQty, { id: string }>(GET_DETAILS, {
     variables: { id: node.strapiId.toString() },
   });
+  const image = getImage(node.variants[0].images[0].localFile);
 
   const hasStyles = node.variants.some(variant => variant.style !== null);
 
@@ -138,8 +140,8 @@ const FeaturedProduct: React.FC<FeaturedProductProps> = ({
         }
         classes={{ root: classes.frame }}
       >
-        <img
-          src={node.variants[0].images[0].url}
+        <GatsbyImage
+          image={image!}
           alt={node.name}
           className={classes.featured}
         />

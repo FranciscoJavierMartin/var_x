@@ -245,7 +245,11 @@ export const query = graphql`
             style
             colorLabel
             images {
-              url
+              localFile {
+                childImageSharp {
+                  gatsbyImageData
+                }
+              }
             }
           }
         }

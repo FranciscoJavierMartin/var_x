@@ -68,7 +68,11 @@ const PromotionalProducts: React.FC = () => {
             }
             variants {
               images {
-                url
+                localFile {
+                  childImageSharp {
+                    gatsbyImageData
+                  }
+                }
               }
             }
           }
@@ -82,7 +86,7 @@ const PromotionalProducts: React.FC = () => {
     content: (
       <PromotionalProductSlide
         key={node.strapiId}
-        imageUrl={node.variants[0].images[0].url}
+        imageUrl={node.variants[0].images[0].localFile}
         isSelectedSlide={selectedSlide === index}
         name={node.category.name?.toLowerCase()}
         selectSlide={setSelectedSlide}

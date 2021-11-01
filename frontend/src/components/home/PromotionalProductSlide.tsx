@@ -1,4 +1,5 @@
 import React from 'react';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import { Grid, IconButton, Typography, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 
@@ -38,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface PromotionalProductSlideProps {
-  imageUrl: string;
+  imageUrl: any;
   isSelectedSlide: boolean;
   name: string;
   selectSlide: React.Dispatch<React.SetStateAction<number>>;
@@ -53,7 +54,7 @@ const PromotionalProductSlide: React.FC<PromotionalProductSlideProps> = ({
   index,
 }) => {
   const classes = useStyles();
-
+  const image = getImage(imageUrl);
   return (
     <Grid container direction='column' alignItems='center'>
       <Grid item>
@@ -66,7 +67,12 @@ const PromotionalProductSlide: React.FC<PromotionalProductSlideProps> = ({
             }),
           }}
         >
-          <img src={imageUrl} alt={name} className={classes.carouselImage} />
+          <GatsbyImage
+            image={image!}
+            alt={name}
+            className={classes.carouselImage}
+            objectFit='contain'
+          />
         </IconButton>
       </Grid>
       <Grid item>

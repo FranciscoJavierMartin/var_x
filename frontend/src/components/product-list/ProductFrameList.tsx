@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import { Grid, Typography, Chip, makeStyles } from '@material-ui/core';
 import Rating from '../shared/Rating';
 import Sizes from '../shared/Sizes';
@@ -101,18 +102,18 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
         justifyContent='space-around'
         classes={{ root: classes.frame }}
       >
-        {images.map((image: Image) => (
+        {images.map((image: Image, i: number) => (
           <Grid
             item
-            key={image.url}
+            key={i}
             component={Link}
             to={`/${product.node.category.name.toLowerCase()}/${product.node.name
               .split(' ')[0]
               .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
           >
-            <img
-              src={image.url}
-              alt={image.url}
+            <GatsbyImage
+              image={getImage(image.localFile)!}
+              alt={'Image frame list'}
               className={classes.productImage}
             />
           </Grid>
