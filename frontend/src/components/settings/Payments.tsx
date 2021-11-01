@@ -153,12 +153,16 @@ const Payments: React.FC<PaymentsProps> = ({
       ? { last4: '', brand: '' }
       : user.paymentMethods[slot];
 
+  const subscriptionPayment = user.subscriptions?.some(
+    subscription => subscription.paymentMethod.last4 === card.last4
+  );
+
   const removeCard = () => {
     setIsLoading(true);
 
     const remaining = user.paymentMethods.some(method => method.last4);
 
-    if (hasSubcriptionActive && remaining) {
+    if ((hasSubcriptionActive && remaining) || subscriptionPayment) {
       dispatchFeedback(
         openSnackbar(
           SnackbarStatus.Success,
