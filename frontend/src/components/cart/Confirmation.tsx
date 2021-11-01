@@ -191,7 +191,6 @@ const Confirmation: React.FC<ConfirmationProps> = ({
     () => calculateTotalPrice(cart.cart),
     [cart.cart]
   );
-  const tax = subtotal * 0.21;
   const classes = useStyles({ stepNumber, selectedStep });
   const theme = useTheme();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
@@ -201,6 +200,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   const shipping = shippingOptions.find(
     option => option.label === selectedShipping
   )!;
+  const tax = (subtotal + shipping.price) * 0.21;
 
   const firstFields = [
     {
