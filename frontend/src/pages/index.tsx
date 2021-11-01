@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Link } from 'gatsby';
 import Layout from '../components/ui/Layout';
+import Seo from '../components/ui/Seo';
 import HeroBlock from '../components/home/HeroBlock';
 import PromotionalProducts from '../components/home/PromotionalProducts';
 import FeaturedProducts from '../components/home/FeaturedProducts';
@@ -9,6 +9,7 @@ import CallToAction from '../components/home/CallToAction';
 
 const IndexPage = () => (
   <Layout>
+    <Seo title='Home' />
     <HeroBlock />
     <PromotionalProducts />
     <FeaturedProducts />

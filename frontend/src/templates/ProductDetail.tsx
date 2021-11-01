@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { Grid, Theme, useMediaQuery } from '@material-ui/core';
 import ProductImages from '../components/product-detail/ProductImages';
 import Layout from '../components/ui/Layout';
+import Seo from '../components/ui/Seo';
 import ProductInfo from '../components/product-detail/ProductInfo';
 import RecentlyViewed from '../components/product-detail/RecentlyViewed';
 import ProductReviews from '../components/product-detail/ProductReviews';
@@ -99,6 +100,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   return (
     <Layout>
+      <Seo title={name.split(' ')[0]} description={description} />
       <Grid container direction='column'>
         <Grid item container direction={matchesMD ? 'column' : 'row'}>
           <ProductImages

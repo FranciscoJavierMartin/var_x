@@ -7,6 +7,7 @@ import {
   Theme,
 } from '@material-ui/core';
 import Layout from '../components/ui/Layout';
+import Seo from '../components/ui/Seo';
 import CartList from '../components/cart/CartList';
 import CheckoutPortal from '../components/cart/CheckoutPortal';
 import { UserContext } from '../contexts';
@@ -34,6 +35,10 @@ const Cart: React.FC<CartProps> = ({}) => {
 
   return (
     <Layout>
+      <Seo
+        title='Cart'
+        description='Make one-time purchases or buy a subscription for any of the amazing products at VAR-X'
+      />
       <Grid
         container
         direction='column'

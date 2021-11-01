@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { graphql } from 'gatsby';
 import { Grid, Fab, makeStyles } from '@material-ui/core';
 import Layout from '../components/ui/Layout';
+import Seo from '../components/ui/Seo';
 import DynamicToolbar from '../components/product-list/DynamicToolbar';
 import ListOfProducts from '../components/product-list/ListOfProducts';
 import StyledPagination from '../components/shared/StyledPagination';
@@ -186,6 +187,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
   return (
     <Layout>
+      <Seo title={name} description={description} />
       <Grid container direction='column' alignItems='center'>
         <div ref={scrollRef} />
         <DynamicToolbar

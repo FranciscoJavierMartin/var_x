@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Layout from '../components/ui/Layout';
+import Seo from '../components/ui/Seo';
 import validate from '../utils/validate';
 import { FeedbackContext } from '../contexts';
 import { openSnackbar, SnackbarStatus } from '../contexts/feedback/actions';
@@ -283,6 +284,10 @@ const ContactPage: React.FC = () => {
 
   return (
     <Layout>
+      <Seo
+        title='Contact Us'
+        description='Send us a message and learn more about the high quality clothing standards at VAR-X'
+      />
       <Grid
         container
         justifyContent='space-around'
