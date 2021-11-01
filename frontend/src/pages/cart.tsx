@@ -1,5 +1,11 @@
 import React, { useContext } from 'react';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  makeStyles,
+  useMediaQuery,
+  Theme,
+} from '@material-ui/core';
 import Layout from '../components/ui/Layout';
 import CartList from '../components/cart/CartList';
 import CheckoutPortal from '../components/cart/CheckoutPortal';
@@ -21,6 +27,10 @@ interface CartProps {}
 const Cart: React.FC<CartProps> = ({}) => {
   const { user } = useContext(UserContext);
   const classes = useStyles();
+  const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
+  const items = <CartList />;
+  const checkout = <CheckoutPortal />;
 
   return (
     <Layout>
@@ -40,8 +50,8 @@ const Cart: React.FC<CartProps> = ({}) => {
           </Typography>
         </Grid>
         <Grid item container>
-          <CartList />
-          <CheckoutPortal />
+          {matchesMD ? checkout : items}
+          {matchesMD ? items : checkout}
         </Grid>
       </Grid>
     </Layout>

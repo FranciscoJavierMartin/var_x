@@ -200,7 +200,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
   const shipping = shippingOptions.find(
     option => option.label === selectedShipping
   )!;
-  const tax = (subtotal + shipping.price) * 0.21;
+  const tax = (subtotal + shipping?.price) * 0.21;
 
   const firstFields = [
     {
