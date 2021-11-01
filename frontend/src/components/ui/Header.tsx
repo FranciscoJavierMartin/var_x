@@ -18,6 +18,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import { CartContext } from '../../contexts';
+import { useIsClient } from '../../hooks';
 
 import search from '../../images/search.svg';
 import cartIcon from '../../images/cart.svg';
@@ -91,6 +92,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
   const { cart } = useContext(CartContext);
   const classes = useStyles();
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  const { key } = useIsClient();
 
   const iOS: boolean = !!(
     typeof window !== 'undefined' &&
@@ -216,6 +218,7 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
               >
                 {action.alt === 'cart' ? (
                   <Badge
+                    key={key}
                     overlap='circular'
                     badgeContent={calculateNumberOfItemsCart(cart.cart)}
                     classes={{ badge: classes.badge }}

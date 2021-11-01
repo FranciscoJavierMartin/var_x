@@ -16,11 +16,7 @@ import Favorite from '../shared/Favorite';
 import SelectFrequency from '../shared/SelectFrequency';
 import { CartItem } from '../../interfaces/cart';
 import { CartContext } from '../../contexts';
-import {
-  removeFromCart,
-  changeFrequency,
-  toggleSubcription,
-} from '../../contexts/cart/actions';
+import { removeFromCart, changeFrequency } from '../../contexts/cart/actions';
 
 import DeleteIcon from '../../images/DeleteIcon';
 
