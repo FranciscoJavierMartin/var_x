@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'gatsby';
 import {
   Grid,
@@ -14,6 +14,8 @@ import {
 import clsx from 'clsx';
 import Layout from '../components/ui/Layout';
 import validate from '../utils/validate';
+import { FeedbackContext } from '../contexts';
+import { openSnackbar, SnackbarStatus } from '../contexts/feedback/actions';
 
 import address from '../images/address.svg';
 import PhoneAdornment from '../images/PhoneAdornment';
@@ -159,6 +161,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const encode = (data: any) =>
+  Object.keys(data)
+    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .join('/');
+
 const ContactPage: React.FC = () => {
   const [values, setValues] = useState<{ [key: string]: string }>({
     name: '',
@@ -167,11 +174,40 @@ const ContactPage: React.FC = () => {
     message: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-
+  const { dispatchFeedback } = useContext(FeedbackContext);
   const classes = useStyles();
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
   const theme = useTheme();
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encode({
+        'form-name': 'contact',
+        name: values.name,
+        phone: values.phone,
+        email: values.email,
+        message: values.message,
+      }),
+    })
+      .then(() => {
+        setValues({ name: '', phone: '', email: '', message: '' });
+        dispatchFeedback(
+          openSnackbar(SnackbarStatus.Success, 'Message sent successfully')
+        );
+      })
+      .catch(() => {
+        dispatchFeedback(
+          openSnackbar(
+            SnackbarStatus.Error,
+            'There was a problem sending your message. Please try again'
+          )
+        );
+      });
+  };
 
   const fields: {
     [key: string]: {
@@ -254,7 +290,14 @@ const ContactPage: React.FC = () => {
         classes={{ root: classes.mainContainer }}
         direction={matchesMD ? 'column' : 'row'}
       >
-        <Grid item classes={{ root: classes.formWrapper }}>
+        <Grid
+          item
+          classes={{ root: classes.formWrapper }}
+          component='form'
+          name='contact'
+          method='POST'
+          data-netlify='true'
+        >
           <Grid
             container
             direction='column'
@@ -292,6 +335,7 @@ const ContactPage: React.FC = () => {
                       }}
                     >
                       <TextField
+                        name={field}
                         value={values[field]}
                         onChange={e => {
                           const valid = validateHelper(e);
@@ -340,6 +384,8 @@ const ContactPage: React.FC = () => {
             </Grid>
             <Grid
               item
+              type='submit'
+              onClick={handleSubmit}
               component={Button}
               disabled={disabled}
               classes={{
