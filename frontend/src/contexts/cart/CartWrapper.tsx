@@ -8,7 +8,10 @@ export const CartContext = createContext<CartContextState>(
 );
 
 export const CartWrapper: React.FC = ({ children }) => {
-  const storedCart = JSON.parse(localStorage.getItem(CART_STORAGED)!);
+  const storedCart =
+    typeof window !== 'undefined'
+      ? JSON.parse(localStorage.getItem(CART_STORAGED)!)
+      : null;
   const [cart, dispatchCart] = useReducer(cartReducer, {
     cart: storedCart || [],
   });

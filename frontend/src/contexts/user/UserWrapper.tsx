@@ -26,7 +26,10 @@ export const UserContext = createContext<UserContextState>(
 );
 
 export const UserWrapper: React.FC = ({ children }) => {
-  const storedUser = JSON.parse(localStorage.getItem(USER_STORAGED)!);
+  const storedUser =
+    typeof window !== 'undefined'
+      ? JSON.parse(localStorage.getItem(USER_STORAGED)!)
+      : null;
   const [user, dispatchUser] = useReducer(
     userReducer,
     storedUser || defaultUser

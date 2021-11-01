@@ -36,7 +36,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const [rating, setRating] = useState<number>(0);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const matchesMD = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
-  const params = new URLSearchParams(window.location.search);
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : { get: () => null };
   const paramStyle = params.get('style');
   let recentlyView: Product[] = getRecentlyViewProducts();
 
