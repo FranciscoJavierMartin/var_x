@@ -98,7 +98,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({
         <Grid container direction='column' alignItems='center'>
           <Grid item>
             <img
-              src={`${process.env.GATSBY_STRAPI_URL}${value.variant.images[0].url}`}
+              src={value.variant.images[0].url}
               alt={value.name}
               className={classes.productImage}
             />

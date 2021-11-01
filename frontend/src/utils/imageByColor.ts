@@ -20,12 +20,9 @@ export function getImageByColor(
   defaultImage: string
 ): string {
   const colorIndex = getColorIndex(product, variant, color);
-  const imageSelected =
-    colorIndex > -1
-      ? product.node.variants[colorIndex].images[0].url
-      : defaultImage;
-
-  return `${process.env.GATSBY_STRAPI_URL}${imageSelected}`;
+  return colorIndex > -1
+    ? product.node.variants[colorIndex].images[0].url
+    : defaultImage;
 }
 
 export function getImagesByColor(

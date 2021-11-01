@@ -139,7 +139,7 @@ const FeaturedProduct: React.FC<FeaturedProductProps> = ({
         classes={{ root: classes.frame }}
       >
         <img
-          src={`${process.env.GATSBY_STRAPI_URL}${node.variants[0].images[0].url}`}
+          src={node.variants[0].images[0].url}
           alt={node.name}
           className={classes.featured}
         />

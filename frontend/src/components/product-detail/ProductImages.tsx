@@ -45,7 +45,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
     <Grid item container direction='column' alignItems='center' lg={6}>
       <Grid item>
         <img
-          src={`${process.env.GATSBY_STRAPI_URL}${images[selectedImage].url}`}
+          src={images[selectedImage].url}
           alt='product_large'
           className={classes.selected}
         />
@@ -55,7 +55,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
           <Grid item key={image.url} classes={{ root: classes.imageItem }}>
             <IconButton onClick={() => setSelectedImage(i)}>
               <img
-                src={`${process.env.GATSBY_STRAPI_URL}${image.url}`}
+                src={image.url}
                 alt={`product_large_${i}`}
                 className={classes.small}
               />

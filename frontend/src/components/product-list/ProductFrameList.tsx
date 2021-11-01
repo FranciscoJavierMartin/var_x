@@ -111,7 +111,7 @@ const ProductFrameList: React.FC<ProductFrameListProps> = ({
               .toLowerCase()}${hasStyles ? `?style=${variant.style}` : ''}`}
           >
             <img
-              src={`${process.env.GATSBY_STRAPI_URL}${image.url}`}
+              src={image.url}
               alt={image.url}
               className={classes.productImage}
             />

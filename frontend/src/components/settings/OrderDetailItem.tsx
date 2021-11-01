@@ -38,7 +38,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ item }) => {
     >
       <Grid item>
         <img
-          src={`${process.env.GATSBY_STRAPI_URL}${item.variant.images[0].url}`}
+          src={item.variant.images[0].url}
           alt={item.name}
           className={classes.product}
         />

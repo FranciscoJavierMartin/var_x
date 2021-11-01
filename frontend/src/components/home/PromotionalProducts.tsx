@@ -82,7 +82,7 @@ const PromotionalProducts: React.FC = () => {
     content: (
       <PromotionalProductSlide
         key={node.strapiId}
-        imageUrl={`${process.env.GATSBY_STRAPI_URL}${node.variants[0].images[0].url}`}
+        imageUrl={node.variants[0].images[0].url}
         isSelectedSlide={selectedSlide === index}
         name={node.category.name?.toLowerCase()}
         selectSlide={setSelectedSlide}

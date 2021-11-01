@@ -120,11 +120,7 @@ const Favorites: React.FC<FavoritesProps> = ({ setSelectedSetting }) => {
       renderCell: ({ value }: any) => (
         <Grid container direction='column'>
           <Grid item>
-            <img
-              src={`${process.env.GATSBY_STRAPI_URL}${value.image}`}
-              alt={value.name}
-              className={classes.image}
-            />
+            <img src={value.image} alt={value.name} className={classes.image} />
           </Grid>
           <Grid item>
             <Typography variant='h3' classes={{ root: classes.name }}>
