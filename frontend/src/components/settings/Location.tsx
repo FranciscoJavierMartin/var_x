@@ -126,6 +126,13 @@ const Location: React.FC<LocationProps> = ({
     },
   };
 
+  const handleValues = (values: { [key: string]: string }) => {
+    if (billing === slot && !noSlots && setBillingValues) {
+      setBillingValues(values);
+    }
+    setValues(values);
+  };
+
   const getLocation = (): void => {
     setIsLoading(true);
 
@@ -136,11 +143,11 @@ const Location: React.FC<LocationProps> = ({
       .then(response => {
         setIsLoading(false);
         const { place_name, admin_name1 } = response.data.records[0].fields;
-        setValues(prevState => ({
+        handleValues(((prevState: any) => ({
           ...prevState,
           city: place_name,
           state: admin_name1,
-        }));
+        })) as any);
       })
       .catch(error => {
         setIsLoading(false);
@@ -174,7 +181,11 @@ const Location: React.FC<LocationProps> = ({
         getLocation();
       }
     } else if (values.zip.length < 5 && values.city) {
-      setValues(prevState => ({ ...prevState, city: '', state: '' }));
+      handleValues(((prevState: any) => ({
+        ...prevState,
+        city: '',
+        state: '',
+      })) as any);
     }
   }, [values]);
 
@@ -222,9 +233,7 @@ const Location: React.FC<LocationProps> = ({
         <Fields
           fields={fields}
           values={billing === slot && !noSlots ? billingValues! : values}
-          setValues={
-            billing === slot && !noSlots ? setBillingValues! : setValues
-          }
+          setValues={handleValues as any}
           errors={errors}
           setErrors={setErrors}
           isWhite

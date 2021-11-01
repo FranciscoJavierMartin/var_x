@@ -142,6 +142,13 @@ const Details: React.FC<DetailsProps> = ({
   const theme = useTheme();
   const matchesXS = useMediaQuery<Theme>(theme => theme.breakpoints.down('xs'));
 
+  const handleValues = (values: { [key: string]: string }) => {
+    if (billing === slot && !noSlots && setBillingValues) {
+      setBillingValues(values);
+    }
+    setValues(values);
+  };
+
   const email_password = EmailPassword(
     false,
     false,
@@ -250,9 +257,7 @@ const Details: React.FC<DetailsProps> = ({
           <Fields
             fields={pair}
             values={billing === slot && !noSlots ? billingValues! : values}
-            setValues={
-              billing === slot && !noSlots ? setBillingValues! : setValues
-            }
+            setValues={handleValues as any}
             errors={errors}
             setErrors={setErrors}
             isWhite
