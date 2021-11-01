@@ -34,8 +34,12 @@ const FeaturedProducts: React.FC = () => {
           node {
             name
             strapiId
+            category {
+              name
+            }
             variants {
               price
+              style
               images {
                 url
               }

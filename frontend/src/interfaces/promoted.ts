@@ -11,6 +11,7 @@ export interface Node {
   name: string;
   strapiId: number;
   variants: Variant[];
+  category: { name: string };
 }
 
 export interface Edge {
@@ -22,5 +23,5 @@ export interface RootObject {
 }
 
 export interface GetPromo {
-  allStrapiProduct: RootObject
+  allStrapiProduct: RootObject;
 }

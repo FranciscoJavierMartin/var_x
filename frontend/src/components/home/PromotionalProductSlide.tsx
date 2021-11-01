@@ -31,8 +31,8 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       margin: '0 8rem 8rem 8rem',
     },
-    [theme.breakpoints.down("xs")]: {
-      margin: "0 5rem 10rem 5rem",
+    [theme.breakpoints.down('xs')]: {
+      margin: '0 5rem 10rem 5rem',
     },
   },
 }));
@@ -72,7 +72,7 @@ const PromotionalProductSlide: React.FC<PromotionalProductSlideProps> = ({
       <Grid item>
         {isSelectedSlide && (
           <Typography variant='h1' classes={{ root: classes.productName }}>
-            {name.split(' ')[0]}
+            {name}
           </Typography>
         )}
       </Grid>

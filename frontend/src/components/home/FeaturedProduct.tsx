@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'gatsby';
 import { useQuery } from '@apollo/client';
 import {
   Grid,
@@ -114,6 +115,8 @@ const FeaturedProduct: React.FC<FeaturedProductProps> = ({
     variables: { id: node.strapiId.toString() },
   });
 
+  const hasStyles = node.variants.some(variant => variant.style !== null);
+
   useEffect(() => {
     if (data) {
       setRating(data.product.rating);
@@ -169,7 +172,15 @@ const FeaturedProduct: React.FC<FeaturedProductProps> = ({
           />
         </Grid>
         <Grid item classes={{ root: classes.exploreContainer }}>
-          <Button classes={{ root: classes.exploreButton }}>
+          <Button
+            classes={{ root: classes.exploreButton }}
+            component={Link}
+            to={`/${node.category.name.toLowerCase()}/${node.name
+              .split(' ')[0]
+              .toLowerCase()}${
+              hasStyles ? `?style=${node.variants[0].style}` : ''
+            }`}
+          >
             <Typography variant='h5'>Details</Typography>
             <img
               src={explore}

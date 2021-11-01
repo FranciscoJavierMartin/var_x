@@ -5,12 +5,14 @@ export interface Image {
 export interface Variant {
   price: number;
   images: Image[];
+  style?: string | null;
 }
 
 export interface Node {
   name: string;
   strapiId: number;
   variants: Variant[];
+  category: { name: string };
 }
 
 export interface Edge {

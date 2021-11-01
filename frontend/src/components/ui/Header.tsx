@@ -143,7 +143,10 @@ const Header: React.FC<HeaderProps> = ({ categories }) => {
       classes={{ paper: classes.drawer }}
     >
       <List disablePadding>
-        {routes.map((route, index) => (
+        {[
+          ...routes,
+          { node: { name: 'Account', strapiId: 'account', link: '/account' } },
+        ].map((route, index) => (
           <ListItem
             selected={activeIndex() === index}
             component={Link}

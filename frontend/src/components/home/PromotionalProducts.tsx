@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+import { useStaticQuery, graphql, Link } from 'gatsby';
 import {
   Grid,
   Typography,
@@ -60,9 +60,12 @@ const PromotionalProducts: React.FC = () => {
       allStrapiProduct(filter: { promo: { eq: true } }) {
         edges {
           node {
-            description
             name
             strapiId
+            description
+            category {
+              name
+            }
             variants {
               images {
                 url
@@ -81,7 +84,7 @@ const PromotionalProducts: React.FC = () => {
         key={node.strapiId}
         imageUrl={`${process.env.GATSBY_STRAPI_URL}${node.variants[0].images[0].url}`}
         isSelectedSlide={selectedSlide === index}
-        name={node.name}
+        name={node.category.name?.toLowerCase()}
         selectSlide={setSelectedSlide}
         index={index}
       />
@@ -112,7 +115,7 @@ const PromotionalProducts: React.FC = () => {
         <Typography variant='h2' paragraph>
           {data.allStrapiProduct.edges[selectedSlide].node.description}
         </Typography>
-        <Button>
+        <Button component={Link} to={(slides[selectedSlide] as any).url}>
           <Typography variant='h4' classes={{ root: classes.explore }}>
             Explore
           </Typography>
